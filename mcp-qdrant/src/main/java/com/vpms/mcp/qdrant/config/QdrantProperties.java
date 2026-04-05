@@ -1,9 +1,9 @@
 package com.vpms.mcp.qdrant.config;
 
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "mcp.qdrant")
@@ -12,7 +12,7 @@ public class QdrantProperties {
     private int port = 6334;
     private boolean useTls = false;
     private String apiKey;
-    private int timeoutMs = 5000;
+    private int timeoutMs = 10000;
     private List<String> collections = List.of("vpms", "vpmshelp");
     private int searchLimit = 10;
     private float searchThreshold = 0.7f;

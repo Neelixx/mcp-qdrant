@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.vpms.mcp.qdrant.config.QdrantProperties;
 import com.vpms.mcp.qdrant.model.DocumentChunk;
 import com.vpms.mcp.qdrant.model.SearchResult;
 
@@ -24,9 +25,11 @@ public class QdrantRepository {
     private static final Logger log = LoggerFactory.getLogger(QdrantRepository.class);
     
     private final QdrantClient qdrantClient;
+    private final QdrantProperties properties;
     
-    public QdrantRepository(QdrantClient qdrantClient) {
+    public QdrantRepository(QdrantClient qdrantClient, QdrantProperties properties) {
         this.qdrantClient = qdrantClient;
+        this.properties = properties;
     }
 
     public List<SearchResult> search(String collectionName, float[] vector, int limit, Map<String, String> filters) {
@@ -38,13 +41,13 @@ public class QdrantRepository {
                             .setLimit(limit)
                             .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build())
                             .build()
-            ).get(5, TimeUnit.SECONDS);
+            ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
 
             return results.stream()
                     .map(point -> SearchResult.builder()
                             .id(point.getId().getUuid())
                             .score(point.getScore())
-                            .payload(point.getPayload().toString())
+                            .payload(extractContent(point.getPayloadMap()))
                             .collection(collectionName)
                             .metadata(extractMetadata(point.getPayloadMap()))
                             .build())
@@ -57,6 +60,11 @@ public class QdrantRepository {
     }
 
     public int batchIndex(String collectionName, String documentId, List<DocumentChunk> chunks, List<float[]> vectors, int dimension) {
+        // Add at start of batchIndex() method (line 60):
+        if (chunks.size() != vectors.size()) {
+            throw new IllegalArgumentException("Chunks and vectors must have same size: chunks=" 
+                + chunks.size() + ", vectors=" + vectors.size());
+        }
         try {
             // Ensure collection exists before indexing
             ensureCollectionExists(collectionName, dimension);
@@ -93,7 +101,7 @@ public class QdrantRepository {
                             .setCollectionName(collectionName)
                             .addAllPoints(points)
                             .build()
-            ).get(10, TimeUnit.SECONDS);
+            ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
 
             log.info("Indexed {} chunks to collection {}", chunks.size(), collectionName);
             return chunks.size();
@@ -106,7 +114,7 @@ public class QdrantRepository {
 
     public void ensureCollectionExists(String collectionName, int dimension) {
         try {
-            boolean exists = qdrantClient.collectionExistsAsync(collectionName).get(5, TimeUnit.SECONDS);
+            boolean exists = qdrantClient.collectionExistsAsync(collectionName).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
 
             if (!exists) {
                 log.info("Creating collection: {}", collectionName);
@@ -114,7 +122,7 @@ public class QdrantRepository {
                         .setDistance(Collections.Distance.Cosine)
                         .setSize(dimension)
                         .build();
-                qdrantClient.createCollectionAsync(collectionName, vectorParams).get(10, TimeUnit.SECONDS);
+                qdrantClient.createCollectionAsync(collectionName, vectorParams).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
                 log.info("Collection {} created successfully", collectionName);
             }
         } catch (Exception e) {
@@ -131,6 +139,14 @@ public class QdrantRepository {
             }
         });
         return metadata;
+    }
+
+    private String extractContent(Map<String, io.qdrant.client.grpc.JsonWithInt.Value> payload) {
+        io.qdrant.client.grpc.JsonWithInt.Value contentValue = payload.get("content");
+        if (contentValue != null && contentValue.hasStringValue()) {
+            return contentValue.getStringValue();
+        }
+        return "";
     }
 
     private io.qdrant.client.grpc.JsonWithInt.Value jsonValue(String value) {

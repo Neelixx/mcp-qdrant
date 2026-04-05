@@ -1,12 +1,17 @@
 package com.vpms.mcp.qdrant.chunker;
 
-import com.vpms.mcp.qdrant.model.DocumentChunk;
-import com.vpms.mcp.qdrant.proto.ChunkingConfig;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import com.vpms.mcp.qdrant.model.DocumentChunk;
+import com.vpms.mcp.qdrant.proto.ChunkingConfig;
 
 @Component
 public class TextChunker {
@@ -20,8 +25,9 @@ public class TextChunker {
     public List<DocumentChunk> chunk(String content, Map<String, String> metadata, ChunkingConfig config) {
         int chunkSize = (config != null && config.getChunkSize() > 0) ? config.getChunkSize() : DEFAULT_CHUNK_SIZE;
         int overlap = (config != null && config.getChunkOverlap() > 0) ? config.getChunkOverlap() : DEFAULT_CHUNK_OVERLAP;
-        String separator = (config != null && !config.getSeparator().isEmpty()) ? config.getSeparator() : DEFAULT_SEPARATOR;
-
+        String separator = (config != null && config.getSeparator() != null && !config.getSeparator().isEmpty()) 
+    ? config.getSeparator() 
+    : DEFAULT_SEPARATOR;
         List<DocumentChunk> chunks = new ArrayList<>();
 
         if (content == null || content.isEmpty()) {

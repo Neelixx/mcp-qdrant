@@ -55,4 +55,29 @@ public interface IngestDocumentResponseOrBuilder extends
    */
   com.google.protobuf.ByteString
       getErrorMessageBytes();
+
+  /**
+   * <code>repeated string failed_collections = 5;</code>
+   * @return A list containing the failedCollections.
+   */
+  java.util.List<java.lang.String>
+      getFailedCollectionsList();
+  /**
+   * <code>repeated string failed_collections = 5;</code>
+   * @return The count of failedCollections.
+   */
+  int getFailedCollectionsCount();
+  /**
+   * <code>repeated string failed_collections = 5;</code>
+   * @param index The index of the element to return.
+   * @return The failedCollections at the given index.
+   */
+  java.lang.String getFailedCollections(int index);
+  /**
+   * <code>repeated string failed_collections = 5;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the failedCollections at the given index.
+   */
+  com.google.protobuf.ByteString
+      getFailedCollectionsBytes(int index);
 }

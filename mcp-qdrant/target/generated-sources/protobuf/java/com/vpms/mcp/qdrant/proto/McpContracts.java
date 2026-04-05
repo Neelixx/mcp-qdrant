@@ -124,69 +124,70 @@ public final class McpContracts {
       "\003(\01325.com.vpms.mcp.qdrant.HybridSearchRe" +
       "quest.FiltersEntry\022\026\n\tsummarize\030\004 \001(\010H\001\210" +
       "\001\001\032.\n\014FiltersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
-      "\030\002 \001(\t:\0028\001B\010\n\006_limitB\014\n\n_summarize\"\306\001\n\024H" +
+      "\030\002 \001(\t:\0028\001B\010\n\006_limitB\014\n\n_summarize\"\342\001\n\024H" +
       "ybridSearchResponse\0222\n\007results\030\001 \003(\0132!.c" +
       "om.vpms.mcp.qdrant.SearchResult\022\017\n\007summa" +
       "ry\030\002 \001(\t\022\025\n\rfallback_used\030\003 \001(\010\022\034\n\024colle" +
       "ctions_searched\030\004 \001(\005\0224\n\007sources\030\005 \003(\0132#" +
-      ".com.vpms.mcp.qdrant.DocumentSource\"N\n\016D" +
-      "ocumentSource\022\023\n\013document_id\030\001 \001(\t\022\022\n\nco" +
-      "llection\030\002 \001(\t\022\023\n\013chunk_count\030\003 \001(\005\"\302\001\n\014" +
-      "SearchResult\022\n\n\002id\030\001 \001(\t\022\r\n\005score\030\002 \001(\002\022" +
-      "\017\n\007payload\030\003 \001(\t\022\022\n\ncollection\030\004 \001(\t\022A\n\010" +
-      "metadata\030\005 \003(\0132/.com.vpms.mcp.qdrant.Sea" +
-      "rchResult.MetadataEntry\032/\n\rMetadataEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\224\002\n\025Ing" +
-      "estDocumentRequest\022\023\n\013document_id\030\001 \001(\t\022" +
-      "\017\n\007content\030\002 \001(\t\022J\n\010metadata\030\003 \003(\01328.com" +
-      ".vpms.mcp.qdrant.IngestDocumentRequest.M" +
-      "etadataEntry\022\032\n\022target_collections\030\004 \003(\t" +
-      "\022<\n\017chunking_config\030\005 \001(\0132#.com.vpms.mcp" +
-      ".qdrant.ChunkingConfig\032/\n\rMetadataEntry\022" +
-      "\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"N\n\016Chunk" +
-      "ingConfig\022\022\n\nchunk_size\030\001 \001(\005\022\025\n\rchunk_o" +
-      "verlap\030\002 \001(\005\022\021\n\tseparator\030\003 \001(\t\"u\n\026Inges" +
-      "tDocumentResponse\022\017\n\007success\030\001 \001(\010\022\026\n\016ch" +
-      "unks_indexed\030\002 \001(\005\022\033\n\023indexed_collection" +
-      "s\030\003 \003(\t\022\025\n\rerror_message\030\004 \001(\t\"W\n\027Create" +
-      "CollectionRequest\022\027\n\017collection_name\030\001 \001" +
-      "(\t\022\021\n\tdimension\030\002 \001(\005\022\020\n\010distance\030\003 \001(\t\"" +
-      "[\n\030CreateCollectionResponse\022\017\n\007success\030\001" +
-      " \001(\010\022\027\n\017collection_name\030\002 \001(\t\022\025\n\rerror_m" +
-      "essage\030\003 \001(\t\"2\n\027DeleteCollectionRequest\022" +
-      "\027\n\017collection_name\030\001 \001(\t\"[\n\030DeleteCollec" +
-      "tionResponse\022\017\n\007success\030\001 \001(\010\022\027\n\017collect" +
-      "ion_name\030\002 \001(\t\022\025\n\rerror_message\030\003 \001(\t\"\030\n" +
-      "\026ListCollectionsRequest\"w\n\016CollectionInf" +
-      "o\022\014\n\004name\030\001 \001(\t\022\024\n\014points_count\030\002 \001(\005\022\030\n" +
-      "\020vector_dimension\030\003 \001(\005\022\027\n\017distance_metr" +
-      "ic\030\004 \001(\t\022\016\n\006status\030\005 \001(\t\"{\n\027ListCollecti" +
-      "onsResponse\022\017\n\007success\030\001 \001(\010\0228\n\013collecti" +
-      "ons\030\002 \003(\0132#.com.vpms.mcp.qdrant.Collecti" +
-      "onInfo\022\025\n\rerror_message\030\003 \001(\t\"3\n\030GetColl" +
-      "ectionInfoRequest\022\027\n\017collection_name\030\001 \001" +
-      "(\t\"v\n\031GetCollectionInfoResponse\022\017\n\007succe" +
-      "ss\030\001 \001(\010\0221\n\004info\030\002 \001(\0132#.com.vpms.mcp.qd" +
-      "rant.CollectionInfo\022\025\n\rerror_message\030\003 \001" +
-      "(\t2\246\005\n\020McpQdrantService\022c\n\014HybridSearch\022" +
-      "(.com.vpms.mcp.qdrant.HybridSearchReques" +
-      "t\032).com.vpms.mcp.qdrant.HybridSearchResp" +
-      "onse\022i\n\016IngestDocument\022*.com.vpms.mcp.qd" +
-      "rant.IngestDocumentRequest\032+.com.vpms.mc" +
-      "p.qdrant.IngestDocumentResponse\022o\n\020Creat" +
-      "eCollection\022,.com.vpms.mcp.qdrant.Create" +
-      "CollectionRequest\032-.com.vpms.mcp.qdrant." +
-      "CreateCollectionResponse\022o\n\020DeleteCollec" +
-      "tion\022,.com.vpms.mcp.qdrant.DeleteCollect" +
-      "ionRequest\032-.com.vpms.mcp.qdrant.DeleteC" +
-      "ollectionResponse\022l\n\017ListCollections\022+.c" +
-      "om.vpms.mcp.qdrant.ListCollectionsReques" +
-      "t\032,.com.vpms.mcp.qdrant.ListCollectionsR" +
-      "esponse\022r\n\021GetCollectionInfo\022-.com.vpms." +
-      "mcp.qdrant.GetCollectionInfoRequest\032..co" +
-      "m.vpms.mcp.qdrant.GetCollectionInfoRespo" +
-      "nseB+\n\031com.vpms.mcp.qdrant.protoB\014McpCon" +
-      "tractsP\001b\006proto3"
+      ".com.vpms.mcp.qdrant.DocumentSource\022\032\n\022f" +
+      "ailed_collections\030\006 \003(\t\"N\n\016DocumentSourc" +
+      "e\022\023\n\013document_id\030\001 \001(\t\022\022\n\ncollection\030\002 \001" +
+      "(\t\022\023\n\013chunk_count\030\003 \001(\005\"\302\001\n\014SearchResult" +
+      "\022\n\n\002id\030\001 \001(\t\022\r\n\005score\030\002 \001(\002\022\017\n\007payload\030\003" +
+      " \001(\t\022\022\n\ncollection\030\004 \001(\t\022A\n\010metadata\030\005 \003" +
+      "(\0132/.com.vpms.mcp.qdrant.SearchResult.Me" +
+      "tadataEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(" +
+      "\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\224\002\n\025IngestDocumentR" +
+      "equest\022\023\n\013document_id\030\001 \001(\t\022\017\n\007content\030\002" +
+      " \001(\t\022J\n\010metadata\030\003 \003(\01328.com.vpms.mcp.qd" +
+      "rant.IngestDocumentRequest.MetadataEntry" +
+      "\022\032\n\022target_collections\030\004 \003(\t\022<\n\017chunking" +
+      "_config\030\005 \001(\0132#.com.vpms.mcp.qdrant.Chun" +
+      "kingConfig\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022\r\n\005value\030\002 \001(\t:\0028\001\"N\n\016ChunkingConfig\022\022\n" +
+      "\nchunk_size\030\001 \001(\005\022\025\n\rchunk_overlap\030\002 \001(\005" +
+      "\022\021\n\tseparator\030\003 \001(\t\"\221\001\n\026IngestDocumentRe" +
+      "sponse\022\017\n\007success\030\001 \001(\010\022\026\n\016chunks_indexe" +
+      "d\030\002 \001(\005\022\033\n\023indexed_collections\030\003 \003(\t\022\025\n\r" +
+      "error_message\030\004 \001(\t\022\032\n\022failed_collection" +
+      "s\030\005 \003(\t\"W\n\027CreateCollectionRequest\022\027\n\017co" +
+      "llection_name\030\001 \001(\t\022\021\n\tdimension\030\002 \001(\005\022\020" +
+      "\n\010distance\030\003 \001(\t\"[\n\030CreateCollectionResp" +
+      "onse\022\017\n\007success\030\001 \001(\010\022\027\n\017collection_name" +
+      "\030\002 \001(\t\022\025\n\rerror_message\030\003 \001(\t\"2\n\027DeleteC" +
+      "ollectionRequest\022\027\n\017collection_name\030\001 \001(" +
+      "\t\"[\n\030DeleteCollectionResponse\022\017\n\007success" +
+      "\030\001 \001(\010\022\027\n\017collection_name\030\002 \001(\t\022\025\n\rerror" +
+      "_message\030\003 \001(\t\"\030\n\026ListCollectionsRequest" +
+      "\"w\n\016CollectionInfo\022\014\n\004name\030\001 \001(\t\022\024\n\014poin" +
+      "ts_count\030\002 \001(\005\022\030\n\020vector_dimension\030\003 \001(\005" +
+      "\022\027\n\017distance_metric\030\004 \001(\t\022\016\n\006status\030\005 \001(" +
+      "\t\"{\n\027ListCollectionsResponse\022\017\n\007success\030" +
+      "\001 \001(\010\0228\n\013collections\030\002 \003(\0132#.com.vpms.mc" +
+      "p.qdrant.CollectionInfo\022\025\n\rerror_message" +
+      "\030\003 \001(\t\"3\n\030GetCollectionInfoRequest\022\027\n\017co" +
+      "llection_name\030\001 \001(\t\"v\n\031GetCollectionInfo" +
+      "Response\022\017\n\007success\030\001 \001(\010\0221\n\004info\030\002 \001(\0132" +
+      "#.com.vpms.mcp.qdrant.CollectionInfo\022\025\n\r" +
+      "error_message\030\003 \001(\t2\246\005\n\020McpQdrantService" +
+      "\022c\n\014HybridSearch\022(.com.vpms.mcp.qdrant.H" +
+      "ybridSearchRequest\032).com.vpms.mcp.qdrant" +
+      ".HybridSearchResponse\022i\n\016IngestDocument\022" +
+      "*.com.vpms.mcp.qdrant.IngestDocumentRequ" +
+      "est\032+.com.vpms.mcp.qdrant.IngestDocument" +
+      "Response\022o\n\020CreateCollection\022,.com.vpms." +
+      "mcp.qdrant.CreateCollectionRequest\032-.com" +
+      ".vpms.mcp.qdrant.CreateCollectionRespons" +
+      "e\022o\n\020DeleteCollection\022,.com.vpms.mcp.qdr" +
+      "ant.DeleteCollectionRequest\032-.com.vpms.m" +
+      "cp.qdrant.DeleteCollectionResponse\022l\n\017Li" +
+      "stCollections\022+.com.vpms.mcp.qdrant.List" +
+      "CollectionsRequest\032,.com.vpms.mcp.qdrant" +
+      ".ListCollectionsResponse\022r\n\021GetCollectio" +
+      "nInfo\022-.com.vpms.mcp.qdrant.GetCollectio" +
+      "nInfoRequest\032..com.vpms.mcp.qdrant.GetCo" +
+      "llectionInfoResponseB+\n\031com.vpms.mcp.qdr" +
+      "ant.protoB\014McpContractsP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -209,7 +210,7 @@ public final class McpContracts {
     internal_static_com_vpms_mcp_qdrant_HybridSearchResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_vpms_mcp_qdrant_HybridSearchResponse_descriptor,
-        new java.lang.String[] { "Results", "Summary", "FallbackUsed", "CollectionsSearched", "Sources", });
+        new java.lang.String[] { "Results", "Summary", "FallbackUsed", "CollectionsSearched", "Sources", "FailedCollections", });
     internal_static_com_vpms_mcp_qdrant_DocumentSource_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_vpms_mcp_qdrant_DocumentSource_fieldAccessorTable = new
@@ -251,7 +252,7 @@ public final class McpContracts {
     internal_static_com_vpms_mcp_qdrant_IngestDocumentResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_vpms_mcp_qdrant_IngestDocumentResponse_descriptor,
-        new java.lang.String[] { "Success", "ChunksIndexed", "IndexedCollections", "ErrorMessage", });
+        new java.lang.String[] { "Success", "ChunksIndexed", "IndexedCollections", "ErrorMessage", "FailedCollections", });
     internal_static_com_vpms_mcp_qdrant_CreateCollectionRequest_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_com_vpms_mcp_qdrant_CreateCollectionRequest_fieldAccessorTable = new

@@ -19,6 +19,8 @@ private static final long serialVersionUID = 0L;
     results_ = java.util.Collections.emptyList();
     summary_ = "";
     sources_ = java.util.Collections.emptyList();
+    failedCollections_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   @java.lang.Override
@@ -184,6 +186,43 @@ private static final long serialVersionUID = 0L;
     return sources_.get(index);
   }
 
+  public static final int FAILED_COLLECTIONS_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.LazyStringArrayList failedCollections_ =
+      com.google.protobuf.LazyStringArrayList.emptyList();
+  /**
+   * <code>repeated string failed_collections = 6;</code>
+   * @return A list containing the failedCollections.
+   */
+  public com.google.protobuf.ProtocolStringList
+      getFailedCollectionsList() {
+    return failedCollections_;
+  }
+  /**
+   * <code>repeated string failed_collections = 6;</code>
+   * @return The count of failedCollections.
+   */
+  public int getFailedCollectionsCount() {
+    return failedCollections_.size();
+  }
+  /**
+   * <code>repeated string failed_collections = 6;</code>
+   * @param index The index of the element to return.
+   * @return The failedCollections at the given index.
+   */
+  public java.lang.String getFailedCollections(int index) {
+    return failedCollections_.get(index);
+  }
+  /**
+   * <code>repeated string failed_collections = 6;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the failedCollections at the given index.
+   */
+  public com.google.protobuf.ByteString
+      getFailedCollectionsBytes(int index) {
+    return failedCollections_.getByteString(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -213,6 +252,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < sources_.size(); i++) {
       output.writeMessage(5, sources_.get(i));
     }
+    for (int i = 0; i < failedCollections_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, failedCollections_.getRaw(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -241,6 +283,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, sources_.get(i));
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < failedCollections_.size(); i++) {
+        dataSize += computeStringSizeNoTag(failedCollections_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getFailedCollectionsList().size();
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -266,6 +316,8 @@ private static final long serialVersionUID = 0L;
         != other.getCollectionsSearched()) return false;
     if (!getSourcesList()
         .equals(other.getSourcesList())) return false;
+    if (!getFailedCollectionsList()
+        .equals(other.getFailedCollectionsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -291,6 +343,10 @@ private static final long serialVersionUID = 0L;
     if (getSourcesCount() > 0) {
       hash = (37 * hash) + SOURCES_FIELD_NUMBER;
       hash = (53 * hash) + getSourcesList().hashCode();
+    }
+    if (getFailedCollectionsCount() > 0) {
+      hash = (37 * hash) + FAILED_COLLECTIONS_FIELD_NUMBER;
+      hash = (53 * hash) + getFailedCollectionsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -440,6 +496,8 @@ private static final long serialVersionUID = 0L;
         sourcesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000010);
+      failedCollections_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
@@ -503,6 +561,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.collectionsSearched_ = collectionsSearched_;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        failedCollections_.makeImmutable();
+        result.failedCollections_ = failedCollections_;
       }
     }
 
@@ -613,6 +675,16 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (!other.failedCollections_.isEmpty()) {
+        if (failedCollections_.isEmpty()) {
+          failedCollections_ = other.failedCollections_;
+          bitField0_ |= 0x00000020;
+        } else {
+          ensureFailedCollectionsIsMutable();
+          failedCollections_.addAll(other.failedCollections_);
+        }
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -680,6 +752,12 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 42
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureFailedCollectionsIsMutable();
+              failedCollections_.add(s);
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1311,6 +1389,117 @@ private static final long serialVersionUID = 0L;
         sources_ = null;
       }
       return sourcesBuilder_;
+    }
+
+    private com.google.protobuf.LazyStringArrayList failedCollections_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    private void ensureFailedCollectionsIsMutable() {
+      if (!failedCollections_.isModifiable()) {
+        failedCollections_ = new com.google.protobuf.LazyStringArrayList(failedCollections_);
+      }
+      bitField0_ |= 0x00000020;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @return A list containing the failedCollections.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getFailedCollectionsList() {
+      failedCollections_.makeImmutable();
+      return failedCollections_;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @return The count of failedCollections.
+     */
+    public int getFailedCollectionsCount() {
+      return failedCollections_.size();
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param index The index of the element to return.
+     * @return The failedCollections at the given index.
+     */
+    public java.lang.String getFailedCollections(int index) {
+      return failedCollections_.get(index);
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the failedCollections at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getFailedCollectionsBytes(int index) {
+      return failedCollections_.getByteString(index);
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param index The index to set the value at.
+     * @param value The failedCollections to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFailedCollections(
+        int index, java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureFailedCollectionsIsMutable();
+      failedCollections_.set(index, value);
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param value The failedCollections to add.
+     * @return This builder for chaining.
+     */
+    public Builder addFailedCollections(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureFailedCollectionsIsMutable();
+      failedCollections_.add(value);
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param values The failedCollections to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllFailedCollections(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureFailedCollectionsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, failedCollections_);
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFailedCollections() {
+      failedCollections_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000020);;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string failed_collections = 6;</code>
+     * @param value The bytes of the failedCollections to add.
+     * @return This builder for chaining.
+     */
+    public Builder addFailedCollectionsBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      ensureFailedCollectionsIsMutable();
+      failedCollections_.add(value);
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

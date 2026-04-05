@@ -9,7 +9,7 @@ public class EmbeddingProperties {
     private String serviceUrl = "http://localhost:11434";
     private String model = "nomic-embed-text-v2-moe";
     private int dimension = 768;
-    private int timeoutMs = 50;
+    private int timeoutMs = 5000;
     private int batchSize = 32;
     
     public String getServiceUrl() { return serviceUrl; }

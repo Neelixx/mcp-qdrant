@@ -66,6 +66,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         try {
             List<SearchResult> allResults = new ArrayList<>();
             int collectionsSearched = 0;
+            List<String> failedCollections = new ArrayList<>();
 
             // Handle default limit (num_results) - default to 5 if not specified
             int limit = request.hasLimit() && request.getLimit() > 0 ? request.getLimit() : 5;
@@ -92,6 +93,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     collectionsSearched++;
                 } catch (Exception e) {
                     log.error("Search failed for collection {}: {}", collection, e.getMessage());
+                    failedCollections.add(collection);
                 }
             }
 
@@ -116,7 +118,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 log.info("Summarization skipped: embedding model not configured or empty");
             }
 
-            HybridSearchResponse response = buildResponse(sortedResults, summary, fallbackUsed, collectionsSearched);
+            HybridSearchResponse response = buildResponse(sortedResults, summary, fallbackUsed, collectionsSearched, failedCollections);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
 
@@ -146,6 +148,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             );
 
             int totalIndexed = 0;
+            List<String> failedCollections = new ArrayList<>();
             for (String collection : targetCollections) {
                 try {
                     int indexed = qdrantRepository.batchIndex(
@@ -158,13 +161,15 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     totalIndexed += indexed;
                 } catch (Exception e) {
                     log.error("Indexing failed for collection {}: {}", collection, e.getMessage());
+                    failedCollections.add(collection);
                 }
             }
 
             IngestDocumentResponse response = IngestDocumentResponse.newBuilder()
-                    .setSuccess(totalIndexed > 0)
+                    .setSuccess(failedCollections.isEmpty())
                     .setChunksIndexed(totalIndexed)
                     .addAllIndexedCollections(targetCollections)
+                    .addAllFailedCollections(failedCollections)
                     .build();
 
             responseObserver.onNext(response);
@@ -181,10 +186,14 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     }
 
     private HybridSearchResponse buildResponse(List<SearchResult> results, String summary,
-                                                boolean fallbackUsed, int collectionsSearched) {
+                                                boolean fallbackUsed, int collectionsSearched, List<String> failedCollections) {
         HybridSearchResponse.Builder builder = HybridSearchResponse.newBuilder()
                 .setFallbackUsed(fallbackUsed)
                 .setCollectionsSearched(collectionsSearched);
+
+        if (!failedCollections.isEmpty()) {
+            builder.addAllFailedCollections(failedCollections);
+        }
 
         if (summary != null && !summary.isEmpty()) {
             builder.setSummary(summary);

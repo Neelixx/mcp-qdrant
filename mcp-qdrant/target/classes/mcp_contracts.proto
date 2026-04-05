@@ -28,6 +28,7 @@ message HybridSearchResponse {
   bool fallback_used = 3;
   int32 collections_searched = 4;
   repeated DocumentSource sources = 5;
+  repeated string failed_collections = 6;
 }
 
 message DocumentSource {
@@ -63,6 +64,7 @@ message IngestDocumentResponse {
   int32 chunks_indexed = 2;
   repeated string indexed_collections = 3;
   string error_message = 4;
+  repeated string failed_collections = 5;
 }
 
 // Collection Management Messages
