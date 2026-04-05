@@ -13,7 +13,7 @@ A Spring Boot-based MCP (Model Context Protocol) server providing gRPC access to
 
 **Objective:** Perform unified, contextual search across configured Qdrant collections.
 
-**Implementation:** `com.vpms.mcp.qdrant.service.GrpcMcpService`
+**Implementation:** `com.mcp.qdrant.service.GrpcMcpService`
 
 ### Workflow Steps:
 
@@ -48,7 +48,7 @@ rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
 
 **Objective:** Process and index documents into Qdrant collections.
 
-**Implementation:** `com.vpms.mcp.qdrant.service.GrpcMcpService`
+**Implementation:** `com.mcp.qdrant.service.GrpcMcpService`
 
 ### Workflow Steps:
 
@@ -75,7 +75,7 @@ rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
 
 **Objective:** Explicitly manage Qdrant collections with configurable vector parameters.
 
-**Implementation:** `com.vpms.mcp.qdrant.service.GrpcMcpService`
+**Implementation:** `com.mcp.qdrant.service.GrpcMcpService`
 
 ### Workflow Steps:
 
@@ -111,14 +111,14 @@ rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoRespon
 ## 4. Component Architecture
 
 ### 4.1 EmbeddingServiceClient
-**Location:** `com.vpms.mcp.qdrant.client.EmbeddingServiceClient`
+**Location:** `com.mcp.qdrant.client.EmbeddingServiceClient`
 
 - Handles HTTP calls to Ollama embedding service
 - Methods: `embed()`, `embedBatch()`
 - Error handling: Throws `RuntimeException` on timeout/failure
 
 ### 4.2 QdrantRepository
-**Location:** `com.vpms.mcp.qdrant.repository.QdrantRepository`
+**Location:** `com.mcp.qdrant.repository.QdrantRepository`
 
 - **search():** Performs vector similarity search
 - **batchIndex():** Batch upsert of document chunks
@@ -126,13 +126,13 @@ rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoRespon
 - **getQdrantClient():** Exposes underlying QdrantClient for collection management operations
 
 ### 4.3 TextChunker
-**Location:** `com.vpms.mcp.qdrant.chunker.TextChunker`
+**Location:** `com.mcp.qdrant.chunker.TextChunker`
 
 - Recursive text splitting by separators: `\n\n`, `\n`, `. `, ` `
 - Configurable: `chunkSize`, `chunkOverlap`, `separators`
 
 ### 4.4 SummarizationService
-**Location:** `com.vpms.mcp.qdrant.service.SummarizationService`
+**Location:** `com.mcp.qdrant.service.SummarizationService`
 
 - Simple text-based summarization (concatenation + truncation)
 - Extensible for LLM-based summarization
@@ -176,7 +176,7 @@ grpc:
 - Embedding service failures return gRPC error status
 
 ### Services Exposed:
-- `com.vpms.mcp.qdrant.McpQdrantService` - Main MCP operations
+- `com.mcp.qdrant.McpQdrantService` - Main MCP operations
 - `grpc.health.v1.Health` - Health checks
 - `grpc.reflection.v1alpha.ServerReflection` - Service discovery
 

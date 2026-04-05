@@ -3,7 +3,7 @@ syntax = "proto3";
 package com.vpms.mcp.qdrant;
 
 option java_multiple_files = true;
-option java_package = "com.vpms.mcp.qdrant.proto";
+option java_package = "com.mcp.qdrant.proto";
 option java_outer_classname = "McpContracts";
 
 service McpQdrantService {

@@ -132,7 +132,7 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 ```json
 {
   "servers": {
-    "com.vpms/mcp-qdrant": {
+    "com.mcp/mcp-qdrant": {
       "type": "stdio",
       "command": "/home/frankw/git/github/mcp-qdrant/mcp-qdrant/mcp-bridge.sh"
     }
@@ -147,7 +147,7 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 ```json
 {
   "servers": {
-    "com.vpms/mcp-qdrant": {
+    "com.mcp/mcp-qdrant": {
       "type": "stdio",
       "command": "/home/frankw/git/github/mcp-qdrant/mcp-qdrant/mcp-bridge.sh"
     }
@@ -225,7 +225,7 @@ server:
 
 | Service | Description |
 |---------|-------------|
-| `com.vpms.mcp.qdrant.McpQdrantService` | Main MCP operations |
+| `com.mcp.qdrant.McpQdrantService` | Main MCP operations |
 | `grpc.health.v1.Health` | Health checks |
 | `grpc.reflection.v1alpha.ServerReflection` | Service discovery |
 
@@ -284,7 +284,7 @@ mcp-qdrant/
 ├── src/main/
 │   ├── proto/mcp_contracts.proto    # gRPC service definitions
 │   ├── resources/application.yml    # Spring configuration
-│   └── java/com/vpms/mcp/qdrant/
+│   └── java/com/mcp/qdrant/
 │       ├── McpQdrantApplication.java
 │       ├── config/                  # Configuration classes
 │       ├── service/                 # gRPC service + summarization

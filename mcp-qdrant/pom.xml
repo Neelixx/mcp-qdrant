@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.vpms</groupId>
+    <groupId>com.mcp</groupId>
     <artifactId>mcp-qdrant</artifactId>
     <version>0.0.2</version>
     <packaging>jar</packaging>
