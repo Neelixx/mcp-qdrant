@@ -1,0 +1,13 @@
+Operating System: CachyOS Linux 
+KDE Plasma Version: 6.6.3
+KDE Frameworks Version: 6.24.0
+Qt Version: 6.11.0
+Kernel Version: 6.19.11-1-cachyos (64-bit)
+Graphics Platform: Wayland
+Processors: 16 × AMD Ryzen 7 9800X3D 8-Core Processor
+Memory: 64 GiB of RAM (60.4 GiB usable)
+Graphics Processor 1: AMD Radeon RX 9070 XT
+Graphics Processor 2: AMD Ryzen 7 9800X3D 8-Core Processor
+Manufacturer: Gigabyte Technology Co., Ltd.
+Product Name: B850M GAMING X WIFI6E
+System Version: Default string-CF-WCP-ADO

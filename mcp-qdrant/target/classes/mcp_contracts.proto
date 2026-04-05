@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package com.vpms.mcp.qdrant;
+
+option java_multiple_files = true;
+option java_package = "com.vpms.mcp.qdrant.proto";
+option java_outer_classname = "McpContracts";
+
+service McpQdrantService {
+  rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
+  rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
+  rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
+  rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
+  rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
+  rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoResponse);
+}
+
+message HybridSearchRequest {
+  string query_text = 1;
+  optional int32 limit = 2;      // Default: 5 if not specified
+  map<string, string> filters = 3;
+  optional bool summarize = 4;   // Default: false if not specified or if LLM unavailable
+}
+
+message HybridSearchResponse {
+  repeated SearchResult results = 1;
+  string summary = 2;
+  bool fallback_used = 3;
+  int32 collections_searched = 4;
+  repeated DocumentSource sources = 5;
+}
+
+message DocumentSource {
+  string document_id = 1;
+  string collection = 2;
+  int32 chunk_count = 3;
+}
+
+message SearchResult {
+  string id = 1;
+  float score = 2;
+  string payload = 3;
+  string collection = 4;
+  map<string, string> metadata = 5;
+}
+
+message IngestDocumentRequest {
+  string document_id = 1;
+  string content = 2;
+  map<string, string> metadata = 3;
+  repeated string target_collections = 4;
+  ChunkingConfig chunking_config = 5;
+}
+
+message ChunkingConfig {
+  int32 chunk_size = 1;
+  int32 chunk_overlap = 2;
+  string separator = 3;
+}
+
+message IngestDocumentResponse {
+  bool success = 1;
+  int32 chunks_indexed = 2;
+  repeated string indexed_collections = 3;
+  string error_message = 4;
+}
+
+// Collection Management Messages
+message CreateCollectionRequest {
+  string collection_name = 1;
+  int32 dimension = 2;  // Vector dimension (default: 768)
+  string distance = 3;    // Distance metric: Cosine, Euclid, Dot (default: Cosine)
+}
+
+message CreateCollectionResponse {
+  bool success = 1;
+  string collection_name = 2;
+  string error_message = 3;
+}
+
+message DeleteCollectionRequest {
+  string collection_name = 1;
+}
+
+message DeleteCollectionResponse {
+  bool success = 1;
+  string collection_name = 2;
+  string error_message = 3;
+}
+
+message ListCollectionsRequest {
+  // Empty request - no parameters needed
+}
+
+message CollectionInfo {
+  string name = 1;
+  int32 points_count = 2;
+  int32 vector_dimension = 3;
+  string distance_metric = 4;
+  string status = 5;
+}
+
+message ListCollectionsResponse {
+  bool success = 1;
+  repeated CollectionInfo collections = 2;
+  string error_message = 3;
+}
+
+message GetCollectionInfoRequest {
+  string collection_name = 1;
+}
+
+message GetCollectionInfoResponse {
+  bool success = 1;
+  CollectionInfo info = 2;
+  string error_message = 3;
+}
