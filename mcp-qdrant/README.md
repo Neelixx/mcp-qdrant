@@ -121,6 +121,58 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
    grpcurl -plaintext localhost:9091 list
    ```
 
+## GitHub Copilot & Windsurf Integration
+
+To use this server with GitHub Copilot or Windsurf, add the following configuration:
+
+### VS Code
+
+**File:** `~/.vscode/mcp-settings.json` or workspace settings
+
+```json
+{
+  "servers": {
+    "com.vpms/mcp-qdrant": {
+      "type": "stdio",
+      "command": "/home/frankw/git/github/mcp-qdrant/mcp-qdrant/mcp-bridge.sh"
+    }
+  }
+}
+```
+
+### Windsurf
+
+**File:** `~/.windsurf/mcp_config.json`
+
+```json
+{
+  "servers": {
+    "com.vpms/mcp-qdrant": {
+      "type": "stdio",
+      "command": "/home/frankw/git/github/mcp-qdrant/mcp-qdrant/mcp-bridge.sh"
+    }
+  }
+}
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `listCollections` | List all Qdrant collections |
+| `getCollectionInfo` | Get collection metadata and point count |
+| `hybridSearch` | Search across collections with vector + keyword |
+| `ingestDocument` | Chunk and index documents into collections |
+| `createCollection` | Create a new vector collection |
+| `deleteCollection` | Remove a collection and all its data |
+
+### Troubleshooting Connection Issues
+
+**"Connection closed" error:**
+- Verify Docker containers are running: `docker ps`
+- Check backend health: `curl http://localhost:8080/actuator/health`
+- Review bridge logs: `ls /tmp/mcp-qdrant-logs/`
+
 ## Configuration
 
 Configuration via `application.yml` or environment variables:
