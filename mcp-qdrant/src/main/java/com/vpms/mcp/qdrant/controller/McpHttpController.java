@@ -1,6 +1,7 @@
 package com.vpms.mcp.qdrant.controller;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,16 @@ public class McpHttpController {
     public void shutdown() {
         if (channel != null) {
             channel.shutdown();
+            try {
+                if (!channel.awaitTermination(5, TimeUnit.SECONDS)) {
+                    log.warn("gRPC channel did not terminate in 5 seconds, forcing shutdown");
+                    channel.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                log.error("Interrupted while waiting for channel shutdown", e);
+                channel.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
@@ -66,6 +77,19 @@ public class McpHttpController {
         Object id = request.get("id");
 
         log.info("MCP request: method={}, id={}", method, id);
+
+        // Validate required fields
+        if (method == null || method.isEmpty()) {
+            log.error("MCP request missing required 'method' field");
+            return ResponseEntity.ok(Map.of(
+                    "jsonrpc", "2.0",
+                    "id", id != null ? id : "null",
+                    "error", Map.of(
+                            "code", -32600,
+                            "message", "Invalid Request: missing required 'method' field"
+                    )
+            ));
+        }
 
         try {
             Object result = dispatchMethod(method, params);
@@ -89,6 +113,7 @@ public class McpHttpController {
     }
 
     private Object dispatchMethod(String method, Map<String, Object> params) {
+        params = params != null ? params : java.util.Collections.emptyMap();
         return switch (method) {
             case "listCollections" -> handleListCollections();
             case "getCollectionInfo" -> handleGetCollectionInfo(params);
@@ -167,6 +192,9 @@ public class McpHttpController {
 
         @SuppressWarnings("unchecked")
         java.util.List<String> targetCollections = (java.util.List<String>) params.get("targetCollections");
+        if (targetCollections == null) {
+            targetCollections = java.util.Collections.emptyList();
+        }
 
         int chunkSize = params.getOrDefault("chunkSize", 512) instanceof Number n ? n.intValue() : 512;
         int chunkOverlap = params.getOrDefault("chunkOverlap", 50) instanceof Number n ? n.intValue() : 50;
