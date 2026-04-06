@@ -102,6 +102,11 @@ public class McpHttpController {
 
         try {
             Object result = dispatchMethod(method, params);
+            // Handle null id for notifications - return empty response for notifications
+            if (id == null) {
+                // This is a notification, no response needed per MCP spec
+                return ResponseEntity.ok(java.util.Collections.emptyMap());
+            }
             return ResponseEntity.ok(Map.of(
                     "jsonrpc", "2.0",
                     "id", id,
@@ -124,6 +129,9 @@ public class McpHttpController {
     private Object dispatchMethod(String method, Map<String, Object> params) {
         params = params != null ? params : java.util.Collections.emptyMap();
         return switch (method) {
+            case "initialize" -> handleInitialize(params);
+            case "notifications/initialized" -> handleNotificationInitialized(params);
+            case "tools/list" -> handleToolsList();
             case "listCollections" -> handleListCollections();
             case "listDocuments" -> handleListDocuments(params);
             case "getCollectionInfo" -> handleGetCollectionInfo(params);
@@ -138,6 +146,193 @@ public class McpHttpController {
             case "restoreCollection" -> handleRestoreCollection(params);
             default -> throw new RuntimeException("Unknown method: " + method);
         };
+    }
+
+    private Object handleInitialize(Map<String, Object> params) {
+        // MCP protocol initialization - return server capabilities
+        Map<String, Object> serverInfo = Map.of(
+            "name", "mcp-qdrant",
+            "version", "0.0.2"
+        );
+        
+        Map<String, Object> capabilities = Map.of(
+            "tools", Map.of(
+                "listChanged", false
+            ),
+            "collections", Map.of(
+                "list", true,
+                "create", true,
+                "delete", true,
+                "backup", true,
+                "restore", true
+            ),
+            "documents", Map.of(
+                "ingest", true,
+                "list", true,
+                "delete", true,
+                "search", true
+            )
+        );
+        
+        return Map.of(
+            "protocolVersion", "2024-11-05",
+            "capabilities", capabilities,
+            "serverInfo", serverInfo
+        );
+    }
+
+    private Object handleNotificationInitialized(Map<String, Object> params) {
+        // MCP notification - client confirms initialization complete
+        // This is a notification, not a request requiring a response
+        log.info("MCP client initialized notification received");
+        return Map.of(); // Return empty result for notifications
+    }
+
+    private Object handleToolsList() {
+        // Return list of available tools in MCP format
+        return Map.of(
+            "tools", java.util.List.of(
+                Map.of(
+                    "name", "hybridSearch",
+                    "description", "Perform hybrid search across Qdrant collections",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "queryText", Map.of("type", "string", "description", "Search query"),
+                            "limit", Map.of("type", "integer", "description", "Max results"),
+                            "summarize", Map.of("type", "boolean", "description", "Summarize results")
+                        ),
+                        "required", java.util.List.of("queryText")
+                    )
+                ),
+                Map.of(
+                    "name", "listCollections",
+                    "description", "List all Qdrant collections",
+                    "inputSchema", Map.of("type", "object", "properties", Map.of())
+                ),
+                Map.of(
+                    "name", "getCollectionInfo",
+                    "description", "Get information about a specific collection",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string", "description", "Name of the collection")
+                        ),
+                        "required", java.util.List.of("collectionName")
+                    )
+                ),
+                Map.of(
+                    "name", "createCollection",
+                    "description", "Create a new Qdrant collection",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string"),
+                            "dimension", Map.of("type", "integer"),
+                            "distance", Map.of("type", "string")
+                        ),
+                        "required", java.util.List.of("collectionName")
+                    )
+                ),
+                Map.of(
+                    "name", "deleteCollection",
+                    "description", "Delete a Qdrant collection",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string")
+                        ),
+                        "required", java.util.List.of("collectionName")
+                    )
+                ),
+                Map.of(
+                    "name", "backupCollection",
+                    "description", "Backup a Qdrant collection to a snapshot",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string"),
+                            "backupPath", Map.of("type", "string")
+                        ),
+                        "required", java.util.List.of("collectionName")
+                    )
+                ),
+                Map.of(
+                    "name", "restoreCollection",
+                    "description", "Restore a Qdrant collection from a snapshot",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string"),
+                            "snapshotPath", Map.of("type", "string"),
+                            "overwriteExisting", Map.of("type", "boolean")
+                        ),
+                        "required", java.util.List.of("collectionName", "snapshotPath")
+                    )
+                ),
+                Map.of(
+                    "name", "listDocuments",
+                    "description", "List documents in a collection",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string"),
+                            "limit", Map.of("type", "integer"),
+                            "offset", Map.of("type", "integer")
+                        )
+                    )
+                ),
+                Map.of(
+                    "name", "getDocumentInfo",
+                    "description", "Get information about a specific document",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "documentId", Map.of("type", "string"),
+                            "collectionName", Map.of("type", "string")
+                        ),
+                        "required", java.util.List.of("documentId")
+                    )
+                ),
+                Map.of(
+                    "name", "ingestDocument",
+                    "description", "Ingest a document into Qdrant",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "documentId", Map.of("type", "string"),
+                            "content", Map.of("type", "string"),
+                            "targetCollections", Map.of("type", "array"),
+                            "chunkSize", Map.of("type", "integer"),
+                            "chunkOverlap", Map.of("type", "integer")
+                        ),
+                        "required", java.util.List.of("documentId", "content")
+                    )
+                ),
+                Map.of(
+                    "name", "deleteDocument",
+                    "description", "Delete a document from Qdrant",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "documentId", Map.of("type", "string"),
+                            "collectionName", Map.of("type", "string")
+                        ),
+                        "required", java.util.List.of("documentId")
+                    )
+                ),
+                Map.of(
+                    "name", "rebuildDocumentCache",
+                    "description", "Rebuild the document cache for better performance",
+                    "inputSchema", Map.of(
+                        "type", "object",
+                        "properties", Map.of(
+                            "collectionName", Map.of("type", "string")
+                        )
+                    )
+                )
+            )
+        );
     }
 
     private Object handleListCollections() {

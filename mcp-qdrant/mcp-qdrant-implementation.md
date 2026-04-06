@@ -247,9 +247,21 @@ rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCa
 ### 4.6 McpHttpController
 **Location:** `com.mcp.qdrant.controller.McpHttpController`
 
-- HTTP REST API for MCP protocol compliance
+- HTTP REST API for MCP protocol compliance via JSON-RPC over HTTP
 - Routes MCP method calls to appropriate gRPC service methods
-- Methods: `listCollections`, `getCollectionInfo`, `hybridSearch`, `ingestDocument`, `createCollection`, `deleteCollection`
+- Supports both stdio-based MCP (via bridge) and HTTP-based MCP clients
+- **Key Methods:**
+  - `initialize` - MCP handshake returning server capabilities including `tools` support
+  - `notifications/initialized` - Acknowledges client initialization (returns empty response)
+  - `tools/list` - Returns all 12 available tools with input schemas
+  - `hybridSearch`, `listCollections`, `getCollectionInfo`, `createCollection`, `deleteCollection`
+  - `backupCollection`, `restoreCollection`
+  - `ingestDocument`, `listDocuments`, `deleteDocument`, `getDocumentInfo`, `rebuildDocumentCache`
+- **MCP Protocol Compliance:**
+  - Handles `null` id for notifications (returns empty map, no response needed)
+  - Returns proper JSON-RPC 2.0 responses with `jsonrpc`, `id`, `result` fields
+  - Error responses include `code` and `message` fields per MCP spec
+- **Endpoint:** `POST /mcp` on HTTP port 8080
 
 ---
 

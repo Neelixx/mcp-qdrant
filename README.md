@@ -182,9 +182,52 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 | `backupCollection`     | Create a snapshot backup of a collection                |
 | `restoreCollection`    | Restore a collection from a snapshot                    |
 
-### Troubleshooting Connection Issues
+### Zed
 
-**"Connection closed" error:**
+**File:** `~/.config/zed/settings.json`
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "mcp-qdrant": {
+        "url": "http://localhost:8080/mcp",
+        "headers": {}
+      }
+    }
+  }
+}
+```
+
+### MCP HTTP API
+
+MCP Qdrant Server supports the **MCP protocol over HTTP** in addition to gRPC. This enables integration with editors like Zed that use HTTP-based MCP connections.
+
+**Endpoint:** `POST http://localhost:8080/mcp`
+
+The HTTP endpoint accepts standard MCP JSON-RPC requests:
+
+```bash
+curl -s http://localhost:8080/mcp \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "initialize",
+    "id": 0
+  }'
+```
+
+**Supported Methods:**
+- `initialize` - MCP handshake returning server capabilities
+- `notifications/initialized` - Client initialization confirmation
+- `tools/list` - List all available tools
+- `hybridSearch` - Search across collections
+- `listCollections`, `getCollectionInfo`, `createCollection`, `deleteCollection`
+- `backupCollection`, `restoreCollection`
+- `ingestDocument`, `listDocuments`, `deleteDocument`, `getDocumentInfo`, `rebuildDocumentCache`
+
+### Troubleshooting Connection Issues**
 
 - Verify Docker containers are running: `docker ps`
 - Check backend health: `curl http://localhost:8080/health`
