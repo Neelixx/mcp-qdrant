@@ -13,6 +13,8 @@ service McpQdrantService {
   rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
   rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
   rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoResponse);
+  rpc BackupCollection(BackupCollectionRequest) returns (BackupCollectionResponse);
+  rpc RestoreCollection(RestoreCollectionRequest) returns (RestoreCollectionResponse);
 }
 
 message HybridSearchRequest {
@@ -116,4 +118,33 @@ message GetCollectionInfoResponse {
   bool success = 1;
   CollectionInfo info = 2;
   string error_message = 3;
+}
+
+// Backup and Restore Messages
+message BackupCollectionRequest {
+  string collection_name = 1;
+  string backup_path = 2;  // Optional: local path to store backup
+}
+
+message BackupCollectionResponse {
+  bool success = 1;
+  string collection_name = 2;
+  string snapshot_name = 3;
+  int64 size_bytes = 4;
+  string creation_time = 5;
+  string download_url = 6;  // URL to download snapshot
+  string error_message = 7;
+}
+
+message RestoreCollectionRequest {
+  string collection_name = 1;      // Target collection name
+  string snapshot_path = 2;      // Path to snapshot file
+  bool overwrite_existing = 3;   // If true, delete existing collection before restore
+}
+
+message RestoreCollectionResponse {
+  bool success = 1;
+  string collection_name = 2;
+  int32 points_restored = 3;
+  string error_message = 4;
 }

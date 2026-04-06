@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mcp.qdrant.proto.BackupCollectionRequest;
+import com.mcp.qdrant.proto.BackupCollectionResponse;
 import com.mcp.qdrant.proto.CreateCollectionRequest;
 import com.mcp.qdrant.proto.CreateCollectionResponse;
 import com.mcp.qdrant.proto.DeleteCollectionRequest;
@@ -25,6 +27,8 @@ import com.mcp.qdrant.proto.IngestDocumentResponse;
 import com.mcp.qdrant.proto.ListCollectionsRequest;
 import com.mcp.qdrant.proto.ListCollectionsResponse;
 import com.mcp.qdrant.proto.McpQdrantServiceGrpc;
+import com.mcp.qdrant.proto.RestoreCollectionRequest;
+import com.mcp.qdrant.proto.RestoreCollectionResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -121,6 +125,8 @@ public class McpHttpController {
             case "ingestDocument" -> handleIngestDocument(params);
             case "createCollection" -> handleCreateCollection(params);
             case "deleteCollection" -> handleDeleteCollection(params);
+            case "backupCollection" -> handleBackupCollection(params);
+            case "restoreCollection" -> handleRestoreCollection(params);
             default -> throw new RuntimeException("Unknown method: " + method);
         };
     }
@@ -258,6 +264,47 @@ public class McpHttpController {
         return Map.of(
                 "success", response.getSuccess(),
                 "collectionName", response.getCollectionName()
+        );
+    }
+
+    private Object handleBackupCollection(Map<String, Object> params) {
+        String collectionName = (String) params.get("collectionName");
+        String backupPath = (String) params.getOrDefault("backupPath", "");
+
+        BackupCollectionRequest request = BackupCollectionRequest.newBuilder()
+                .setCollectionName(collectionName)
+                .setBackupPath(backupPath)
+                .build();
+
+        BackupCollectionResponse response = stub.backupCollection(request);
+
+        return Map.of(
+                "success", response.getSuccess(),
+                "collectionName", response.getCollectionName(),
+                "snapshotName", response.getSnapshotName(),
+                "sizeBytes", response.getSizeBytes(),
+                "creationTime", response.getCreationTime(),
+                "downloadUrl", response.getDownloadUrl()
+        );
+    }
+
+    private Object handleRestoreCollection(Map<String, Object> params) {
+        String collectionName = (String) params.get("collectionName");
+        String snapshotPath = (String) params.get("snapshotPath");
+        boolean overwriteExisting = params.getOrDefault("overwriteExisting", false) instanceof Boolean b ? b : false;
+
+        RestoreCollectionRequest request = RestoreCollectionRequest.newBuilder()
+                .setCollectionName(collectionName)
+                .setSnapshotPath(snapshotPath)
+                .setOverwriteExisting(overwriteExisting)
+                .build();
+
+        RestoreCollectionResponse response = stub.restoreCollection(request);
+
+        return Map.of(
+                "success", response.getSuccess(),
+                "collectionName", response.getCollectionName(),
+                "pointsRestored", response.getPointsRestored()
         );
     }
 }

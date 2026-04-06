@@ -163,8 +163,8 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 | `getCollectionInfo` | Get collection metadata and point count |
 | `hybridSearch` | Search across collections with vector + keyword |
 | `ingestDocument` | Chunk and index documents into collections |
-| `createCollection` | Create a new vector collection |
-| `deleteCollection` | Remove a collection and all its data |
+| `backupCollection` | Create a snapshot backup of a collection |
+| `restoreCollection` | Restore a collection from a snapshot |
 
 ### Troubleshooting Connection Issues
 
@@ -269,12 +269,43 @@ rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
 ```protobuf
 rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
 rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
-rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
-rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoResponse);
+rpc BackupCollection(BackupCollectionRequest) returns (BackupCollectionResponse);
+rpc RestoreCollection(RestoreCollectionRequest) returns (RestoreCollectionResponse);
 ```
 - Create/delete collections with configurable vector dimensions
+- **Backup**: Creates a snapshot of collection data with download URL
+- **Restore**: Uploads and restores collection from snapshot file
 - List all collections with metadata
 - Get detailed info for specific collection
+
+### Backup & Restore Scripts
+
+For command-line backup/restore operations, use the provided shell scripts in the `backup/` directory:
+
+**Backup a collection:**
+```bash
+cd mcp-qdrant/backup
+./backup.sh <collection_name> [qdrant_host] [qdrant_port]
+```
+
+Example:
+```bash
+./backup.sh qdrant-doc localhost 6333
+```
+
+This creates a compressed snapshot file in the `backup/` directory.
+
+**Restore a collection:**
+```bash
+./restore.sh <target_collection_name> <snapshot_file> [qdrant_host] [qdrant_port]
+```
+
+Example:
+```bash
+./restore.sh qdrant-doc-restored ./qdrant-doc-*.snapshot localhost 6333
+```
+
+The restore script will prompt before overwriting existing collections.
 
 ### Proto Definition
 
@@ -287,6 +318,9 @@ mcp-qdrant/
 ├── pom.xml                          # Maven configuration
 ├── docker-compose.yml               # Full stack orchestration
 ├── Dockerfile                       # Multi-stage build
+├── backup/                          # Backup/restore scripts
+│   ├── backup.sh                    # Create and download snapshots
+│   └── restore.sh                   # Upload and restore snapshots
 ├── src/main/
 │   ├── proto/mcp_contracts.proto    # gRPC service definitions
 │   ├── resources/application.yml    # Spring configuration

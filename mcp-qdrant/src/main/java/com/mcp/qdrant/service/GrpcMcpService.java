@@ -15,6 +15,8 @@ import com.mcp.qdrant.config.QdrantProperties;
 import com.mcp.qdrant.model.DocumentChunk;
 import com.mcp.qdrant.model.SearchResult;
 import com.mcp.qdrant.proto.CollectionInfo;
+import com.mcp.qdrant.proto.BackupCollectionRequest;
+import com.mcp.qdrant.proto.BackupCollectionResponse;
 import com.mcp.qdrant.proto.CreateCollectionRequest;
 import com.mcp.qdrant.proto.CreateCollectionResponse;
 import com.mcp.qdrant.proto.DeleteCollectionRequest;
@@ -29,9 +31,12 @@ import com.mcp.qdrant.proto.IngestDocumentResponse;
 import com.mcp.qdrant.proto.ListCollectionsRequest;
 import com.mcp.qdrant.proto.ListCollectionsResponse;
 import com.mcp.qdrant.proto.McpQdrantServiceGrpc;
+import com.mcp.qdrant.proto.RestoreCollectionRequest;
+import com.mcp.qdrant.proto.RestoreCollectionResponse;
 import com.mcp.qdrant.proto.SearchResult.Builder;
 import com.mcp.qdrant.repository.QdrantRepository;
 
+import org.springframework.web.reactive.function.client.WebClient;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -49,6 +54,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     private final EmbeddingProperties embeddingProperties;
     private final TextChunker textChunker;
     private final SummarizationService summarizationService;
+    private final WebClient webClient;
     
     public GrpcMcpService(EmbeddingServiceClient embeddingClient, QdrantRepository qdrantRepository,
                           QdrantProperties qdrantProperties, EmbeddingProperties embeddingProperties,
@@ -59,6 +65,17 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         this.embeddingProperties = embeddingProperties;
         this.textChunker = textChunker;
         this.summarizationService = summarizationService;
+        this.webClient = createWebClient();
+    }
+    
+    private WebClient createWebClient() {
+        String baseUrl = String.format("%s://%s:%d",
+                qdrantProperties.isUseTls() ? "https" : "http",
+                qdrantProperties.getHost(),
+                qdrantProperties.getHttpPort());
+        return WebClient.builder()
+                .baseUrl(baseUrl)
+                .build();
     }
 
     @Override
@@ -383,6 +400,133 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     .setErrorMessage(e.getMessage())
                     .build());
             responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void backupCollection(BackupCollectionRequest request, StreamObserver<BackupCollectionResponse> responseObserver) {
+        try {
+            String collectionName = request.getCollectionName();
+            log.info("Starting backup for collection: {}", collectionName);
+            
+            // Check if collection exists first
+            boolean exists = qdrantRepository.getQdrantClient().collectionExistsAsync(collectionName)
+                    .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+            if (!exists) {
+                throw new RuntimeException("Collection not found: " + collectionName);
+            }
+            
+            // Create snapshot via Qdrant API
+            var snapshotInfo = qdrantRepository.getQdrantClient().createSnapshotAsync(collectionName)
+                    .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+            
+            // Construct download URL
+            String protocol = qdrantProperties.isUseTls() ? "https" : "http";
+            String downloadUrl = String.format("%s://%s:%d/collections/%s/snapshots/%s",
+                    protocol,
+                    qdrantProperties.getHost(),
+                    qdrantProperties.getHttpPort(),
+                    collectionName,
+                    snapshotInfo.getName());
+            
+            BackupCollectionResponse response = BackupCollectionResponse.newBuilder()
+                    .setSuccess(true)
+                    .setCollectionName(collectionName)
+                    .setSnapshotName(snapshotInfo.getName())
+                    .setSizeBytes(snapshotInfo.getSize())
+                    .setCreationTime(snapshotInfo.getCreationTime().toString())
+                    .setDownloadUrl(downloadUrl)
+                    .build();
+            
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+            log.info("Backup completed for collection: {} - snapshot: {} ({} bytes)", 
+                    collectionName, snapshotInfo.getName(), snapshotInfo.getSize());
+
+        } catch (Exception e) {
+            log.error("Failed to backup collection: {}", e.getMessage(), e);
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.INTERNAL.withDescription("Backup failed: " + e.getMessage())
+            ));
+        }
+    }
+
+    @Override
+    public void restoreCollection(RestoreCollectionRequest request, StreamObserver<RestoreCollectionResponse> responseObserver) {
+        try {
+            String collectionName = request.getCollectionName();
+            String snapshotPath = request.getSnapshotPath();
+            boolean overwriteExisting = request.getOverwriteExisting();
+            
+            log.info("Starting restore for collection: {} from snapshot: {}", collectionName, snapshotPath);
+            
+            // Validate snapshot file exists
+            java.nio.file.Path snapshotFile = java.nio.file.Path.of(snapshotPath);
+            if (!java.nio.file.Files.exists(snapshotFile)) {
+                throw new RuntimeException("Snapshot file not found: " + snapshotPath);
+            }
+            
+            // Check if collection exists and delete if overwrite is requested
+            if (overwriteExisting) {
+                try {
+                    boolean exists = qdrantRepository.getQdrantClient().collectionExistsAsync(collectionName)
+                            .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+                    if (exists) {
+                        log.info("Deleting existing collection: {}", collectionName);
+                        qdrantRepository.getQdrantClient().deleteCollectionAsync(collectionName)
+                                .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+                    }
+                } catch (Exception e) {
+                    log.warn("Could not delete existing collection: {}", e.getMessage());
+                }
+            }
+            
+            // Upload and restore snapshot via Qdrant HTTP API using pre-configured WebClient
+            log.info("Uploading snapshot for collection: {}", collectionName);
+            
+            org.springframework.core.io.FileSystemResource fileResource = 
+                    new org.springframework.core.io.FileSystemResource(snapshotFile.toFile());
+            
+            String response = webClient.post()
+                    .uri("/collections/{collection}/snapshots/upload?priority=snapshot", collectionName)
+                    .contentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA)
+                    .body(org.springframework.web.reactive.function.BodyInserters.fromMultipartData(
+                            "snapshot", fileResource))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .timeout(java.time.Duration.ofMillis(qdrantProperties.getTimeoutMs() * 10)) // Longer timeout for upload
+                    .block();
+            
+            if (response == null || !response.contains("\"status\":\"ok\"")) {
+                throw new RuntimeException("Snapshot upload failed: " + response);
+            }
+            
+            log.info("Snapshot uploaded successfully, response: {}", response);
+            
+            // Wait for restore to complete and verify
+            var collectionInfo = qdrantRepository.getQdrantClient().getCollectionInfoAsync(collectionName)
+                    .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+            
+            long pointsCount = collectionInfo.getPointsCount();
+            log.info("Restore completed for collection: {} with {} points", collectionName, pointsCount);
+            
+            // Check for overflow
+            int pointsRestored = pointsCount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) pointsCount;
+            
+            RestoreCollectionResponse restoreResponse = RestoreCollectionResponse.newBuilder()
+                    .setSuccess(true)
+                    .setCollectionName(collectionName)
+                    .setPointsRestored(pointsRestored)
+                    .build();
+            
+            responseObserver.onNext(restoreResponse);
+            responseObserver.onCompleted();
+
+        } catch (Exception e) {
+            log.error("Failed to restore collection: {}", e.getMessage(), e);
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.INTERNAL.withDescription("Restore failed: " + e.getMessage())
+            ));
         }
     }
 }

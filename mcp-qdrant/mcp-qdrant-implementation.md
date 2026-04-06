@@ -102,12 +102,27 @@ rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
     *   Retrieves detailed collection info: points count, status, vector dimension.
     *   Returns `CollectionInfo` with full metadata.
 
+5.  **BackupCollection:**
+    *   Accepts collection name and optional backup storage path.
+    *   Creates snapshot using `QdrantClient.createSnapshotAsync()`.
+    *   Returns snapshot metadata: name, size, creation time, download URL.
+    *   Snapshot stored on Qdrant server, downloadable via HTTP.
+
+6.  **RestoreCollection:**
+    *   Accepts target collection name, snapshot file path, and overwrite flag.
+    *   If `overwriteExisting=true`, deletes existing collection before restore.
+    *   Uploads and restores snapshot using Qdrant's snapshot upload API.
+    *   Creates collection automatically if it doesn't exist.
+    *   Returns success status and points restored count.
+
 ### gRPC Contracts:
 ```protobuf
 rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
 rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
 rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
 rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoResponse);
+rpc BackupCollection(BackupCollectionRequest) returns (BackupCollectionResponse);
+rpc RestoreCollection(RestoreCollectionRequest) returns (RestoreCollectionResponse);
 ```
 
 ---
@@ -223,6 +238,66 @@ grpc:
 mvn clean package -DskipTests
 docker-compose up --build
 ```
+
+---
+
+## 7. Backup & Restore Scripts
+
+Shell scripts in `backup/` directory provide convenient command-line interface for collection backup/restore operations.
+
+### 7.1 backup.sh
+
+**Purpose:** Create snapshot and download compressed backup file.
+
+**Location:** `backup/backup.sh`
+
+**Usage:**
+```bash
+./backup.sh <collection_name> [qdrant_host] [qdrant_port]
+```
+
+**Implementation:**
+1. Verifies collection exists via Qdrant REST API
+2. Creates snapshot: `POST /collections/{name}/snapshots`
+3. Downloads snapshot file to `backup/` directory
+4. Snapshot files are compressed tar archives (`.snapshot` extension)
+
+**Example:**
+```bash
+./backup.sh qdrant-doc localhost 6333
+# Output: qdrant-doc_qdrant-doc-7990766995553057-2026-04-06-06-31-32.snapshot (138MB)
+```
+
+### 7.2 restore.sh
+
+**Purpose:** Upload snapshot file and restore collection.
+
+**Location:** `backup/restore.sh`
+
+**Usage:**
+```bash
+./restore.sh <target_collection_name> <snapshot_file> [qdrant_host] [qdrant_port]
+```
+
+**Implementation:**
+1. Checks if target collection exists
+2. Prompts for confirmation before overwriting (if exists)
+3. Uploads snapshot via multipart form-data: `POST /collections/{name}/snapshots/upload?priority=snapshot`
+4. Qdrant automatically restores collection from snapshot
+5. Displays restored collection point count
+
+**Example:**
+```bash
+./restore.sh qdrant-doc-restored ./qdrant-doc-*.snapshot localhost 6333
+# Restores 18,828 points to new collection
+```
+
+### 7.3 Integration Notes
+
+- Scripts use Qdrant HTTP REST API (port 6333 by default)
+- No authentication required for local Qdrant instances
+- Snapshot files are stored in `backup/` directory alongside scripts
+- Both scripts support custom host/port for Docker/non-local deployments
 
 ---
 

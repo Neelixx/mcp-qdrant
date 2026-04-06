@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class QdrantProperties {
     private String host = "localhost";
     private int port = 6334;
+    private int httpPort = 6333;
     private boolean useTls = false;
     private String apiKey;
     private int timeoutMs = 10000;
@@ -21,6 +22,8 @@ public class QdrantProperties {
     public void setHost(String host) { this.host = host; }
     public int getPort() { return port; }
     public void setPort(int port) { this.port = port; }
+    public int getHttpPort() { return httpPort; }
+    public void setHttpPort(int httpPort) { this.httpPort = httpPort; }
     public boolean isUseTls() { return useTls; }
     public void setUseTls(boolean useTls) { this.useTls = useTls; }
     public String getApiKey() { return apiKey; }

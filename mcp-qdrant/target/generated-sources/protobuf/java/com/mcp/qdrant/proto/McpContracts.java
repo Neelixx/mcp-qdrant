@@ -109,6 +109,26 @@ public final class McpContracts {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_vpms_mcp_qdrant_GetCollectionInfoResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_vpms_mcp_qdrant_BackupCollectionRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_vpms_mcp_qdrant_BackupCollectionResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_vpms_mcp_qdrant_RestoreCollectionRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_vpms_mcp_qdrant_RestoreCollectionResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -169,25 +189,43 @@ public final class McpContracts {
       "llection_name\030\001 \001(\t\"v\n\031GetCollectionInfo" +
       "Response\022\017\n\007success\030\001 \001(\010\0221\n\004info\030\002 \001(\0132" +
       "#.com.vpms.mcp.qdrant.CollectionInfo\022\025\n\r" +
-      "error_message\030\003 \001(\t2\246\005\n\020McpQdrantService" +
-      "\022c\n\014HybridSearch\022(.com.vpms.mcp.qdrant.H" +
-      "ybridSearchRequest\032).com.vpms.mcp.qdrant" +
-      ".HybridSearchResponse\022i\n\016IngestDocument\022" +
-      "*.com.vpms.mcp.qdrant.IngestDocumentRequ" +
-      "est\032+.com.vpms.mcp.qdrant.IngestDocument" +
-      "Response\022o\n\020CreateCollection\022,.com.vpms." +
-      "mcp.qdrant.CreateCollectionRequest\032-.com" +
-      ".vpms.mcp.qdrant.CreateCollectionRespons" +
-      "e\022o\n\020DeleteCollection\022,.com.vpms.mcp.qdr" +
-      "ant.DeleteCollectionRequest\032-.com.vpms.m" +
-      "cp.qdrant.DeleteCollectionResponse\022l\n\017Li" +
-      "stCollections\022+.com.vpms.mcp.qdrant.List" +
-      "CollectionsRequest\032,.com.vpms.mcp.qdrant" +
-      ".ListCollectionsResponse\022r\n\021GetCollectio" +
-      "nInfo\022-.com.vpms.mcp.qdrant.GetCollectio" +
-      "nInfoRequest\032..com.vpms.mcp.qdrant.GetCo" +
-      "llectionInfoResponseB&\n\024com.mcp.qdrant.p" +
-      "rotoB\014McpContractsP\001b\006proto3"
+      "error_message\030\003 \001(\t\"G\n\027BackupCollectionR" +
+      "equest\022\027\n\017collection_name\030\001 \001(\t\022\023\n\013backu" +
+      "p_path\030\002 \001(\t\"\263\001\n\030BackupCollectionRespons" +
+      "e\022\017\n\007success\030\001 \001(\010\022\027\n\017collection_name\030\002 " +
+      "\001(\t\022\025\n\rsnapshot_name\030\003 \001(\t\022\022\n\nsize_bytes" +
+      "\030\004 \001(\003\022\025\n\rcreation_time\030\005 \001(\t\022\024\n\014downloa" +
+      "d_url\030\006 \001(\t\022\025\n\rerror_message\030\007 \001(\t\"f\n\030Re" +
+      "storeCollectionRequest\022\027\n\017collection_nam" +
+      "e\030\001 \001(\t\022\025\n\rsnapshot_path\030\002 \001(\t\022\032\n\022overwr" +
+      "ite_existing\030\003 \001(\010\"u\n\031RestoreCollectionR" +
+      "esponse\022\017\n\007success\030\001 \001(\010\022\027\n\017collection_n" +
+      "ame\030\002 \001(\t\022\027\n\017points_restored\030\003 \001(\005\022\025\n\rer" +
+      "ror_message\030\004 \001(\t2\213\007\n\020McpQdrantService\022c" +
+      "\n\014HybridSearch\022(.com.vpms.mcp.qdrant.Hyb" +
+      "ridSearchRequest\032).com.vpms.mcp.qdrant.H" +
+      "ybridSearchResponse\022i\n\016IngestDocument\022*." +
+      "com.vpms.mcp.qdrant.IngestDocumentReques" +
+      "t\032+.com.vpms.mcp.qdrant.IngestDocumentRe" +
+      "sponse\022o\n\020CreateCollection\022,.com.vpms.mc" +
+      "p.qdrant.CreateCollectionRequest\032-.com.v" +
+      "pms.mcp.qdrant.CreateCollectionResponse\022" +
+      "o\n\020DeleteCollection\022,.com.vpms.mcp.qdran" +
+      "t.DeleteCollectionRequest\032-.com.vpms.mcp" +
+      ".qdrant.DeleteCollectionResponse\022l\n\017List" +
+      "Collections\022+.com.vpms.mcp.qdrant.ListCo" +
+      "llectionsRequest\032,.com.vpms.mcp.qdrant.L" +
+      "istCollectionsResponse\022r\n\021GetCollectionI" +
+      "nfo\022-.com.vpms.mcp.qdrant.GetCollectionI" +
+      "nfoRequest\032..com.vpms.mcp.qdrant.GetColl" +
+      "ectionInfoResponse\022o\n\020BackupCollection\022," +
+      ".com.vpms.mcp.qdrant.BackupCollectionReq" +
+      "uest\032-.com.vpms.mcp.qdrant.BackupCollect" +
+      "ionResponse\022r\n\021RestoreCollection\022-.com.v" +
+      "pms.mcp.qdrant.RestoreCollectionRequest\032" +
+      "..com.vpms.mcp.qdrant.RestoreCollectionR" +
+      "esponseB&\n\024com.mcp.qdrant.protoB\014McpCont" +
+      "ractsP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -307,6 +345,30 @@ public final class McpContracts {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_vpms_mcp_qdrant_GetCollectionInfoResponse_descriptor,
         new java.lang.String[] { "Success", "Info", "ErrorMessage", });
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionRequest_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_vpms_mcp_qdrant_BackupCollectionRequest_descriptor,
+        new java.lang.String[] { "CollectionName", "BackupPath", });
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionResponse_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_com_vpms_mcp_qdrant_BackupCollectionResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_vpms_mcp_qdrant_BackupCollectionResponse_descriptor,
+        new java.lang.String[] { "Success", "CollectionName", "SnapshotName", "SizeBytes", "CreationTime", "DownloadUrl", "ErrorMessage", });
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionRequest_descriptor =
+      getDescriptor().getMessageTypes().get(18);
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_vpms_mcp_qdrant_RestoreCollectionRequest_descriptor,
+        new java.lang.String[] { "CollectionName", "SnapshotPath", "OverwriteExisting", });
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionResponse_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_com_vpms_mcp_qdrant_RestoreCollectionResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_vpms_mcp_qdrant_RestoreCollectionResponse_descriptor,
+        new java.lang.String[] { "Success", "CollectionName", "PointsRestored", "ErrorMessage", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

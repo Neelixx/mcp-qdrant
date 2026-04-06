@@ -1,0 +1,11 @@
+[build]
+  command = "mvn clean package -DskipTests"
+  publish = "target/"
+
+[build.environment]
+  JAVA_VERSION = "21"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"

@@ -201,6 +201,68 @@ public final class McpQdrantServiceGrpc {
     return getGetCollectionInfoMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.mcp.qdrant.proto.BackupCollectionRequest,
+      com.mcp.qdrant.proto.BackupCollectionResponse> getBackupCollectionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "BackupCollection",
+      requestType = com.mcp.qdrant.proto.BackupCollectionRequest.class,
+      responseType = com.mcp.qdrant.proto.BackupCollectionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.mcp.qdrant.proto.BackupCollectionRequest,
+      com.mcp.qdrant.proto.BackupCollectionResponse> getBackupCollectionMethod() {
+    io.grpc.MethodDescriptor<com.mcp.qdrant.proto.BackupCollectionRequest, com.mcp.qdrant.proto.BackupCollectionResponse> getBackupCollectionMethod;
+    if ((getBackupCollectionMethod = McpQdrantServiceGrpc.getBackupCollectionMethod) == null) {
+      synchronized (McpQdrantServiceGrpc.class) {
+        if ((getBackupCollectionMethod = McpQdrantServiceGrpc.getBackupCollectionMethod) == null) {
+          McpQdrantServiceGrpc.getBackupCollectionMethod = getBackupCollectionMethod =
+              io.grpc.MethodDescriptor.<com.mcp.qdrant.proto.BackupCollectionRequest, com.mcp.qdrant.proto.BackupCollectionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "BackupCollection"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mcp.qdrant.proto.BackupCollectionRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mcp.qdrant.proto.BackupCollectionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new McpQdrantServiceMethodDescriptorSupplier("BackupCollection"))
+              .build();
+        }
+      }
+    }
+    return getBackupCollectionMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.mcp.qdrant.proto.RestoreCollectionRequest,
+      com.mcp.qdrant.proto.RestoreCollectionResponse> getRestoreCollectionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "RestoreCollection",
+      requestType = com.mcp.qdrant.proto.RestoreCollectionRequest.class,
+      responseType = com.mcp.qdrant.proto.RestoreCollectionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.mcp.qdrant.proto.RestoreCollectionRequest,
+      com.mcp.qdrant.proto.RestoreCollectionResponse> getRestoreCollectionMethod() {
+    io.grpc.MethodDescriptor<com.mcp.qdrant.proto.RestoreCollectionRequest, com.mcp.qdrant.proto.RestoreCollectionResponse> getRestoreCollectionMethod;
+    if ((getRestoreCollectionMethod = McpQdrantServiceGrpc.getRestoreCollectionMethod) == null) {
+      synchronized (McpQdrantServiceGrpc.class) {
+        if ((getRestoreCollectionMethod = McpQdrantServiceGrpc.getRestoreCollectionMethod) == null) {
+          McpQdrantServiceGrpc.getRestoreCollectionMethod = getRestoreCollectionMethod =
+              io.grpc.MethodDescriptor.<com.mcp.qdrant.proto.RestoreCollectionRequest, com.mcp.qdrant.proto.RestoreCollectionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "RestoreCollection"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mcp.qdrant.proto.RestoreCollectionRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mcp.qdrant.proto.RestoreCollectionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new McpQdrantServiceMethodDescriptorSupplier("RestoreCollection"))
+              .build();
+        }
+      }
+    }
+    return getRestoreCollectionMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -290,6 +352,20 @@ public final class McpQdrantServiceGrpc {
         io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.GetCollectionInfoResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetCollectionInfoMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void backupCollection(com.mcp.qdrant.proto.BackupCollectionRequest request,
+        io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.BackupCollectionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getBackupCollectionMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void restoreCollection(com.mcp.qdrant.proto.RestoreCollectionRequest request,
+        io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.RestoreCollectionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getRestoreCollectionMethod(), responseObserver);
+    }
   }
 
   /**
@@ -366,6 +442,22 @@ public final class McpQdrantServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetCollectionInfoMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void backupCollection(com.mcp.qdrant.proto.BackupCollectionRequest request,
+        io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.BackupCollectionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getBackupCollectionMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void restoreCollection(com.mcp.qdrant.proto.RestoreCollectionRequest request,
+        io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.RestoreCollectionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getRestoreCollectionMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -424,6 +516,20 @@ public final class McpQdrantServiceGrpc {
     public com.mcp.qdrant.proto.GetCollectionInfoResponse getCollectionInfo(com.mcp.qdrant.proto.GetCollectionInfoRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetCollectionInfoMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.mcp.qdrant.proto.BackupCollectionResponse backupCollection(com.mcp.qdrant.proto.BackupCollectionRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getBackupCollectionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.mcp.qdrant.proto.RestoreCollectionResponse restoreCollection(com.mcp.qdrant.proto.RestoreCollectionRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRestoreCollectionMethod(), getCallOptions(), request);
     }
   }
 
@@ -490,6 +596,22 @@ public final class McpQdrantServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetCollectionInfoMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.mcp.qdrant.proto.BackupCollectionResponse> backupCollection(
+        com.mcp.qdrant.proto.BackupCollectionRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getBackupCollectionMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.mcp.qdrant.proto.RestoreCollectionResponse> restoreCollection(
+        com.mcp.qdrant.proto.RestoreCollectionRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getRestoreCollectionMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_HYBRID_SEARCH = 0;
@@ -498,6 +620,8 @@ public final class McpQdrantServiceGrpc {
   private static final int METHODID_DELETE_COLLECTION = 3;
   private static final int METHODID_LIST_COLLECTIONS = 4;
   private static final int METHODID_GET_COLLECTION_INFO = 5;
+  private static final int METHODID_BACKUP_COLLECTION = 6;
+  private static final int METHODID_RESTORE_COLLECTION = 7;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -539,6 +663,14 @@ public final class McpQdrantServiceGrpc {
         case METHODID_GET_COLLECTION_INFO:
           serviceImpl.getCollectionInfo((com.mcp.qdrant.proto.GetCollectionInfoRequest) request,
               (io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.GetCollectionInfoResponse>) responseObserver);
+          break;
+        case METHODID_BACKUP_COLLECTION:
+          serviceImpl.backupCollection((com.mcp.qdrant.proto.BackupCollectionRequest) request,
+              (io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.BackupCollectionResponse>) responseObserver);
+          break;
+        case METHODID_RESTORE_COLLECTION:
+          serviceImpl.restoreCollection((com.mcp.qdrant.proto.RestoreCollectionRequest) request,
+              (io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.RestoreCollectionResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -600,6 +732,20 @@ public final class McpQdrantServiceGrpc {
               com.mcp.qdrant.proto.GetCollectionInfoRequest,
               com.mcp.qdrant.proto.GetCollectionInfoResponse>(
                 service, METHODID_GET_COLLECTION_INFO)))
+        .addMethod(
+          getBackupCollectionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.mcp.qdrant.proto.BackupCollectionRequest,
+              com.mcp.qdrant.proto.BackupCollectionResponse>(
+                service, METHODID_BACKUP_COLLECTION)))
+        .addMethod(
+          getRestoreCollectionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.mcp.qdrant.proto.RestoreCollectionRequest,
+              com.mcp.qdrant.proto.RestoreCollectionResponse>(
+                service, METHODID_RESTORE_COLLECTION)))
         .build();
   }
 
@@ -654,6 +800,8 @@ public final class McpQdrantServiceGrpc {
               .addMethod(getDeleteCollectionMethod())
               .addMethod(getListCollectionsMethod())
               .addMethod(getGetCollectionInfoMethod())
+              .addMethod(getBackupCollectionMethod())
+              .addMethod(getRestoreCollectionMethod())
               .build();
         }
       }
