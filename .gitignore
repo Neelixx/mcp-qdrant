@@ -21,6 +21,9 @@
 
 mcp-qdrant/target/classes/**/*.class
 
+# Maven test reports
+**/surefire-reports/
+
 # Qdrant backup snapshots
 *.snapshot
 

@@ -1,6 +1,6 @@
 com/mcp/qdrant/proto/HybridSearchRequestOrBuilder.class
-com/mcp/qdrant/proto/GetCollectionInfoRequest$1.class
 com/mcp/qdrant/client/EmbeddingServiceClient$EmbeddingRequest.class
+com/mcp/qdrant/proto/GetCollectionInfoRequest$1.class
 com/mcp/qdrant/model/SearchResult$Builder.class
 com/mcp/qdrant/chunker/TextChunker.class
 com/mcp/qdrant/proto/GetCollectionInfoResponseOrBuilder.class
@@ -41,9 +41,9 @@ com/mcp/qdrant/proto/GetCollectionInfoRequestOrBuilder.class
 com/mcp/qdrant/proto/RestoreCollectionRequest$Builder.class
 com/mcp/qdrant/proto/GetCollectionInfoResponse$1.class
 com/mcp/qdrant/proto/BackupCollectionRequest.class
+com/mcp/qdrant/client/EmbeddingServiceClient.class
 com/mcp/qdrant/proto/McpQdrantServiceGrpc$McpQdrantServiceImplBase.class
 com/mcp/qdrant/proto/ListCollectionsResponse$Builder.class
-com/mcp/qdrant/client/EmbeddingServiceClient.class
 com/mcp/qdrant/proto/CreateCollectionRequest$1.class
 com/mcp/qdrant/proto/HybridSearchRequest$Builder.class
 com/mcp/qdrant/proto/CreateCollectionResponseOrBuilder.class
@@ -55,8 +55,8 @@ com/mcp/qdrant/proto/CollectionInfo$Builder.class
 com/mcp/qdrant/proto/ChunkingConfig$1.class
 com/mcp/qdrant/proto/SearchResultOrBuilder.class
 com/mcp/qdrant/proto/ListCollectionsRequestOrBuilder.class
-com/mcp/qdrant/proto/McpQdrantServiceGrpc$3.class
 com/mcp/qdrant/config/QdrantProperties.class
+com/mcp/qdrant/proto/McpQdrantServiceGrpc$3.class
 com/mcp/qdrant/config/EmbeddingProperties.class
 com/mcp/qdrant/proto/IngestDocumentResponseOrBuilder.class
 com/mcp/qdrant/proto/ListCollectionsResponse$1.class
@@ -80,8 +80,8 @@ com/mcp/qdrant/proto/McpContracts.class
 com/mcp/qdrant/proto/GetCollectionInfoRequest$Builder.class
 com/mcp/qdrant/proto/RestoreCollectionResponse.class
 com/mcp/qdrant/service/GrpcMcpService.class
-com/mcp/qdrant/proto/ChunkingConfig.class
 com/mcp/qdrant/repository/QdrantRepository.class
+com/mcp/qdrant/proto/ChunkingConfig.class
 com/mcp/qdrant/proto/DeleteCollectionResponseOrBuilder.class
 com/mcp/qdrant/proto/HybridSearchResponse.class
 com/mcp/qdrant/proto/ListCollectionsRequest$1.class
@@ -98,13 +98,13 @@ com/mcp/qdrant/proto/SearchResult.class
 com/mcp/qdrant/proto/DocumentSourceOrBuilder.class
 com/mcp/qdrant/proto/GetCollectionInfoRequest.class
 com/mcp/qdrant/proto/BackupCollectionResponse$Builder.class
+com/mcp/qdrant/model/SearchResult.class
 com/mcp/qdrant/proto/HybridSearchRequest$1.class
 com/mcp/qdrant/proto/CreateCollectionResponse.class
-com/mcp/qdrant/model/SearchResult.class
 com/mcp/qdrant/proto/CreateCollectionRequest.class
 com/mcp/qdrant/proto/McpQdrantServiceGrpc.class
-com/mcp/qdrant/proto/GetCollectionInfoResponse.class
 com/mcp/qdrant/model/DocumentChunk$Builder.class
+com/mcp/qdrant/proto/GetCollectionInfoResponse.class
 com/mcp/qdrant/model/DocumentChunk.class
 com/mcp/qdrant/proto/ChunkingConfig$Builder.class
 com/mcp/qdrant/proto/ListCollectionsRequest.class

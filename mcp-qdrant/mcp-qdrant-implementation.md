@@ -386,7 +386,85 @@ This allows flexibility for different deployment scenarios.
 
 ---
 
-## 9. Technology Stack
+## 9. Code Quality Improvements
+
+### 9.1 WebClient Resource Management
+**Issue:** Creating new `WebClient` instance for each restore request caused resource leaks.
+
+**Solution:** Refactored `WebClient` as a reusable singleton field initialized in constructor:
+```java
+private final WebClient webClient;
+
+public GrpcMcpService(...) {
+    this.webClient = createWebClient();
+}
+
+private WebClient createWebClient() {
+    return WebClient.builder()
+        .baseUrl(baseUrl)
+        .build();
+}
+```
+
+### 9.2 Thread Blocking Prevention
+**Issue:** `Thread.sleep()` calls blocked gRPC threads, impacting performance.
+
+**Solution:** Removed `Thread.sleep()` calls in `backupCollection()` and `restoreCollection()`. Rely on asynchronous operations and timeouts provided by the Qdrant client instead.
+
+### 9.3 Consistent Error Handling
+**Issue:** Inconsistent error handling patterns across gRPC methods.
+
+**Solution:** Standardized all error handling to use `responseObserver.onError(new StatusRuntimeException(...))` for exceptions, aligning with existing `hybridSearch()` implementation.
+
+### 9.4 TLS Configuration Respect
+**Issue:** Hardcoded HTTP protocol in snapshot download URLs.
+
+**Solution:** Dynamic protocol selection based on `qdrantProperties.isUseTls()`:
+```java
+String protocol = qdrantProperties.isUseTls() ? "https" : "http";
+String downloadUrl = String.format("%s://%s:%d/collections/%s/snapshots/%s",
+    protocol, ...);
+```
+
+### 9.5 Collection Existence Validation
+**Issue:** Attempting to backup non-existent collections caused unclear errors.
+
+**Solution:** Added pre-check in `backupCollection()` to verify collection existence before creating snapshot:
+```java
+boolean exists = qdrantRepository.getQdrantClient()
+    .collectionExistsAsync(collectionName)
+    .get(timeout, TimeUnit.MILLISECONDS);
+if (!exists) {
+    throw new RuntimeException("Collection not found: " + collectionName);
+}
+```
+
+---
+
+## 10. Testing
+
+### 10.1 Test Suite Overview
+Unit test coverage with **32 total tests** validating proto contracts and message builders.
+
+### 10.2 Unit Tests
+Run without external dependencies:
+- `CollectionManagementUnitTest` (8 tests) - Create, delete, list, getInfo
+- `DocumentOperationsUnitTest` (8 tests) - Ingest, search, chunking
+- `BackupRestoreUnitTest` (8 tests) - Backup/restore requests/responses
+- `ProtoContractUnitTest` (8 tests) - All proto message validation
+
+### 10.3 Running Tests
+```bash
+# All tests
+mvn test
+
+# Specific test class
+mvn test -Dtest=CollectionManagementUnitTest
+```
+
+---
+
+## 11. Technology Stack
 
 - **Java:** 21 (LTS) - built with Java 25 JDK
 - **Framework:** Spring Boot 3.2.0

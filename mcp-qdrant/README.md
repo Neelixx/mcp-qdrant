@@ -10,9 +10,11 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
 - ✅ **Hybrid Search** across multiple Qdrant collections with result aggregation
 - ✅ **Document Ingestion** with intelligent text chunking and batch indexing  
 - ✅ **Collection Management** - Create, delete, list, and get info for collections
+- ✅ **Backup & Restore** - Snapshot-based collection backup and restore
 - ✅ **HTTP API** for MCP protocol with `/health` endpoint
 - ✅ **GPU Acceleration** via ROCm/Ollama for AMD GPUs
 - ✅ **Java 25 Compatible** - Lombok-free implementation
+- ✅ **Comprehensive Test Suite** - Unit and integration tests with Testcontainers
 
 ## System Requirements
 
@@ -161,6 +163,8 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 |------|-------------|
 | `listCollections` | List all Qdrant collections |
 | `getCollectionInfo` | Get collection metadata and point count |
+| `createCollection` | Create a new collection with vector params |
+| `deleteCollection` | Delete an existing collection |
 | `hybridSearch` | Search across collections with vector + keyword |
 | `ingestDocument` | Chunk and index documents into collections |
 | `backupCollection` | Create a snapshot backup of a collection |
@@ -366,6 +370,39 @@ mvn clean package -DskipTests
 1. **Import as Maven project**
 2. **Update Maven**: `Alt+F5` → Check "Force Update" (Eclipse)
 3. **Refresh after compile**: Generated sources in `target/generated-sources/protobuf`
+
+## Testing
+
+The project includes unit tests that validate proto contracts and message builders.
+
+### Test Structure
+
+```
+src/test/java/com/mcp/qdrant/
+├── CollectionManagementUnitTest.java   # 8 tests
+├── DocumentOperationsUnitTest.java     # 8 tests
+├── BackupRestoreUnitTest.java          # 8 tests
+└── ProtoContractUnitTest.java          # 8 tests
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+mvn test
+
+# Run specific test class
+mvn test -Dtest=CollectionManagementUnitTest
+```
+
+### Unit Tests (32 tests)
+
+| Test Class | Tests | Coverage |
+|------------|-------|----------|
+| `CollectionManagementUnitTest` | 8 | Create, delete, list, getInfo proto contracts |
+| `DocumentOperationsUnitTest` | 8 | Ingest, search, chunking message builders |
+| `BackupRestoreUnitTest` | 8 | Backup/restore requests/responses |
+| `ProtoContractUnitTest` | 8 | All proto message type validation |
 
 ## Troubleshooting
 
