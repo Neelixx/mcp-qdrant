@@ -29,6 +29,13 @@ public class QdrantProperties {
     public void setTimeoutMs(int timeoutMs) { this.timeoutMs = timeoutMs; }
     public List<String> getCollections() { return collections; }
     public void setCollections(List<String> collections) { this.collections = collections; }
+    
+    public boolean isAllCollections() {
+        if (collections == null || collections.isEmpty()) {
+            return true;
+        }
+        return collections.size() == 1 && ("all".equalsIgnoreCase(collections.get(0)) || collections.get(0).isEmpty());
+    }
     public int getSearchLimit() { return searchLimit; }
     public void setSearchLimit(int searchLimit) { this.searchLimit = searchLimit; }
     public float getSearchThreshold() { return searchThreshold; }

@@ -81,7 +81,9 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
 
             float[] queryVector = embeddingClient.embed(request.getQueryText());
 
-            for (String collection : qdrantProperties.getCollections()) {
+            List<String> collectionsToSearch = getCollectionsToSearch();
+            
+            for (String collection : collectionsToSearch) {
                 try {
                     List<SearchResult> results = qdrantRepository.search(
                             collection,
@@ -133,9 +135,19 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     @Override
     public void ingestDocument(IngestDocumentRequest request, StreamObserver<IngestDocumentResponse> responseObserver) {
         try {
-            List<String> targetCollections = request.getTargetCollectionsList().isEmpty()
-                    ? qdrantProperties.getCollections()
-                    : request.getTargetCollectionsList();
+            List<String> targetCollections;
+            if (!request.getTargetCollectionsList().isEmpty()) {
+                targetCollections = request.getTargetCollectionsList();
+            } else if (qdrantProperties.isAllCollections()) {
+                // When 'all' is specified and no explicit targets, ingest to all existing collections
+                targetCollections = qdrantRepository.getQdrantClient().listCollectionsAsync()
+                        .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+                if (targetCollections.isEmpty()) {
+                    throw new RuntimeException("No collections available for ingestion. Please create a collection first.");
+                }
+            } else {
+                targetCollections = qdrantProperties.getCollections();
+            }
 
             List<DocumentChunk> chunks = textChunker.chunk(
                     request.getContent(),
@@ -327,6 +339,19 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     .build());
             responseObserver.onCompleted();
         }
+    }
+
+    /**
+     * Returns the list of collections to search based on configuration.
+     * If 'all' is specified, fetches all collections from Qdrant.
+     * Otherwise returns the configured collection list.
+     */
+    private List<String> getCollectionsToSearch() throws Exception {
+        if (qdrantProperties.isAllCollections()) {
+            return qdrantRepository.getQdrantClient().listCollectionsAsync()
+                    .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+        }
+        return qdrantProperties.getCollections();
     }
 
     @Override

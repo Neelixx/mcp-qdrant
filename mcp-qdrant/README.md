@@ -184,9 +184,7 @@ mcp:
     port: ${MCP_QDRANT_PORT:6334}
     api-key: ${QDRANT_API_KEY:}
     use-tls: false
-    collections:
-      - vpms
-      - vpmshelp
+    collections: ${MCP_QDRANT_COLLECTIONS:all}  # 'all' or comma-separated list
     search-limit: 10
     search-threshold: 0.7
   
@@ -211,7 +209,7 @@ server:
 |----------|---------|-------------|
 | `MCP_QDRANT_HOST` | `localhost` | Qdrant server hostname |
 | `MCP_QDRANT_PORT` | `6334` | Qdrant gRPC port |
-| `MCP_QDRANT_COLLECTIONS` | `vpms,vpmshelp` | Comma-separated default collections |
+| `MCP_QDRANT_COLLECTIONS` | `all` | Collection mode: `all` (dynamic), `coll1,coll2` (specific), or `\"\"` (treated as `all`) |
 | `QDRANT_API_KEY` | (none) | API key for Qdrant Cloud |
 | `MCP_EMBEDDING_SERVICE_URL` | `http://localhost:11434` | Ollama/embedding service URL |
 | `MCP_EMBEDDING_MODEL` | `nomic-embed-text-v2-moe` | Embedding model name |
@@ -252,6 +250,13 @@ rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
 - If `summarize=true` and `MCP_EMBEDDING_MODEL` is configured → LLM summary generated
 - If `summarize=true` but model unavailable → `fallback_used=true`, no summary
 - If `summarize=false` or not specified → Returns results without summary (default)
+
+**Collection Configuration Behavior**:
+- `MCP_QDRANT_COLLECTIONS=all` (or not set): Dynamically fetches all collections from Qdrant for each search/ingestion
+- `MCP_QDRANT_COLLECTIONS=coll1,coll2`: Uses only those specific collections
+- `MCP_QDRANT_COLLECTIONS=""` (empty): Treated as `all`
+
+This allows flexible deployment scenarios where collections may be created dynamically.
 
 **IngestDocument**
 ```protobuf

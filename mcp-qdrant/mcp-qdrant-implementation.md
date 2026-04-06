@@ -23,8 +23,9 @@ A Spring Boot-based MCP (Model Context Protocol) server providing gRPC access to
     *   Model: `nomic-embed-text-v2-moe` via Ollama.
 
 2.  **Collection Iteration:**
-    *   Retrieves configured collections: `vpms`, `vpmshelp`.
-    *   Iterates through all collections, calling `QdrantRepository.search()` for each.
+    *   **Dynamic Mode (`all`):** When `MCP_QDRANT_COLLECTIONS` is set to `all`, `\"\"`, or not set, dynamically fetches all collections from Qdrant via `listCollectionsAsync()`.
+    *   **Specific Mode:** When configured with specific collections (e.g., `vpms,vpmshelp`), uses only those collections.
+    *   Iterates through collections, calling `QdrantRepository.search()` for each.
     *   **Fallback:** If one collection fails, logs error and continues to next collection.
 
 3.  **Result Processing:**
@@ -61,6 +62,9 @@ rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
     *   Batch size: 32 (configured via `mcp.embedding.batch-size`).
 
 3.  **Indexing:**
+    *   **Dynamic Mode (`all`):** When no explicit targets and `isAllCollections()` is true, fetches all existing collections from Qdrant and indexes to all of them.
+    *   **Specific Mode:** When explicit `targetCollections` provided in request, indexes only to those collections.
+    *   **Fallback:** When `isAllCollections()` but no collections exist, throws error: "No collections available for ingestion."
     *   Calls `QdrantRepository.batchIndex()` to upsert vectors with metadata.
     *   Auto-creates collection if it doesn't exist.
 
@@ -162,7 +166,7 @@ mcp:
   qdrant:
     host: localhost
     port: 6334
-    collections: [vpms, vpmshelp]
+    collections: ${MCP_QDRANT_COLLECTIONS:all}  # 'all' for dynamic, or specific list
     search-limit: 10
     search-threshold: 0.7
   embedding:
@@ -175,6 +179,15 @@ grpc:
   server:
     port: 9091
 ```
+
+**Collection Configuration Modes:**
+
+| Mode | Configuration | Behavior |
+|------|--------------|----------|
+| **Dynamic (default)** | `all`, `""`, or not set | Fetches all collections from Qdrant at runtime for each operation |
+| **Specific** | `coll1,coll2` | Uses only the explicitly configured collections |
+
+**Implementation:** `QdrantProperties.isAllCollections()` determines mode based on configuration value.
 
 ---
 
