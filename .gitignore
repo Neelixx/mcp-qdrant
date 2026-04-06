@@ -19,7 +19,7 @@
 *.tar.gz
 *.rar
 
-mcp-qdrant/target/classes/**/*.class
+mcp-qdrant/target/classes/**/*.*
 
 # Maven test reports
 **/surefire-reports/
