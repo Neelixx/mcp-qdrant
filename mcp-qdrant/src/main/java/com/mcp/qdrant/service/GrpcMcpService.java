@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.mcp.qdrant.chunker.TextChunker;
 import com.mcp.qdrant.client.EmbeddingServiceClient;
+import com.mcp.qdrant.config.CacheConfig;
 import com.mcp.qdrant.config.EmbeddingProperties;
 import com.mcp.qdrant.config.QdrantProperties;
 import com.mcp.qdrant.model.DocumentChunk;
@@ -22,6 +23,7 @@ import com.mcp.qdrant.proto.CreateCollectionRequest;
 import com.mcp.qdrant.proto.CreateCollectionResponse;
 import com.mcp.qdrant.proto.DeleteCollectionRequest;
 import com.mcp.qdrant.proto.DeleteCollectionResponse;
+import com.mcp.qdrant.proto.DocumentInfo;
 import com.mcp.qdrant.proto.DocumentSource;
 import com.mcp.qdrant.proto.GetCollectionInfoRequest;
 import com.mcp.qdrant.proto.GetCollectionInfoResponse;
@@ -31,6 +33,8 @@ import com.mcp.qdrant.proto.IngestDocumentRequest;
 import com.mcp.qdrant.proto.IngestDocumentResponse;
 import com.mcp.qdrant.proto.ListCollectionsRequest;
 import com.mcp.qdrant.proto.ListCollectionsResponse;
+import com.mcp.qdrant.proto.ListDocumentsRequest;
+import com.mcp.qdrant.proto.ListDocumentsResponse;
 import com.mcp.qdrant.proto.McpQdrantServiceGrpc;
 import com.mcp.qdrant.proto.RestoreCollectionRequest;
 import com.mcp.qdrant.proto.RestoreCollectionResponse;
@@ -53,10 +57,12 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     private final TextChunker textChunker;
     private final SummarizationService summarizationService;
     private final WebClient webClient;
+    private final CacheConfig cacheConfig;
     
     public GrpcMcpService(EmbeddingServiceClient embeddingClient, QdrantRepository qdrantRepository,
                           QdrantProperties qdrantProperties, EmbeddingProperties embeddingProperties,
-                          TextChunker textChunker, SummarizationService summarizationService) {
+                          TextChunker textChunker, SummarizationService summarizationService,
+                          CacheConfig cacheConfig) {
         this.embeddingClient = embeddingClient;
         this.qdrantRepository = qdrantRepository;
         this.qdrantProperties = qdrantProperties;
@@ -64,6 +70,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         this.textChunker = textChunker;
         this.summarizationService = summarizationService;
         this.webClient = createWebClient();
+        this.cacheConfig = cacheConfig;
     }
     
     private WebClient createWebClient() {
@@ -298,6 +305,9 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
 
             qdrantRepository.getQdrantClient().createCollectionAsync(collectionName, vectorParams).get(10, java.util.concurrent.TimeUnit.SECONDS);
             
+            // Initialize cache for the new collection with default size 1000
+            cacheConfig.initializeCollectionCache(collectionName);
+            
             CreateCollectionResponse response = CreateCollectionResponse.newBuilder()
                     .setSuccess(true)
                     .setCollectionName(collectionName)
@@ -323,6 +333,9 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             String collectionName = request.getCollectionName();
             
             qdrantRepository.getQdrantClient().deleteCollectionAsync(collectionName).get(10, java.util.concurrent.TimeUnit.SECONDS);
+            
+            // Delete cache for the collection
+            cacheConfig.deleteCollectionCache(collectionName);
             
             DeleteCollectionResponse response = DeleteCollectionResponse.newBuilder()
                     .setSuccess(true)
@@ -351,13 +364,35 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             ListCollectionsResponse.Builder responseBuilder = ListCollectionsResponse.newBuilder().setSuccess(true);
             
             for (String name : collectionNames) {
-                CollectionInfo info = CollectionInfo.newBuilder().setName(name).build();
+                // Get collection info from Qdrant
+                var collectionInfo = qdrantRepository.getQdrantClient().getCollectionInfoAsync(name)
+                        .get(qdrantProperties.getTimeoutMs(), java.util.concurrent.TimeUnit.MILLISECONDS);
+                
+                // Get cache size for this collection
+                long cacheSize = cacheConfig.getCacheSizeForCollection(name);
+                
+                // Get total document count for this collection
+                int totalDocuments = 0;
+                try {
+                    var documents = qdrantRepository.listDocuments(name, Integer.MAX_VALUE, 0);
+                    totalDocuments = documents.size();
+                } catch (Exception e) {
+                    log.warn("Could not count documents for collection {}: {}", name, e.getMessage());
+                }
+                
+                CollectionInfo info = CollectionInfo.newBuilder()
+                        .setName(name)
+                        .setPointsCount((int) collectionInfo.getPointsCount())
+                        .setStatus(collectionInfo.getStatus().name())
+                        .setCacheSize(cacheSize)
+                        .setTotalDocuments(totalDocuments)
+                        .build();
                 responseBuilder.addCollections(info);
             }
             
             responseObserver.onNext(responseBuilder.build());
             responseObserver.onCompleted();
-            log.info("Listed {} collections", collectionNames.size());
+            log.info("Listed {} collections with cache sizes and document counts", collectionNames.size());
 
         } catch (Exception e) {
             log.error("Failed to list collections: {}", e.getMessage(), e);
@@ -526,6 +561,9 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             // Check for overflow
             int pointsRestored = pointsCount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) pointsCount;
             
+            // Rebuild document cache after restore
+            qdrantRepository.rebuildDocumentCache(collectionName);
+            
             RestoreCollectionResponse restoreResponse = RestoreCollectionResponse.newBuilder()
                     .setSuccess(true)
                     .setCollectionName(collectionName)
@@ -538,6 +576,160 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         } catch (Exception e) {
             log.error("Failed to restore collection: {}", e.getMessage(), e);
             responseObserver.onNext(RestoreCollectionResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void listDocuments(ListDocumentsRequest request,
+                              StreamObserver<ListDocumentsResponse> responseObserver) {
+        try {
+            String collectionName = request.getCollectionName();
+            int limit = request.getLimit() > 0 ? request.getLimit() : 100;
+            int offset = request.getOffset() >= 0 ? request.getOffset() : 0;
+            
+            log.info("Listing documents from collection: '{}', offset: {}, limit: {}", 
+                    collectionName.isEmpty() ? "all" : collectionName, offset, limit);
+            
+            java.util.List<com.mcp.qdrant.repository.QdrantRepository.DocumentInfo> documents = 
+                    qdrantRepository.listDocuments(collectionName, limit, offset);
+            
+            ListDocumentsResponse.Builder responseBuilder = 
+                    ListDocumentsResponse.newBuilder()
+                            .setSuccess(true)
+                            .setTotalDocuments(documents.size());
+            
+            for (com.mcp.qdrant.repository.QdrantRepository.DocumentInfo info : documents) {
+                DocumentInfo docInfo = DocumentInfo.newBuilder()
+                        .setDocumentId(info.getDocumentId())
+                        .setCollection(info.getCollection())
+                        .setChunkCount(info.getChunkCount())
+                        .build();
+                responseBuilder.addDocuments(docInfo);
+            }
+            
+            responseObserver.onNext(responseBuilder.build());
+            responseObserver.onCompleted();
+            log.info("Listed {} documents", documents.size());
+
+        } catch (Exception e) {
+            log.error("Failed to list documents: {}", e.getMessage(), e);
+            responseObserver.onNext(ListDocumentsResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void deleteDocument(com.mcp.qdrant.proto.DeleteDocumentRequest request,
+                                  io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.DeleteDocumentResponse> responseObserver) {
+        try {
+            String documentId = request.getDocumentId();
+            String collectionName = request.getCollectionName();
+            
+            log.info("Deleting document: '{}' from collection: '{}'", 
+                    documentId, collectionName.isEmpty() ? "all" : collectionName);
+            
+            int deletedChunks = qdrantRepository.deleteDocument(documentId, collectionName);
+            
+            com.mcp.qdrant.proto.DeleteDocumentResponse response = 
+                    com.mcp.qdrant.proto.DeleteDocumentResponse.newBuilder()
+                            .setSuccess(deletedChunks > 0)
+                            .setDocumentId(documentId)
+                            .setDeletedChunks(deletedChunks)
+                            .setCollection(collectionName)
+                            .build();
+            
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+            log.info("Deleted {} chunks for document '{}'", deletedChunks, documentId);
+
+        } catch (Exception e) {
+            log.error("Failed to delete document: {}", e.getMessage(), e);
+            responseObserver.onNext(com.mcp.qdrant.proto.DeleteDocumentResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void getDocumentInfo(com.mcp.qdrant.proto.GetDocumentInfoRequest request,
+                                 io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.GetDocumentInfoResponse> responseObserver) {
+        try {
+            String documentId = request.getDocumentId();
+            String collectionName = request.getCollectionName();
+            
+            log.info("Getting document info for: '{}' in collection: '{}'", 
+                    documentId, collectionName.isEmpty() ? "all" : collectionName);
+            
+            com.mcp.qdrant.repository.QdrantRepository.DocumentInfo info = 
+                    qdrantRepository.getDocumentInfo(documentId, collectionName);
+            
+            com.mcp.qdrant.proto.GetDocumentInfoResponse.Builder responseBuilder = 
+                    com.mcp.qdrant.proto.GetDocumentInfoResponse.newBuilder()
+                            .setSuccess(true)
+                            .setExists(info != null);
+            
+            if (info != null) {
+                com.mcp.qdrant.proto.DocumentInfo docInfo = com.mcp.qdrant.proto.DocumentInfo.newBuilder()
+                        .setDocumentId(info.getDocumentId())
+                        .setCollection(info.getCollection())
+                        .setChunkCount(info.getChunkCount())
+                        .build();
+                responseBuilder.setDocumentInfo(docInfo);
+            }
+            
+            responseObserver.onNext(responseBuilder.build());
+            responseObserver.onCompleted();
+            log.info("Document '{}' exists: {}", documentId, info != null);
+
+        } catch (Exception e) {
+            log.error("Failed to get document info: {}", e.getMessage(), e);
+            responseObserver.onNext(com.mcp.qdrant.proto.GetDocumentInfoResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void rebuildDocumentCache(com.mcp.qdrant.proto.RebuildDocumentCacheRequest request,
+                                        io.grpc.stub.StreamObserver<com.mcp.qdrant.proto.RebuildDocumentCacheResponse> responseObserver) {
+        try {
+            String collectionName = request.getCollectionName();
+            
+            log.info("Rebuilding document cache for collection: '{}'", 
+                    collectionName.isEmpty() ? "all" : collectionName);
+            
+            int totalDocuments = qdrantRepository.rebuildDocumentCache(collectionName);
+            
+            int collectionsScanned = 0;
+            if (collectionName != null && !collectionName.isEmpty()) {
+                collectionsScanned = 1;
+            }
+            
+            com.mcp.qdrant.proto.RebuildDocumentCacheResponse response = 
+                    com.mcp.qdrant.proto.RebuildDocumentCacheResponse.newBuilder()
+                            .setSuccess(true)
+                            .setTotalDocuments(totalDocuments)
+                            .setCollectionsScanned(collectionsScanned)
+                            .build();
+            
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+            log.info("Document cache rebuilt. Found {} documents", totalDocuments);
+
+        } catch (Exception e) {
+            log.error("Failed to rebuild document cache: {}", e.getMessage(), e);
+            responseObserver.onNext(com.mcp.qdrant.proto.RebuildDocumentCacheResponse.newBuilder()
                     .setSuccess(false)
                     .setErrorMessage(e.getMessage())
                     .build());

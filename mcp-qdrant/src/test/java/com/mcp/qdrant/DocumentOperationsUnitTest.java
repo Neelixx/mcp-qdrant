@@ -6,11 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.mcp.qdrant.proto.ChunkingConfig;
+import com.mcp.qdrant.proto.DocumentInfo;
 import com.mcp.qdrant.proto.DocumentSource;
 import com.mcp.qdrant.proto.HybridSearchRequest;
 import com.mcp.qdrant.proto.HybridSearchResponse;
 import com.mcp.qdrant.proto.IngestDocumentRequest;
 import com.mcp.qdrant.proto.IngestDocumentResponse;
+import com.mcp.qdrant.proto.ListDocumentsRequest;
+import com.mcp.qdrant.proto.ListDocumentsResponse;
 import com.mcp.qdrant.proto.SearchResult;
 
 /**
@@ -145,5 +148,82 @@ public class DocumentOperationsUnitTest {
         assertEquals("test-id", result.getId());
         assertEquals(2, result.getMetadataCount());
         assertEquals("value1", result.getMetadataMap().get("key1"));
+    }
+
+    @Test
+    void testListDocumentsRequest_Builder() {
+        ListDocumentsRequest request = ListDocumentsRequest.newBuilder()
+                .setCollectionName("test-collection")
+                .setLimit(50)
+                .build();
+
+        assertEquals("test-collection", request.getCollectionName());
+        assertEquals(50, request.getLimit());
+    }
+
+    @Test
+    void testListDocumentsRequest_DefaultValues() {
+        ListDocumentsRequest request = ListDocumentsRequest.newBuilder().build();
+
+        assertEquals("", request.getCollectionName());
+        assertEquals(0, request.getLimit());
+    }
+
+    @Test
+    void testListDocumentsResponse_Builder() {
+        DocumentInfo doc1 = DocumentInfo.newBuilder()
+                .setDocumentId("doc-1")
+                .setCollection("collection-a")
+                .setChunkCount(5)
+                .build();
+
+        DocumentInfo doc2 = DocumentInfo.newBuilder()
+                .setDocumentId("doc-2")
+                .setCollection("collection-b")
+                .setChunkCount(3)
+                .build();
+
+        ListDocumentsResponse response = ListDocumentsResponse.newBuilder()
+                .setSuccess(true)
+                .setTotalDocuments(2)
+                .addDocuments(doc1)
+                .addDocuments(doc2)
+                .build();
+
+        assertTrue(response.getSuccess());
+        assertEquals(2, response.getTotalDocuments());
+        assertEquals(2, response.getDocumentsCount());
+        assertEquals("doc-1", response.getDocuments(0).getDocumentId());
+        assertEquals(5, response.getDocuments(0).getChunkCount());
+    }
+
+    @Test
+    void testListDocumentsResponse_Error() {
+        ListDocumentsResponse response = ListDocumentsResponse.newBuilder()
+                .setSuccess(false)
+                .setErrorMessage("Collection not found")
+                .setTotalDocuments(0)
+                .build();
+
+        assertFalse(response.getSuccess());
+        assertEquals("Collection not found", response.getErrorMessage());
+        assertEquals(0, response.getDocumentsCount());
+    }
+
+    @Test
+    void testDocumentInfo_Builder() {
+        DocumentInfo docInfo = DocumentInfo.newBuilder()
+                .setDocumentId("doc-123")
+                .setCollection("my-collection")
+                .setChunkCount(10)
+                .setTotalPoints(10)
+                .setFirstSeen("2024-01-15T10:30:00Z")
+                .build();
+
+        assertEquals("doc-123", docInfo.getDocumentId());
+        assertEquals("my-collection", docInfo.getCollection());
+        assertEquals(10, docInfo.getChunkCount());
+        assertEquals(10, docInfo.getTotalPoints());
+        assertEquals("2024-01-15T10:30:00Z", docInfo.getFirstSeen());
     }
 }

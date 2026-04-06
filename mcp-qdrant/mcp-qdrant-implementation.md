@@ -95,7 +95,11 @@ rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
 
 3.  **ListCollections:**
     *   Retrieves all collection names from Qdrant.
-    *   Returns list of `CollectionInfo` objects with basic metadata.
+    *   For each collection, fetches detailed info including:
+        - Points count, status, vector dimension, distance metric
+        - **Cache size**: Current configured cache size limit for the collection
+        - **Total documents**: Number of unique documents in the collection
+    *   Returns list of `CollectionInfo` objects with full metadata.
 
 4.  **GetCollectionInfo:**
     *   Accepts collection name.
@@ -127,6 +131,70 @@ rpc RestoreCollection(RestoreCollectionRequest) returns (RestoreCollectionRespon
 
 ---
 
+## 3.5 Document Caching and Management (`ListDocuments`, `DeleteDocument`, `GetDocumentInfo`, `RebuildDocumentCache` RPCs)
+
+**Objective:** Implement per-collection document caching with dynamic sizing using Spring Cache and Caffeine.
+
+**Implementation:** `com.mcp.qdrant.config.CacheConfig`, `com.mcp.qdrant.repository.QdrantRepository`
+
+### Cache Configuration
+
+**Cache Size Formula:** `max(1000, totalDocuments)`
+
+| Collection Size | Cache Size |
+|----------------|------------|
+| 0 (new)        | 1000       |
+| 250 docs       | 1000       |
+| 5000 docs      | 5000       |
+| 10000 docs     | 10000      |
+
+**Implementation:** `CacheConfig.updateCacheSizeForCollection(String collectionName, int totalDocuments)`
+
+### Workflow Steps:
+
+1. **ListDocuments:**
+   *   Lists all unique documents in a collection or across all collections.
+   *   Uses `@Cacheable` with per-collection cache names: `documentListCache-<collection>`
+   *   Documents identified by `document_id` in chunk payloads.
+   *   Supports pagination with `limit` and `offset`.
+
+2. **DeleteDocument:**
+   *   Accepts document ID and optional collection name.
+   *   Uses payload filter to delete all chunks with matching `document_id`.
+   *   Uses `@CacheEvict` to invalidate cache entries.
+
+3. **GetDocumentInfo:**
+   *   Retrieves metadata for a specific document.
+   *   Uses `@Cacheable` with per-collection cache: `documentInfoCache-<collection>`
+   *   Returns chunk count, collection, and first seen timestamp.
+
+4. **RebuildDocumentCache:**
+   *   Counts documents per collection.
+   *   Recalculates cache size: `max(1000, totalDocuments)`.
+   *   Clears existing cache entries.
+   *   Reconfigures caches with new size limits.
+
+### Cache Lifecycle:
+
+| Operation | Cache Behavior |
+|-----------|----------------|
+| `createCollection` | Initialize cache with default size 1000 |
+| `deleteCollection` | Delete all cache entries for collection |
+| `restoreCollection` | Call `rebuildDocumentCache` to recalculate |
+| `ingestDocument` | Evict cache entries |
+| `deleteDocument` | Evict cache entries |
+| `rebuildDocumentCache` | Clear and resize cache |
+
+### gRPC Contracts:
+```protobuf
+rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
+rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
+rpc GetDocumentInfo(GetDocumentInfoRequest) returns (GetDocumentInfoResponse);
+rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCacheResponse);
+```
+
+---
+
 ## 4. Component Architecture
 
 ### 4.1 EmbeddingServiceClient
@@ -141,10 +209,23 @@ rpc RestoreCollection(RestoreCollectionRequest) returns (RestoreCollectionRespon
 
 - **search():** Performs vector similarity search
 - **batchIndex():** Batch upsert of document chunks
+- **listDocuments():** List all documents with `@Cacheable` support
+- **deleteDocument():** Delete by document ID with `@CacheEvict`
+- **getDocumentInfo():** Get document metadata with `@Cacheable`
+- **rebuildDocumentCache():** Recalculate cache sizes and clear caches
 - **ensureCollectionExists():** Auto-creates collections with proper vector params
 - **getQdrantClient():** Exposes underlying QdrantClient for collection management operations
 
-### 4.3 TextChunker
+### 4.3 CacheConfig
+**Location:** `com.mcp.qdrant.config.CacheConfig`
+
+- **Spring Cache + Caffeine:** In-memory caching with TTL and size limits
+- **Per-collection caches:** `documentListCache-<collection>`, `documentInfoCache-<collection>`
+- **Dynamic sizing:** `updateCacheSizeForCollection(name, docCount)` - size = `max(1000, docCount)`
+- **Cache management:** `initializeCollectionCache()`, `deleteCollectionCache()`
+- **Default settings:** 5 minute TTL, max 1000 entries (grows with collection size)
+
+### 4.4 TextChunker
 **Location:** `com.mcp.qdrant.chunker.TextChunker`
 
 - Recursive text splitting by separators: `\n\n`, `\n`, `. `, ` `

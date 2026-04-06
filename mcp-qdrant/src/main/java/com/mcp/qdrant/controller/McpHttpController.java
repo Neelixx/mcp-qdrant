@@ -27,6 +27,8 @@ import com.mcp.qdrant.proto.IngestDocumentRequest;
 import com.mcp.qdrant.proto.IngestDocumentResponse;
 import com.mcp.qdrant.proto.ListCollectionsRequest;
 import com.mcp.qdrant.proto.ListCollectionsResponse;
+import com.mcp.qdrant.proto.ListDocumentsRequest;
+import com.mcp.qdrant.proto.ListDocumentsResponse;
 import com.mcp.qdrant.proto.McpQdrantServiceGrpc;
 import com.mcp.qdrant.proto.RestoreCollectionRequest;
 import com.mcp.qdrant.proto.RestoreCollectionResponse;
@@ -123,9 +125,13 @@ public class McpHttpController {
         params = params != null ? params : java.util.Collections.emptyMap();
         return switch (method) {
             case "listCollections" -> handleListCollections();
+            case "listDocuments" -> handleListDocuments(params);
             case "getCollectionInfo" -> handleGetCollectionInfo(params);
             case "hybridSearch" -> handleHybridSearch(params);
             case "ingestDocument" -> handleIngestDocument(params);
+            case "deleteDocument" -> handleDeleteDocument(params);
+            case "getDocumentInfo" -> handleGetDocumentInfo(params);
+            case "rebuildDocumentCache" -> handleRebuildDocumentCache(params);
             case "createCollection" -> handleCreateCollection(params);
             case "deleteCollection" -> handleDeleteCollection(params);
             case "backupCollection" -> handleBackupCollection(params);
@@ -140,7 +146,15 @@ public class McpHttpController {
         return Map.of(
                 "success", response.getSuccess(),
                 "collections", response.getCollectionsList().stream()
-                        .map(c -> Map.of("name", c.getName()))
+                        .map(c -> Map.of(
+                                "name", c.getName(),
+                                "pointsCount", c.getPointsCount(),
+                                "vectorDimension", c.getVectorDimension(),
+                                "distanceMetric", c.getDistanceMetric(),
+                                "status", c.getStatus(),
+                                "cacheSize", c.getCacheSize(),
+                                "totalDocuments", c.getTotalDocuments()
+                        ))
                         .toList()
         );
     }
@@ -335,6 +349,112 @@ public class McpHttpController {
                 "success", response.getSuccess(),
                 "collectionName", response.getCollectionName(),
                 "pointsRestored", response.getPointsRestored()
+        );
+    }
+
+    private Object handleListDocuments(Map<String, Object> params) {
+        params = params != null ? params : java.util.Collections.emptyMap();
+        String collectionName = (String) params.get("collectionName");
+        if (collectionName == null) {
+            collectionName = "";
+        }
+        int limit = params.getOrDefault("limit", 100) instanceof Number n ? n.intValue() : 100;
+        int offset = params.getOrDefault("offset", 0) instanceof Number n ? n.intValue() : 0;
+
+        ListDocumentsRequest request = ListDocumentsRequest.newBuilder()
+                .setCollectionName(collectionName)
+                .setLimit(limit)
+                .setOffset(offset)
+                .build();
+
+        ListDocumentsResponse response = stub.listDocuments(request);
+
+        return Map.of(
+                "success", response.getSuccess(),
+                "totalDocuments", response.getTotalDocuments(),
+                "documents", response.getDocumentsList().stream()
+                        .map(d -> Map.of(
+                                "documentId", d.getDocumentId(),
+                                "collection", d.getCollection(),
+                                "chunkCount", d.getChunkCount()
+                        ))
+                        .toList(),
+                "errorMessage", response.getErrorMessage()
+        );
+    }
+
+    private Object handleDeleteDocument(Map<String, Object> params) {
+        String documentId = (String) params.get("documentId");
+        if (documentId == null || documentId.isEmpty()) {
+            throw new IllegalArgumentException("documentId is required");
+        }
+        String collectionName = (String) params.getOrDefault("collectionName", "");
+
+        com.mcp.qdrant.proto.DeleteDocumentRequest request = 
+                com.mcp.qdrant.proto.DeleteDocumentRequest.newBuilder()
+                        .setDocumentId(documentId)
+                        .setCollectionName(collectionName)
+                        .build();
+
+        com.mcp.qdrant.proto.DeleteDocumentResponse response = stub.deleteDocument(request);
+
+        return Map.of(
+                "success", response.getSuccess(),
+                "documentId", response.getDocumentId(),
+                "deletedChunks", response.getDeletedChunks(),
+                "collection", response.getCollection(),
+                "errorMessage", response.getErrorMessage()
+        );
+    }
+
+    private Object handleGetDocumentInfo(Map<String, Object> params) {
+        String documentId = (String) params.get("documentId");
+        if (documentId == null || documentId.isEmpty()) {
+            throw new IllegalArgumentException("documentId is required");
+        }
+        String collectionName = (String) params.getOrDefault("collectionName", "");
+
+        com.mcp.qdrant.proto.GetDocumentInfoRequest request = 
+                com.mcp.qdrant.proto.GetDocumentInfoRequest.newBuilder()
+                        .setDocumentId(documentId)
+                        .setCollectionName(collectionName)
+                        .build();
+
+        com.mcp.qdrant.proto.GetDocumentInfoResponse response = stub.getDocumentInfo(request);
+
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("success", response.getSuccess());
+        result.put("exists", response.getExists());
+        
+        if (response.hasDocumentInfo()) {
+            com.mcp.qdrant.proto.DocumentInfo info = response.getDocumentInfo();
+            result.put("documentInfo", Map.of(
+                    "documentId", info.getDocumentId(),
+                    "collection", info.getCollection(),
+                    "chunkCount", info.getChunkCount()
+            ));
+        }
+        result.put("errorMessage", response.getErrorMessage());
+        
+        return result;
+    }
+
+    private Object handleRebuildDocumentCache(Map<String, Object> params) {
+        params = params != null ? params : java.util.Collections.emptyMap();
+        String collectionName = (String) params.getOrDefault("collectionName", "");
+
+        com.mcp.qdrant.proto.RebuildDocumentCacheRequest request = 
+                com.mcp.qdrant.proto.RebuildDocumentCacheRequest.newBuilder()
+                        .setCollectionName(collectionName)
+                        .build();
+
+        com.mcp.qdrant.proto.RebuildDocumentCacheResponse response = stub.rebuildDocumentCache(request);
+
+        return Map.of(
+                "success", response.getSuccess(),
+                "totalDocuments", response.getTotalDocuments(),
+                "collectionsScanned", response.getCollectionsScanned(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 }

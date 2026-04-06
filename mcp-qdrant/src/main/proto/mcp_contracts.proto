@@ -9,6 +9,10 @@ option java_outer_classname = "McpContracts";
 service McpQdrantService {
   rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
   rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
+  rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
+  rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
+  rpc GetDocumentInfo(GetDocumentInfoRequest) returns (GetDocumentInfoResponse);
+  rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCacheResponse);
   rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
   rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
   rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
@@ -102,6 +106,8 @@ message CollectionInfo {
   int32 vector_dimension = 3;
   string distance_metric = 4;
   string status = 5;
+  int64 cache_size = 6;         // Current cache size limit for this collection
+  int32 total_documents = 7;    // Total number of unique documents in collection
 }
 
 message ListCollectionsResponse {
@@ -146,5 +152,64 @@ message RestoreCollectionResponse {
   bool success = 1;
   string collection_name = 2;
   int32 points_restored = 3;
+  string error_message = 4;
+}
+
+// Document Listing Messages
+message ListDocumentsRequest {
+  string collection_name = 1;  // Optional: if empty, lists from all collections
+  int32 limit = 2;             // Max documents to return (default: 100)
+  int32 offset = 3;            // Skip first N documents (default: 0)
+}
+
+message DocumentInfo {
+  string document_id = 1;
+  string collection = 2;
+  int32 chunk_count = 3;
+  int64 total_points = 4;      // Total points (chunks) for this document
+  string first_seen = 5;     // ISO timestamp of first chunk
+}
+
+message ListDocumentsResponse {
+  bool success = 1;
+  repeated DocumentInfo documents = 2;
+  int32 total_documents = 3;
+  string error_message = 4;
+}
+
+// Document Management Messages
+message DeleteDocumentRequest {
+  string document_id = 1;
+  string collection_name = 2;  // Optional: if empty, searches all collections
+}
+
+message DeleteDocumentResponse {
+  bool success = 1;
+  string document_id = 2;
+  int32 deleted_chunks = 3;
+  string collection = 4;
+  string error_message = 5;
+}
+
+message GetDocumentInfoRequest {
+  string document_id = 1;
+  string collection_name = 2;  // Optional: if empty, searches all collections
+}
+
+message GetDocumentInfoResponse {
+  bool success = 1;
+  bool exists = 2;
+  DocumentInfo document_info = 3;
+  string error_message = 4;
+}
+
+message RebuildDocumentCacheRequest {
+  string collection_name = 1;  // Optional: if empty, rebuilds for all collections
+}
+
+message RebuildDocumentCacheResponse {
+  bool success = 1;
+  int32 total_documents = 2;
+  int32 collections_scanned = 3;
   string error_message = 4;
 }
