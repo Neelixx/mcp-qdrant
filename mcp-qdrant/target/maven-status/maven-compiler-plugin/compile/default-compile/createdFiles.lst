@@ -16,6 +16,7 @@ com/mcp/qdrant/proto/IngestDocumentResponse.class
 com/mcp/qdrant/proto/McpQdrantServiceGrpc$2.class
 com/mcp/qdrant/proto/HybridSearchRequest$FiltersDefaultEntryHolder.class
 com/mcp/qdrant/proto/DeleteCollectionResponse.class
+com/mcp/qdrant/controller/HealthController.class
 com/mcp/qdrant/proto/HybridSearchResponseOrBuilder.class
 com/mcp/qdrant/proto/HybridSearchRequest.class
 com/mcp/qdrant/proto/IngestDocumentResponse$1.class

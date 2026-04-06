@@ -137,6 +137,20 @@ rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoRespon
 - Simple text-based summarization (concatenation + truncation)
 - Extensible for LLM-based summarization
 
+### 4.5 HealthController
+**Location:** `com.mcp.qdrant.controller.HealthController`
+
+- Provides root-level `/health` endpoint for Windsurf/Cascade MCP integration
+- Returns JSON response with status, service name, version, and timestamp
+- Independent controller (not under `/mcp` prefix) for MCP protocol compliance
+
+### 4.6 McpHttpController
+**Location:** `com.mcp.qdrant.controller.McpHttpController`
+
+- HTTP REST API for MCP protocol compliance
+- Routes MCP method calls to appropriate gRPC service methods
+- Methods: `listCollections`, `getCollectionInfo`, `hybridSearch`, `ingestDocument`, `createCollection`, `deleteCollection`
+
 ---
 
 ## 5. Configuration
@@ -167,7 +181,7 @@ grpc:
 ## 6. API Interface and Error Handling
 
 - **gRPC Server:** Port 9091 (Docker: mapped to 9090)
-- **Health Endpoint:** HTTP 8080 `/actuator/health`
+- **Health Endpoint:** HTTP 8080 `/health`
 - **Reflection:** Enabled for service discovery
 
 ### Error Handling:
@@ -179,6 +193,8 @@ grpc:
 - `com.mcp.qdrant.McpQdrantService` - Main MCP operations
 - `grpc.health.v1.Health` - Health checks
 - `grpc.reflection.v1alpha.ServerReflection` - Service discovery
+- `McpHttpController` - HTTP REST API for MCP protocol
+- `HealthController` - Root-level health endpoint
 
 ---
 

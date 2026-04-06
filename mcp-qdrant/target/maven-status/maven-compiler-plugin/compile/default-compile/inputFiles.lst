@@ -29,6 +29,7 @@
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/target/generated-sources/protobuf/java/com/mcp/qdrant/proto/DeleteCollectionRequestOrBuilder.java
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/target/generated-sources/protobuf/java/com/mcp/qdrant/proto/DeleteCollectionResponse.java
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/src/main/java/com/mcp/qdrant/controller/McpHttpController.java
+/home/frankw/git/github/mcp-qdrant/mcp-qdrant/src/main/java/com/mcp/qdrant/controller/HealthController.java
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/target/generated-sources/protobuf/grpc-java/com/mcp/qdrant/proto/McpQdrantServiceGrpc.java
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/target/generated-sources/protobuf/java/com/mcp/qdrant/proto/McpContracts.java
 /home/frankw/git/github/mcp-qdrant/mcp-qdrant/target/generated-sources/protobuf/java/com/mcp/qdrant/proto/DeleteCollectionResponseOrBuilder.java

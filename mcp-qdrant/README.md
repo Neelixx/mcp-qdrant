@@ -10,7 +10,7 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
 - ✅ **Hybrid Search** across multiple Qdrant collections with result aggregation
 - ✅ **Document Ingestion** with intelligent text chunking and batch indexing  
 - ✅ **Collection Management** - Create, delete, list, and get info for collections
-- ✅ **gRPC API** with reflection and health checking
+- ✅ **HTTP API** for MCP protocol with `/health` endpoint
 - ✅ **GPU Acceleration** via ROCm/Ollama for AMD GPUs
 - ✅ **Java 25 Compatible** - Lombok-free implementation
 
@@ -84,7 +84,7 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
    grpcurl -plaintext localhost:9090 list
 
    # MCP health endpoint
-   curl http://localhost:8080/actuator/health
+   curl http://localhost:8080/health
    ```
 
 ### Option 2: Local Development
@@ -115,7 +115,7 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
 4. **Verify:**
    ```bash
    # Health check
-   curl http://localhost:8080/actuator/health
+   curl http://localhost:8080/health
 
    # gRPC services (port 9091 for local)
    grpcurl -plaintext localhost:9091 list
@@ -170,7 +170,7 @@ To use this server with GitHub Copilot or Windsurf, add the following configurat
 
 **"Connection closed" error:**
 - Verify Docker containers are running: `docker ps`
-- Check backend health: `curl http://localhost:8080/actuator/health`
+- Check backend health: `curl http://localhost:8080/health`
 - Review bridge logs: `ls /tmp/mcp-qdrant-logs/`
 
 ## Configuration
@@ -217,7 +217,8 @@ server:
 | `MCP_EMBEDDING_MODEL` | `nomic-embed-text-v2-moe` | Embedding model name |
 | `MCP_EMBEDDING_TIMEOUT_MS` | `10000` | Embedding service timeout |
 | `GRPC_SERVER_PORT` | `9091` | gRPC server port |
-| `SERVER_PORT` | `8080` | HTTP actuator port |
+| **HTTP API** | 8080 | MCP protocol endpoint, health checks |
+| **gRPC** | 9091 | Internal gRPC service (Docker: 9090) |
 
 ## gRPC API
 
@@ -286,6 +287,9 @@ mcp-qdrant/
 │   ├── resources/application.yml    # Spring configuration
 │   └── java/com/mcp/qdrant/
 │       ├── McpQdrantApplication.java
+│       ├── controller/              # HTTP controllers
+│       │   ├── HealthController.java
+│       │   └── McpHttpController.java
 │       ├── config/                  # Configuration classes
 │       ├── service/                 # gRPC service + summarization
 │       ├── repository/              # Qdrant data access
