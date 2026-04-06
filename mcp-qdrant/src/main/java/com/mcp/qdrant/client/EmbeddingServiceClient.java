@@ -67,42 +67,6 @@ public class EmbeddingServiceClient {
         return results;
     }
 
-    private String createBatchRequestBody(List<String> texts) {
-        try {
-            List<EmbeddingRequest> requests = texts.stream()
-                    .map(text -> new EmbeddingRequest(properties.getModel(), text))
-                    .toList();
-            return objectMapper.writeValueAsString(requests);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create batch request body", e);
-        }
-    }
-
-    private List<float[]> parseBatchEmbedding(String response) {
-        try {
-            JsonNode root = objectMapper.readTree(response);
-            if (!root.isArray()) {
-                throw new RuntimeException("Invalid batch embedding response format - expected array");
-            }
-            
-            List<float[]> results = new ArrayList<>();
-            for (JsonNode item : root) {
-                JsonNode embedding = item.get("embedding");
-                if (embedding == null || !embedding.isArray()) {
-                    throw new RuntimeException("Invalid embedding item in batch response");
-                }
-                float[] result = new float[embedding.size()];
-                for (int i = 0; i < embedding.size(); i++) {
-                    result[i] = embedding.get(i).floatValue();
-                }
-                results.add(result);
-            }
-            return results;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse batch embedding response", e);
-        }
-    }
-
     private String createRequestBody(String text) {
         try {
             return objectMapper.writeValueAsString(new EmbeddingRequest(properties.getModel(), text));

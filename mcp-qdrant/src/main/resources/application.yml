@@ -19,7 +19,6 @@ mcp:
       - vpms
       - vpmshelp
     search-limit: 10
-    search-threshold: 0.7
   embedding:
     service-url: http://localhost:11434
     model: nomic-embed-text-v2-moe

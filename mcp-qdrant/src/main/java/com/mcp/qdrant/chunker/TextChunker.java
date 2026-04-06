@@ -28,6 +28,10 @@ public class TextChunker {
         String separator = (config != null && config.getSeparator() != null && !config.getSeparator().isEmpty()) 
     ? config.getSeparator() 
     : DEFAULT_SEPARATOR;
+        
+        // Ensure overlap is less than chunk size to prevent infinite loops
+        overlap = Math.min(overlap, chunkSize / 2);
+        
         List<DocumentChunk> chunks = new ArrayList<>();
 
         if (content == null || content.isEmpty()) {

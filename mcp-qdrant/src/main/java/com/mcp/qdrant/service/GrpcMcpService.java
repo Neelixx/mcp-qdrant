@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.mcp.qdrant.chunker.TextChunker;
 import com.mcp.qdrant.client.EmbeddingServiceClient;
@@ -14,9 +15,9 @@ import com.mcp.qdrant.config.EmbeddingProperties;
 import com.mcp.qdrant.config.QdrantProperties;
 import com.mcp.qdrant.model.DocumentChunk;
 import com.mcp.qdrant.model.SearchResult;
-import com.mcp.qdrant.proto.CollectionInfo;
 import com.mcp.qdrant.proto.BackupCollectionRequest;
 import com.mcp.qdrant.proto.BackupCollectionResponse;
+import com.mcp.qdrant.proto.CollectionInfo;
 import com.mcp.qdrant.proto.CreateCollectionRequest;
 import com.mcp.qdrant.proto.CreateCollectionResponse;
 import com.mcp.qdrant.proto.DeleteCollectionRequest;
@@ -36,9 +37,6 @@ import com.mcp.qdrant.proto.RestoreCollectionResponse;
 import com.mcp.qdrant.proto.SearchResult.Builder;
 import com.mcp.qdrant.repository.QdrantRepository;
 
-import org.springframework.web.reactive.function.client.WebClient;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.qdrant.client.grpc.Collections;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -73,14 +71,26 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 qdrantProperties.isUseTls() ? "https" : "http",
                 qdrantProperties.getHost(),
                 qdrantProperties.getHttpPort());
-        return WebClient.builder()
-                .baseUrl(baseUrl)
-                .build();
+        
+        WebClient.Builder builder = WebClient.builder()
+                .baseUrl(baseUrl);
+        
+        // Add API key if configured
+        if (qdrantProperties.getApiKey() != null && !qdrantProperties.getApiKey().isEmpty()) {
+            builder.defaultHeader("api-key", qdrantProperties.getApiKey());
+        }
+        
+        return builder.build();
     }
 
     @Override
     public void hybridSearch(HybridSearchRequest request, StreamObserver<HybridSearchResponse> responseObserver) {
         try {
+            // Validate query text
+            if (request.getQueryText() == null || request.getQueryText().trim().isEmpty()) {
+                throw new IllegalArgumentException("Query text is required and cannot be empty");
+            }
+
             List<SearchResult> allResults = new ArrayList<>();
             int collectionsSearched = 0;
             List<String> failedCollections = new ArrayList<>();
@@ -143,9 +153,10 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
 
         } catch (Exception e) {
             log.error("Hybrid search failed: {}", e.getMessage(), e);
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL.withDescription("Search failed: " + e.getMessage())
-            ));
+            responseObserver.onNext(HybridSearchResponse.newBuilder()
+                    .setFallbackUsed(true)
+                    .build());
+            responseObserver.onCompleted();
         }
     }
 
@@ -445,9 +456,11 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
 
         } catch (Exception e) {
             log.error("Failed to backup collection: {}", e.getMessage(), e);
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL.withDescription("Backup failed: " + e.getMessage())
-            ));
+            responseObserver.onNext(BackupCollectionResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
         }
     }
 
@@ -524,9 +537,11 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
 
         } catch (Exception e) {
             log.error("Failed to restore collection: {}", e.getMessage(), e);
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL.withDescription("Restore failed: " + e.getMessage())
-            ));
+            responseObserver.onNext(RestoreCollectionResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
+                    .build());
+            responseObserver.onCompleted();
         }
     }
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,16 +43,18 @@ public class McpHttpController {
     private static final Logger log = LoggerFactory.getLogger(McpHttpController.class);
 
     private final ObjectMapper objectMapper;
+    private final int grpcPort;
     private ManagedChannel channel;
     private McpQdrantServiceGrpc.McpQdrantServiceBlockingStub stub;
 
-    public McpHttpController(ObjectMapper objectMapper) {
+    public McpHttpController(ObjectMapper objectMapper, @Value("${grpc.server.port:9091}") int grpcPort) {
         this.objectMapper = objectMapper;
+        this.grpcPort = grpcPort;
     }
 
     @PostConstruct
     public void init() {
-        channel = ManagedChannelBuilder.forAddress("localhost", 9091)
+        channel = ManagedChannelBuilder.forAddress("localhost", grpcPort)
                 .usePlaintext()
                 .build();
         stub = McpQdrantServiceGrpc.newBlockingStub(channel);
@@ -144,6 +147,9 @@ public class McpHttpController {
 
     private Object handleGetCollectionInfo(Map<String, Object> params) {
         String collectionName = (String) params.get("collectionName");
+        if (collectionName == null || collectionName.isEmpty()) {
+            throw new IllegalArgumentException("collectionName is required");
+        }
         GetCollectionInfoRequest request = GetCollectionInfoRequest.newBuilder()
                 .setCollectionName(collectionName)
                 .build();
@@ -160,6 +166,9 @@ public class McpHttpController {
 
     private Object handleHybridSearch(Map<String, Object> params) {
         String queryText = (String) params.get("queryText");
+        if (queryText == null || queryText.isEmpty()) {
+            throw new IllegalArgumentException("queryText is required");
+        }
         int limit = params.getOrDefault("limit", 5) instanceof Number n ? n.intValue() : 5;
         boolean summarize = params.getOrDefault("summarize", false) instanceof Boolean b ? b : false;
 
@@ -195,6 +204,12 @@ public class McpHttpController {
     private Object handleIngestDocument(Map<String, Object> params) {
         String documentId = (String) params.get("documentId");
         String content = (String) params.get("content");
+        if (documentId == null || documentId.isEmpty()) {
+            throw new IllegalArgumentException("documentId is required");
+        }
+        if (content == null || content.isEmpty()) {
+            throw new IllegalArgumentException("content is required");
+        }
 
         @SuppressWarnings("unchecked")
         java.util.List<String> targetCollections = (java.util.List<String>) params.get("targetCollections");
@@ -213,7 +228,7 @@ public class McpHttpController {
                         com.mcp.qdrant.proto.ChunkingConfig.newBuilder()
                                 .setChunkSize(chunkSize)
                                 .setChunkOverlap(chunkOverlap)
-                                .setSeparator("\n")
+                                .setSeparator("\\n\\n")
                                 .build()
                 );
 
@@ -235,6 +250,9 @@ public class McpHttpController {
 
     private Object handleCreateCollection(Map<String, Object> params) {
         String collectionName = (String) params.get("collectionName");
+        if (collectionName == null || collectionName.isEmpty()) {
+            throw new IllegalArgumentException("collectionName is required");
+        }
         int dimension = params.getOrDefault("dimension", 768) instanceof Number n ? n.intValue() : 768;
         String distance = (String) params.getOrDefault("distance", "Cosine");
 
@@ -254,6 +272,9 @@ public class McpHttpController {
 
     private Object handleDeleteCollection(Map<String, Object> params) {
         String collectionName = (String) params.get("collectionName");
+        if (collectionName == null || collectionName.isEmpty()) {
+            throw new IllegalArgumentException("collectionName is required");
+        }
 
         DeleteCollectionRequest request = DeleteCollectionRequest.newBuilder()
                 .setCollectionName(collectionName)
@@ -269,6 +290,9 @@ public class McpHttpController {
 
     private Object handleBackupCollection(Map<String, Object> params) {
         String collectionName = (String) params.get("collectionName");
+        if (collectionName == null || collectionName.isEmpty()) {
+            throw new IllegalArgumentException("collectionName is required");
+        }
         String backupPath = (String) params.getOrDefault("backupPath", "");
 
         BackupCollectionRequest request = BackupCollectionRequest.newBuilder()
@@ -291,6 +315,12 @@ public class McpHttpController {
     private Object handleRestoreCollection(Map<String, Object> params) {
         String collectionName = (String) params.get("collectionName");
         String snapshotPath = (String) params.get("snapshotPath");
+        if (collectionName == null || collectionName.isEmpty()) {
+            throw new IllegalArgumentException("collectionName is required");
+        }
+        if (snapshotPath == null || snapshotPath.isEmpty()) {
+            throw new IllegalArgumentException("snapshotPath is required");
+        }
         boolean overwriteExisting = params.getOrDefault("overwriteExisting", false) instanceof Boolean b ? b : false;
 
         RestoreCollectionRequest request = RestoreCollectionRequest.newBuilder()

@@ -16,7 +16,6 @@ public class QdrantProperties {
     private int timeoutMs = 10000;
     private List<String> collections = List.of("vpms", "vpmshelp");
     private int searchLimit = 10;
-    private float searchThreshold = 0.7f;
     
     public String getHost() { return host; }
     public void setHost(String host) { this.host = host; }
@@ -41,6 +40,4 @@ public class QdrantProperties {
     }
     public int getSearchLimit() { return searchLimit; }
     public void setSearchLimit(int searchLimit) { this.searchLimit = searchLimit; }
-    public float getSearchThreshold() { return searchThreshold; }
-    public void setSearchThreshold(float searchThreshold) { this.searchThreshold = searchThreshold; }
 }
