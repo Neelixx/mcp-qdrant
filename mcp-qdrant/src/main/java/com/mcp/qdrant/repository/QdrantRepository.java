@@ -39,6 +39,11 @@ public class QdrantRepository {
 
     public List<SearchResult> search(String collectionName, float[] vector, int limit, Map<String, String> filters) {
         try {
+            // Handle "all" as special case - search all collections
+            if ("all".equals(collectionName)) {
+                return searchAllCollections(vector, limit, filters);
+            }
+            
             List<Points.ScoredPoint> results = qdrantClient.searchAsync(
                     Points.SearchPoints.newBuilder()
                             .setCollectionName(collectionName)
@@ -61,6 +66,51 @@ public class QdrantRepository {
         } catch (Exception e) {
             log.error("Qdrant search failed for collection {}: {}", collectionName, e.getMessage());
             throw new RuntimeException("Search failed: " + e.getMessage(), e);
+        }
+    }
+    
+    private List<SearchResult> searchAllCollections(float[] vector, int limit, Map<String, String> filters) {
+        try {
+            List<String> allCollections = qdrantClient.listCollectionsAsync()
+                    .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+            
+            List<SearchResult> allResults = new ArrayList<>();
+            int perCollectionLimit = Math.max(limit / allCollections.size(), 10);
+            
+            for (String collection : allCollections) {
+                try {
+                    List<Points.ScoredPoint> results = qdrantClient.searchAsync(
+                            Points.SearchPoints.newBuilder()
+                                    .setCollectionName(collection)
+                                    .addAllVector(toFloatList(vector))
+                                    .setLimit(perCollectionLimit)
+                                    .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build())
+                                    .build()
+                    ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+
+                    for (Points.ScoredPoint point : results) {
+                        allResults.add(SearchResult.builder()
+                                .id(point.getId().getUuid())
+                                .score(point.getScore())
+                                .payload(extractContent(point.getPayloadMap()))
+                                .collection(collection)
+                                .metadata(extractMetadata(point.getPayloadMap()))
+                                .build());
+                    }
+                } catch (Exception e) {
+                    log.warn("Search failed for collection {}: {}", collection, e.getMessage());
+                }
+            }
+            
+            // Sort by score and limit results
+            return allResults.stream()
+                    .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+                    .limit(limit)
+                    .collect(Collectors.toList());
+                    
+        } catch (Exception e) {
+            log.error("Failed to search all collections: {}", e.getMessage());
+            throw new RuntimeException("Search all collections failed: " + e.getMessage(), e);
         }
     }
 
