@@ -1,0 +1,66 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.6.3
+Build-Jdk-Spec: 17
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.epp.mpc.help.ui;singleton:=true
+Bundle-Version: 1.13.0.v20250727-0825
+Bundle-Vendor: %Bundle-Vendor
+Require-Bundle: org.eclipse.help;bundle-version="3.5.0"
+Eclipse-SourceReferences: scm:git:https://git.eclipse.org/r/mpc/org.ecli
+ pse.epp.mpc;path="org.eclipse.epp.mpc.help.ui";commitId=b74acbd469373dd
+ e4cf8bcf24d187791261a7e5d
+Bundle-License: Eclipse Public License v2.0;link="http://www.eclipse.org
+ /legal/epl-2.0"
+
+Name: EPP/MPC/User_Guide/images/MPC_SearchControls.png
+SHA-256-Digest: gA6TqgFpPNvm5TBOIBymcXVDnWvBvWwwYlIdFcBwhuc=
+
+Name: about.html
+SHA-256-Digest: JB2Go5g/LDCH4N1zeMpFVkW6wVDJ9PJOsytAXp5crYA=
+
+Name: plugin.xml
+SHA-256-Digest: zGrAVdsvvK2OfVBdrQG+PD6Lc0C+nXBItOj9KGahBo0=
+
+Name: images/home.gif
+SHA-256-Digest: 4cB3uzSzawBtPtcQboiWU16+RMytdhxFuZZGzwENCF8=
+
+Name: EPP/MPC/User_Guide/images/MPC_Licenses.png
+SHA-256-Digest: 1nE8eW7b1+1umJI2PT1s6eGhtxtLEVDWwYO3tp81hYc=
+
+Name: EPP/MPC/User_Guide/images/MPC_Popular.png
+SHA-256-Digest: wxGIZwRBKIw2M7wY1HumxdXbHyvt0Qqm4OV196bKkLA=
+
+Name: contextHelp.xml
+SHA-256-Digest: fvwhU2hLfcBdhfSbwwTvh6yfdL1jbe3EO1To7f7IrR8=
+
+Name: images/next.gif
+SHA-256-Digest: IFqoxpwo9EXNAc2xh0M2KmlZWC1RBMxv8nWCwhMwRtI=
+
+Name: images/prev.gif
+SHA-256-Digest: I4Bs/TypPpF2FValAaI3lNDWuD4KFikkGjdaeiyR4Yc=
+
+Name: EPP/MPC/User_Guide/images/MPC_ConfirmFeatures.png
+SHA-256-Digest: JdiQcH0JKP01db4b2G1gjMsHmMJhKygdYmvFc1/Jvik=
+
+Name: EPP/MPC/User_Guide/User-Guide.html
+SHA-256-Digest: 6fhM5nC+wCuuw1x7BuVqoWJZa9li808U0mX/ayS5z6g=
+
+Name: EPP/MPC/User_Guide/images/MPC_WebsiteInstall.png
+SHA-256-Digest: X1XVUijbWWY0Gf1AO8HOUw3YnrCFw5W5nDyJh9KHW7o=
+
+Name: toc.xml
+SHA-256-Digest: BvWv4Ujk8Ebu/Y3RnyvcOj2r7YBRwmhTlCpvqeMSn8M=
+
+Name: EPP/MPC/User_Guide/images/MPC_Installed.png
+SHA-256-Digest: wbjHFdVWP/4MThYoB+/Y46O4B+71dtZCfJ/6bDQP/DI=
+
+Name: EPP/MPC/User_Guide/images/MPC_Selection.png
+SHA-256-Digest: p9x72QWcT/WsQGCETbDz7xBFcVkm+09fKq1bNFm335c=
+
+Name: OSGI-INF/l10n/bundle.properties
+SHA-256-Digest: NDeaCc+c90cult6eswuUL+nJhZ1DQtWrfZ/K2IeKoYs=
+
+Name: EPP/MPC/User_Guide/images/MPC_ChangeFeatures.png
+SHA-256-Digest: kFjCbeOUFTVDw9/OyPBDHlnc5++/KUNiK6gxRL9NuPc=
+

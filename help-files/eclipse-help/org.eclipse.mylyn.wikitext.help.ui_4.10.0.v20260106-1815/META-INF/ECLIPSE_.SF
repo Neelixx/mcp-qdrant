@@ -1,0 +1,213 @@
+Signature-Version: 1.0
+Created-By: 11.0.24 (Eclipse Adoptium)
+SHA-256-Digest-Manifest: 4zsczJcRWf7/i711/hAtHhlfT4P7Je+ELyFhST+xbBA=
+SHA-256-Digest-Manifest-Main-Attributes: q9RDY2QSupYddlha94aEMw+fpQoA8hc
+ CPcsED/aQ1Z4=
+
+Name: plugin.xml
+SHA-256-Digest: uMypD6uZfl0Fcwl1nSjwjEt3uVCSvEn4ApccANz7nfo=
+
+Name: help/images/editor-tabs.png
+SHA-256-Digest: ktnzT4tWb+TQ654q/kQOjnlQPmiEIT0oBYPhlW+c+2Y=
+
+Name: help/Mylyn-WikiText-User-Guide.textile
+SHA-256-Digest: +EPrjauyy1zfDagatjp0gQ/C57HLUiLz5VsPVf/D50w=
+
+Name: contextHelp.xml
+SHA-256-Digest: bxgtnG3iopfa0Uq5oywemNqEHsbzAESEwKVsb2PeHcs=
+
+Name: help/images/editor-document-internal-link-validation.png
+SHA-256-Digest: uMhPpVcOyuaPjmeMZKzSHggaYj2Vg7sM3loTGxxnsmQ=
+
+Name: help/devguide/WikiText-Developer-Guide-toc.xml
+SHA-256-Digest: gvYm4wgC3dJalCdQ+VAMFa03LRr/E+piU/0S0fa7iL8=
+
+Name: help/devguide/Contributing.html
+SHA-256-Digest: Js3N6ELxLnw2XwZTcPq0XdzSKCZp+SYF1zOGUndwNIk=
+
+Name: help/images/editor-assist-selection-proposal-completed.png
+SHA-256-Digest: 5QBP1A8kPZl0zRy3l5Fr+ZUL27w1lmgcix0oATP/H0M=
+
+Name: help/devguide/images/prev.gif
+SHA-256-Digest: 2ilW+xxx8/H5A/RzmcNDPcQjXh8QPzBnlOPH5Sru4fY=
+
+Name: plugin.properties
+SHA-256-Digest: qxW9PeVLzKpTDul9pepqEUfgI3LEGorZGxMi5HHurJA=
+
+Name: help/images/prev.gif
+SHA-256-Digest: WX/JXuWyoF5dKNB8uRQ/NygLS23R2vrqDnlNFXS0tmk=
+
+Name: .empty
+SHA-256-Digest: bIyC5VBGLoL/I5NqyBRyhqUvD0HYv7vpFMzBxG0K0b8=
+
+Name: help/Preferences.html
+SHA-256-Digest: EaSjlkY5KTh1smOvJsMqNJ7YPH+DR/oD2T8f9s5FCkg=
+
+Name: help/Textile-Syntax.html
+SHA-256-Digest: je2DE9A60DHfc9UU9rbS6F+nH8A0AQZSYah+CQsYxx4=
+
+Name: help/devguide/WikiText-Developer-Guide.textile
+SHA-256-Digest: RK6JxXmvOkS1geaBkMlU4tFID4bcYx9zGIPTUGe28IY=
+
+Name: help/images/editor-assist-proposals.png
+SHA-256-Digest: ZIXfrxo/l/iuNNYZ+bziSJ/wDGhzR3vtbz2IoMSYwLU=
+
+Name: help/images/editor-preferences-appearance.png
+SHA-256-Digest: P2vkqf2G1KHI4RMbBpcxXiYPqmUx03Do063DauNWY0A=
+
+Name: help/images/editor-overview.png
+SHA-256-Digest: We4TodneNhbHEdGh6Mg++MIK7a01jQcb8+sXMo/rMTw=
+
+Name: help/devguide/images/home.gif
+SHA-256-Digest: RprXVQkhs8SS/I78kbrzR6uwW48TbT1hKj0XiBU6tLk=
+
+Name: help/Tips-and-Tricks.html
+SHA-256-Digest: st+YPEErYsNiN73f544RnCIDHusLhxbnc/BoHJ1rgpo=
+
+Name: help/devguide/book.css
+SHA-256-Digest: g0MK2v05j9I5BFjMqZXCTpNWI+z3HqwwAa8L05iiQes=
+
+Name: help/images/task-editor-font-preferences.png
+SHA-256-Digest: xPZOlacPV9VHMJ3ucShWYBrSwrz+bJPll2sm3OX2IE4=
+
+Name: help/images/editor-assist-document-internal-link-proposal.png
+SHA-256-Digest: 6BsIiNhgEjRMYibmuDJsh38N5z7LfnCFiU4l2rzNxXM=
+
+Name: toc.xml
+SHA-256-Digest: S/yYzm37B8F5qPtkxAGDBlmRXdz337k1m9HEDL1QNeY=
+
+Name: help/devguide/images/markup-blocks.png
+SHA-256-Digest: 7JhArht+F2carxmEd0WL7TKVv2oSQfKpMZIhAcUroc4=
+
+Name: help/images/repository-settings-task-editor-extension.png
+SHA-256-Digest: ffypV+LbOvGLbvXIbutyAEaMmlWCe/p3EuVGRIe6hjA=
+
+Name: help/devguide/images/next.gif
+SHA-256-Digest: n8nSg/KvzMVQZYJ7dFzN0xIuZbqbNsjuothXmRffEZo=
+
+Name: help/images/resource-conversion-menu.png
+SHA-256-Digest: T/vBwsB1aud2fCm2HreMs7Z4TzXM9LRpSbvRpv10DHk=
+
+Name: help/Getting-Started.html
+SHA-256-Digest: 896de5YSudGhngi6YpgTu3Xj41XqT60qSf7rovGF/0k=
+
+Name: help/Mylyn-WikiText-User-Guide.html
+SHA-256-Digest: EWW16DfLJQJzRWl+9RfrbiuSvTxkrq8LOdTJHmpnsNA=
+
+Name: help/images/editor-toggle-active-folding.png
+SHA-256-Digest: OwbveJw5fB5JkHYsRmfuGS/R640N9vnRmG5/DuxyxQ4=
+
+Name: help/devguide/Markup-Languages.html
+SHA-256-Digest: w5hpKFmBluIpxeXKnuvD3bsS6jc01iA5VcsK067ptWc=
+
+Name: help/images/editor-assist-template-proposal.png
+SHA-256-Digest: lvbV8ujI2cRXpCaa18PlwifyRRdQkVXZYYANWCZyI6w=
+
+Name: help/images/editor-command-help.png
+SHA-256-Digest: NwLTj0o/EUn7yl1A4DML6/hFcL80V/Le2OZpKj5KcUA=
+
+Name: toc-sdk.xml
+SHA-256-Digest: 1uh8/Vw+U6TYUXOUa2PK+93IXaBBiOea/hjGZ6XKk9Y=
+
+Name: help/images/editor-outline.png
+SHA-256-Digest: es+bBkVflKh5NZKLXlg4f7XhoHGVW4QIWtq/Y5oEEyg=
+
+Name: help/styles/main.css
+SHA-256-Digest: KntvEAMhVRP2kdM+4KsVrKVyOWu+13dRoZYMXZCPDKQ=
+
+Name: help/Upgrading-From-Mylyn-WikiText-2-7-to-2-8.html
+SHA-256-Digest: ItMp3V8pPqnPMWMcwltGJg6fdQJGjVusn8HfHZruIy8=
+
+Name: help/devguide/images/markup-tokens.png
+SHA-256-Digest: Xr2oA6P4n97GdPUO5P1g9ucJGCV9Vvm+7gMX8xp69gY=
+
+Name: help/Upgrading-From-Mylyn-WikiText-2-x-to-3-x.html
+SHA-256-Digest: SGbpv7V2tEeHCU8AYy2azp9kCiepFdsJFeBZMZwlAv4=
+
+Name: help/devguide/WikiText-and-the-UI.html
+SHA-256-Digest: WWzexMGm8aDkQwmfBqdg8o8/LpWBJdzTc9KdR5OY8fk=
+
+Name: help/images/editor-quick-outline.png
+SHA-256-Digest: L0YAgpm5YKilLfgSOkaTgu8nJAmZOexwGwsCky5EDBQ=
+
+Name: help/images/editor-assist-selection-proposal.png
+SHA-256-Digest: VvG12d+w0mOAnee4LoIL/4BeY1DQo2NLws3Lo8SMzkg=
+
+Name: help/devguide/images/markup-phrases.png
+SHA-256-Digest: dYkvRqkDDvK/4mgFhWykSbR1uWLLukiUfjAKuLmvmJ8=
+
+Name: help/images/editor-cheat-sheet.png
+SHA-256-Digest: H3fKb2VMjTHKZeDmkhjdVwnoswomJ4RPBnBI9YrBhYU=
+
+Name: help/devguide/Using-The-WikiText-Parser.html
+SHA-256-Digest: So/sCgI9k6SSepBhTXyi1fAFBH88h8MH0KQSAfK4eGo=
+
+Name: help/Markup-Generation.html
+SHA-256-Digest: peheUmDmCs1m74VP+RGi4wfgKvA8rZr/ICd/3aWn/MQ=
+
+Name: help/images/editor-assist-template-proposal-selection.png
+SHA-256-Digest: GSOjtK5TStYxEdgHoIkahkYooKQFXHaUiVy2YpIPFYI=
+
+Name: about.html
+SHA-256-Digest: UTtxWxYjTwuw01ie6Wm9t1PmlKWIGkL8LB08KC+5VWA=
+
+Name: help/More-Information.html
+SHA-256-Digest: F/IkDScX4d/7v+cIMeacFJinQPSLTv2AWXmQpzCHzfs=
+
+Name: help/examples/build-wikitext-to-dita.xml
+SHA-256-Digest: zzxX/bmiawEXZuaeS9DJrxZeWppkxCvwHZ3cE4YcpVw=
+
+Name: help/devguide/images/markup-plain.png
+SHA-256-Digest: 1c7SegBX0U6kg5QhbnSiXGIBBtbJzvdkqewANwIz0uE=
+
+Name: help/book.css
+SHA-256-Digest: DoIofoenYpK5m0ql/Gc82qZeVoTlCyEejZrX0L7ZMmA=
+
+Name: help/images/editor-spelling.png
+SHA-256-Digest: 13rYXVQFm/P5DP8R3Oy2B8PD5EpieEqcMLqTFQcFyo4=
+
+Name: help/images/task-editor-bugzilla-quote.png
+SHA-256-Digest: ODZ66WbSjUQZPdxu7eNX6pSYBA8gTiiZ3u2yopUrduU=
+
+Name: help/devguide/WikiText-Developer-Guide.html
+SHA-256-Digest: Jmn1F4/E9onMHc6U9kOKvagTmyw9bEPWAkmobTDJPvw=
+
+Name: help/images/editor-folding-menu.png
+SHA-256-Digest: KGUbHEYOntnB0LRxSFqdiD41DfSZL1Jmf3F1IcU8v+M=
+
+Name: help/images/editor-switch-language.png
+SHA-256-Digest: plUXmQ105XubxP/1RzMn9Z1G+/e6AImb/RGjZViswGY=
+
+Name: help/images/editor-folding.png
+SHA-256-Digest: SjoLokN2LAu0xX598ku16QQdxJvDpk7BN4UNxqwt5kA=
+
+Name: help/images/editor-preferences.png
+SHA-256-Digest: wFko9nk31bJCHtgXF9RMhHSF5zuAz24ptFXRfxd8kG0=
+
+Name: help/Upgrading-From-Mylyn-WikiText-1-x-to-2-x.html
+SHA-256-Digest: 3KgmlP/uaMkSReA2VA9SbK5B9sX1SIdQjeQnn+XHnvw=
+
+Name: help/images/editor-preferences-fonts.png
+SHA-256-Digest: UZBxEPcIXYqmVKdCe286cI74XDmSlHxiwsSf3szymr0=
+
+Name: help/images/next.gif
+SHA-256-Digest: uhZVDNeQgCegR1xctWrCZqIQObvqmh1lD7b7VHN4eE0=
+
+Name: help/images/task-editor-bugzilla-text.png
+SHA-256-Digest: Wh6sL34M7cgVt+b2OT3t5O+B/aLsw5cUnRFPLVFjpAA=
+
+Name: help/Task-Editor-Integration.html
+SHA-256-Digest: RiabBmdp9x6aTWRVASlOZYmPe4JbDoaAazTv9fjePuY=
+
+Name: help/images/editor-preferences-templates.png
+SHA-256-Digest: Ro7rEXPZGEpvHphPXkoNnzGmL8Ri+5BB5OrAkJSUW0g=
+
+Name: help/images/home.gif
+SHA-256-Digest: 0JidKNoX40w9e5w8YzYfLsTav8Kv2UR5H9zNkvZMr88=
+
+Name: help/images/project-settings.png
+SHA-256-Digest: G3aPrvqgPPwEct8o1ri+rze/UhaUk5BkE7NHaBi9uzk=
+
+Name: help/Mylyn-WikiText-User-Guide-toc.xml
+SHA-256-Digest: eI+ZMdu0WR5CEgxg77faF66bkGcLy7+N1jKnabMfyWg=
+

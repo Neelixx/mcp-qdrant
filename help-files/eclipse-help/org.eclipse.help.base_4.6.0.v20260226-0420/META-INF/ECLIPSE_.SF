@@ -1,0 +1,714 @@
+Signature-Version: 1.0
+Created-By: 11.0.24 (Eclipse Adoptium)
+SHA-256-Digest-Manifest: +rQGrlfvfLjirXlj2uEPo11U4aBFHqFyxhWcLeoN4dA=
+SHA-256-Digest-Manifest-Main-Attributes: GVeZLVsaLkfDzEJSClp5Y+HAKSG9Pl2
+ jxVqM3npJt9M=
+
+Name: org/eclipse/help/search/ISearchEngineResultCollector.class
+SHA-256-Digest: VhY42yzsWy8Yx+dHI0v20DSKDJutlZadTCck8ie6wrM=
+
+Name: plugin.xml
+SHA-256-Digest: CoCSLpzlkH0lt3TC2l9GQZY/u0dbIYZV7kukfu3EocU=
+
+Name: org/eclipse/help/internal/base/BaseHelpSystem$1.class
+SHA-256-Digest: inFvtdO9Of9HCzoTIng3UUNym8KmBWzGN5ePKwyxjBM=
+
+Name: org/eclipse/help/internal/base/remote/RemoteContentLocator.class
+SHA-256-Digest: hQQdQi38dKTjLkx75bMnWSxCxYe3Oe++gY9YNt6VpQ0=
+
+Name: org/eclipse/help/internal/search/ASCIIReader.class
+SHA-256-Digest: D5S/Mj/apcvu11NIVE3G7TOsEif0b1v1OaR3lnKdhXM=
+
+Name: org/eclipse/help/internal/search/SearchIndex$SearcherInfo.class
+SHA-256-Digest: rkvX+cnuFArIeIcO10vvZhHGu5k+whzEu981kNLp3U8=
+
+Name: org/eclipse/help/search/HelpIndexBuilder.class
+SHA-256-Digest: ZYKUCHecSIC/ganCtLBegXw1H+EMIN3lBvXS7xdu4xc=
+
+Name: org/apache/lucene/demo/html/Token.class
+SHA-256-Digest: stIUoJLsfMYbSw/f414y2mNH1dg+/jbTB7tOHwPhhfo=
+
+Name: org/eclipse/help/internal/search/IndexingOperation.class
+SHA-256-Digest: fkxDPl+0wcVkgy4cKHA8ZZDO5aRsgsg8irM6iF3Mca4=
+
+Name: org/eclipse/help/internal/search/AnalyzerDescriptor.class
+SHA-256-Digest: gBQEYifpeoN1Ih+8YmB5PBraWWZOsUl6ljnntUDX4xw=
+
+Name: org/eclipse/help/internal/standalone/EclipseController$EclipseClea
+ ner.class
+SHA-256-Digest: M0hLRst7L7mjRUBDckmHAp6lXZ1nQyYCtaTiRGX4RBM=
+
+Name: org/eclipse/help/internal/base/scope/ScopeRegistry$RegistryHolder.
+ class
+SHA-256-Digest: Mz4pAwU+PgQa0sfm5l5Zs/koV2swqxBRqm0OQYparEw=
+
+Name: org/eclipse/help/internal/base/scope/UnionScope.class
+SHA-256-Digest: D1HIuxwb/GWJtehZ+XWgCDI9KNtsz+1c6WfVqwLFW1E=
+
+Name: org/eclipse/help/search/HelpIndexBuilder$LocaleDir.class
+SHA-256-Digest: aXQBXA3+q+mfZr/0bHAMyPQW4PyQEgQUq+xy+khjrWs=
+
+Name: about.ini
+SHA-256-Digest: yo/9QI8D9Mdu/DH3PkSfJNxzdNQdBRm/y0FX+QK3RTc=
+
+Name: org/eclipse/help/internal/base/IHelpActivitySupport.class
+SHA-256-Digest: 6PxfL1EZbGl4k6WTrlZkNm9QxgGaOyT6u/RVPwGohfY=
+
+Name: org/eclipse/help/internal/search/SearchProgressMonitor.class
+SHA-256-Digest: 5gKQ0C+fWGUZ9qWcz523ler/7g83+2t63zvOEa62sn8=
+
+Name: org/eclipse/help/search/SearchParticipantXML$XMLHandler.class
+SHA-256-Digest: eomR15h+ge/no4jcFEdp7ZR6xjqRqig7jQYmev2biKg=
+
+Name: org/eclipse/help/internal/browser/StreamConsumer.class
+SHA-256-Digest: KRrgw9yAQvwysXj5uWV4cFOilIt9R9w9SYLQWLUGmNQ=
+
+Name: org/eclipse/help/base/IHelpScopeProducer.class
+SHA-256-Digest: Rh2PqzThiTUTSNxWK+8mauVOOuNsJcZkFyZX5gy7nmw=
+
+Name: .api_description
+SHA-256-Digest: 2tcjubFVK8CSRnbstu/OHDPljKh6OXR4fhqPTvZURHc=
+
+Name: org/eclipse/help/internal/workingset/WorkingSet.class
+SHA-256-Digest: UkPLNGnQj6oaKPVnCyByDOOOkB9L9vI2MElaSyHx7ag=
+
+Name: org/eclipse/help/internal/base/HelpBaseResources.class
+SHA-256-Digest: +QIYxR/ehdk+AHC87E3eB9ZTxjVb+KElikVnaw0fx98=
+
+Name: org/eclipse/help/internal/search/SearchIndexWithIndexingProgress.c
+ lass
+SHA-256-Digest: E+Fis7Hdd+7phCNtL85zBE3a5Lad5THCtbHYQOBblJw=
+
+Name: org/eclipse/help/internal/base/IndexToolApplication.class
+SHA-256-Digest: Q8JmYIWR8NqAk/7ldB7oJ6cIWnps9HgaF86AbCBwaHw=
+
+Name: org/eclipse/help/internal/workingset/WorkingSetComparator.class
+SHA-256-Digest: hqdbfv8JxEMJaFJDoVJvapC4XlgIK6TzJ61Oi0GssG0=
+
+Name: doc/e_auto_synch_toc.svg
+SHA-256-Digest: YTxdaswCeuSDDHJ78JzLmlH2IZ4VtvyUD44SHF6tPFQ=
+
+Name: org/eclipse/help/search/ISearchDocument.class
+SHA-256-Digest: iHG4K84pSi0hMex18g8+6MUWE74HbmDDg0eXA89sVvs=
+
+Name: org/eclipse/help/search/SearchProcessorInfo.class
+SHA-256-Digest: gTiPAh02xZRCTmwDbIfxso7E/nM0mU8Dfw7y+g3f1Qk=
+
+Name: org/apache/lucene/demo/html/HTMLParser$LookaheadSuccess.class
+SHA-256-Digest: 2zGIEO+ElH/UwLXCC1J4aCs7f8Ab/KDGEvVJ3itjs34=
+
+Name: org/eclipse/help/internal/base/MissingContentManager$Placeholder.c
+ lass
+SHA-256-Digest: TBCx3+zBCb0CpaPn3nK4NXcOVSlho6L/mL7xvxUnoAs=
+
+Name: org/eclipse/help/internal/search/federated/IndexerJob.class
+SHA-256-Digest: cugZ6rs7cBNX+VgcDD59EnVojGHxBT6rSIsEXpNkOSw=
+
+Name: org/eclipse/help/internal/browser/CustomBrowser.class
+SHA-256-Digest: ZNLCl532caM7/H6w6Y1Fzw6jJmotODEHbjL8b5gb+Ow=
+
+Name: org/eclipse/help/base/IScopeHandle.class
+SHA-256-Digest: GpanrtQECyEvFPQUsqbAkXIEbVgovbZT3GVPY9CMuoQ=
+
+Name: org/eclipse/help/internal/search/ISearchHitCollector.class
+SHA-256-Digest: zrELGUIG0VcRWbDKO8o8pDFLHecancxsbJc90hpBrko=
+
+Name: org/eclipse/help/internal/search/InfoCenter$InfoCenterResult$1.cla
+ ss
+SHA-256-Digest: 2fMWpwxqhc5h0fyzvdOglGloiscWVYtm291vgUPGnys=
+
+Name: about.mappings
+SHA-256-Digest: FbSG03Uux4Lf4r3TNULujg+sh1i7c7wvC+WC9ly+0T8=
+
+Name: org/eclipse/help/internal/search/QueryWordsExactPhrase.class
+SHA-256-Digest: Ll5Pmi45CTl2cwve664BWrXZl6bGAMjX+CR1Tsjmg+Q=
+
+Name: org/eclipse/help/internal/standalone/EclipseConnection.class
+SHA-256-Digest: DVe2MOyeW/L9723XThDYec1Pvjb8Kq+CZArspFJ6Mdg=
+
+Name: org/eclipse/help/internal/base/scope/EnablementScope.class
+SHA-256-Digest: RXkPPjfmaHhwhkEH7WnpqQDYi+40jm4Bnqq0PobWDrQ=
+
+Name: org/eclipse/help/internal/base/scope/ScopeRegistry$ScopePhrase.cla
+ ss
+SHA-256-Digest: CU2USZyV0XWc/lihamfqRcJY3BHUn/BN2a9RDxiNyj8=
+
+Name: org/eclipse/help/search/HelpIndexBuilder$TocFile.class
+SHA-256-Digest: C2lmUsSvBR/UpenQuIItRYs5lh0Six12tMBX6rm+m2U=
+
+Name: preferences.ini
+SHA-256-Digest: FkX9sgEvgEkgVDn79ahiUTP3vWIdAVjnEIYi4dcPea0=
+
+Name: org/eclipse/help/internal/base/util/CriteriaUtilities.class
+SHA-256-Digest: /cCEnua/sgkiJ1rMdEACLvAUWVokUxm3aNuTy1TthoM=
+
+Name: org/eclipse/help/internal/protocols/HelpURLStreamHandler.class
+SHA-256-Digest: N8to2+TPLdD6Ly5mA8yQVU1iYAftdnOA0P3IXQtXogM=
+
+Name: org/eclipse/help/internal/base/scope/ScopeRegistry.class
+SHA-256-Digest: TCCGimI9IqKx1d7oJOU8O8yE2I3we0dBb/s9LYwRlWs=
+
+Name: org/eclipse/help/internal/workingset/AdaptableHelpResource.class
+SHA-256-Digest: 3HU04S7Ai8TziWojeFKoi9FNrRhVdLiuCupBefW19d8=
+
+Name: org/eclipse/help/internal/base/BookmarkManager$Bookmark.class
+SHA-256-Digest: FsNYb3w+FhLFeCVTu4dn4VrdPhNf11b2IueXyS9ilfo=
+
+Name: org/eclipse/help/internal/base/BookmarkManager.class
+SHA-256-Digest: iSo5hEyJiB61FpaUoer3fUG2+m7TApMYGOx7fv6YTMo=
+
+Name: org/eclipse/help/internal/workingset/AdaptableSelectedToc.class
+SHA-256-Digest: h5c+XOYtVgRGWSB9kfC1wFw5xCili8BPjGNjYW50Cl0=
+
+Name: org/eclipse/help/internal/standalone/StandaloneInfocenter.class
+SHA-256-Digest: fu0nOj358pRnaS0GZicENc6NrMkWWsmDIcdVldrHQpA=
+
+Name: org/apache/lucene/demo/html/ParseException.class
+SHA-256-Digest: IwELPFfG9yG9vMrz9S3oI1zbxgCALjcJR2+DL6ltpms=
+
+Name: doc/darkTheme.css
+SHA-256-Digest: eZNJ+DdmPAF4jWTIYhXiM1i3jm80/EQSfk2NF4B0vw0=
+
+Name: org/eclipse/help/internal/validation/TocValidator$PassThroughFilte
+ r.class
+SHA-256-Digest: dTa2y/klCMz1lUGq0CZohYT7yc3gcTM7RDmduwqeyXo=
+
+Name: org/eclipse/help/internal/base/HelpDisplay.class
+SHA-256-Digest: RiCZ/+T6Mqn66rWobKTNEvXhs/AWYpgw4H/qfe/Hvu0=
+
+Name: org/eclipse/help/internal/browser/BrowserLog.class
+SHA-256-Digest: S1u0cqiAbXmprxsl8lRh0iSnCnZ2VKPQ/cQeHMCsQRA=
+
+Name: org/eclipse/help/internal/workingset/AdaptableTocsArray.class
+SHA-256-Digest: vJvTJuqOkyRyCclTqskForsvb1L5Qg+vxdxekdrQlik=
+
+Name: org/eclipse/help/internal/base/remote/RemoteTocParser.class
+SHA-256-Digest: GX01TCiVOWp59Z4Ul5OTZWyHPl4UiHkyZCeybSmv54A=
+
+Name: org/apache/lucene/demo/html/HTMLParserTokenManager.class
+SHA-256-Digest: zLCteggf7mDptUi5WMTf6eaUyA95wmi30KkQyydJ2fw=
+
+Name: org/eclipse/help/internal/search/LuceneSearchDocument.class
+SHA-256-Digest: RnTr4I7vRa0aTnYDEd7RUtYNuE7vG8fngUZd9TiYSys=
+
+Name: org/eclipse/help/internal/search/QueryBuilder.class
+SHA-256-Digest: VcTrOzdbLOWlEweBHCcMy8NrXk2Iuq+tGwAhP9A9MGY=
+
+Name: org/eclipse/help/internal/protocols/HelpURLConnection.class
+SHA-256-Digest: waXJxJAqJR2FWwL97Im4bh3MsfaFSvTA8yimiz9aYG8=
+
+Name: doc/book.css
+SHA-256-Digest: YN6moPoy1QwT84vlKnOq2SsdgXTVtDhPzI9f0GHgULs=
+
+Name: doc/contents_view.svg
+SHA-256-Digest: XzMnlfpsnFOQRmHrmtVlgGspRGyl3DF2AAXs3SWimes=
+
+Name: org/eclipse/help/internal/server/WebappManager.class
+SHA-256-Digest: 5WI49Z2cbtdUzhXhhbdUy7wq9GLR8Kh027wYVOKa8GQ=
+
+Name: org/eclipse/help/internal/base/HelpEvaluationContext.class
+SHA-256-Digest: KP7vdWqQUb9p59HgRDJqQleCa+Z1x3QISK9Yh4b7MjM=
+
+Name: org/eclipse/help/internal/search/SearchManager.class
+SHA-256-Digest: jdW0EcUtpmxvXzp8Il5HH5YzIpjFRM9iLVzIAdZoVzY=
+
+Name: org/eclipse/help/internal/server/JettyHelpServer$WorkerThread.clas
+ s
+SHA-256-Digest: wEgw8xCtmCvNYiSFXAmoHg2oSeu4IxoC6UlNgKxHV7w=
+
+Name: org/eclipse/help/internal/base/HelpDisplay$DefaultDisplay.class
+SHA-256-Digest: YM580fTbEC1OAyPakLbl6nZq3Hcm1UdMn3R/y8iGQ5k=
+
+Name: org/eclipse/help/search/SearchParticipant.class
+SHA-256-Digest: owSuueC+C7nNvRhw7Vg2Vj2iNMXl3yxDdCimzUxQS2E=
+
+Name: org/eclipse/help/internal/workingset/WorkingSetManager.class
+SHA-256-Digest: k3k9rHhNINlNABcmZKRsOQEf8432AE/AKnFXgCy1020=
+
+Name: org/eclipse/help/internal/base/IHelpBaseConstants.class
+SHA-256-Digest: ymxSrIV9zYrYv6opQfXMmZvarOF4rTsLvxUmm9ETxoQ=
+
+Name: org/eclipse/help/internal/browser/BrowserManager$1.class
+SHA-256-Digest: KVxh+XxMSW/bbENqw/wQYkeGFB/1idkQr3sflzLMi1c=
+
+Name: org/eclipse/help/internal/base/scope/WorkingSetScope.class
+SHA-256-Digest: pxf63zE93QevFiRFBQaiTo80z2Oncs1qNHnpWgcD3uQ=
+
+Name: org/eclipse/help/internal/base/remote/RemoteStatusData$ConnectionC
+ ache.class
+SHA-256-Digest: zJ9GiZeWwDU4bQrjzMYgMlqe6WjAoF8qElTI07100PI=
+
+Name: org/eclipse/help/internal/search/LimitedSizeCharArrayWriter.class
+SHA-256-Digest: wAZbTsLcbY2SRMC3B7QKAQeKY5FSBd86VWrLwTG4u6E=
+
+Name: org/eclipse/help/internal/workingset/AdaptableTopic.class
+SHA-256-Digest: vER72/6RhNa6tf/TIFU23KdhBTR4ee+ZlOLQQ2LOz74=
+
+Name: org/eclipse/help/standalone/Infocenter.class
+SHA-256-Digest: JLw4e4MTPk5eGGo+fZnDJtEzHgMs2fKRXIs/iBjcfyQ=
+
+Name: org/eclipse/help/internal/search/WebSearch$SearchResult.class
+SHA-256-Digest: YcpxNKvFdYE8mSoqogtZMhJWGzJRsN5Mar9Q4Yiu8A8=
+
+Name: org/eclipse/help/internal/search/PluginIndex.class
+SHA-256-Digest: QG65cCcBlcpZDkxsep76HwyXJ3mF3psyOdO+dEYQuSk=
+
+Name: org/eclipse/help/internal/browser/MozillaBrowserAdapter.class
+SHA-256-Digest: vwTjMMvxGWmdgLvbxd8OLMoyq9ScwvNu+A5BEUZIyXo=
+
+Name: org/eclipse/help/internal/search/ISearchQuery.class
+SHA-256-Digest: HPcX4TFHZfuuadHcBRG3WVheNgIgTGcUNTPdU/JYCD0=
+
+Name: org/eclipse/help/internal/xhtml/XHTMLCharsetHandler.class
+SHA-256-Digest: 6loherfyWckplzePVylCz9KlXtwG+XBnwdEkN4lpzww=
+
+Name: org/eclipse/help/base/AbstractHelpScope.class
+SHA-256-Digest: YgN4dHt5gbbsp5tS6VNeiam/wLeYhzJX1m320nIsOGA=
+
+Name: org/eclipse/help/internal/base/util/TestConnectionUtility.class
+SHA-256-Digest: MYfSP4dRR+413j/+ejIiWB4sDvCj7E5yI7EAEehNBuI=
+
+Name: org/eclipse/help/internal/base/remote/RemoteIndexParser.class
+SHA-256-Digest: E+qXPeL1JzxvEru3zMifvEqUeFbOg8h51u2noTuujkw=
+
+Name: org/eclipse/help/internal/base/scope/FilterScope.class
+SHA-256-Digest: gUWDHz7Zu9aXTm0jLd3cdLnOOaPG8YYdBnZTJQTGEHA=
+
+Name: org/eclipse/help/internal/base/util/IErrorUtil.class
+SHA-256-Digest: ycjEjkszBLV93ehiRsVz+XlVuTlkBh1dpkBw4HkfEA4=
+
+Name: org/eclipse/help/internal/base/util/LinkUtil.class
+SHA-256-Digest: Rn7iZvWOdkcgN3DF3aLY1mZC5DRqHRWQo9S68xa6RSI=
+
+Name: org/eclipse/help/internal/base/remote/RemoteIndexProvider.class
+SHA-256-Digest: b0ezqsURtJXhSRN2e0qEBLcWYo0mqIWgP0n8xcOS69k=
+
+Name: org/eclipse/help/internal/search/LocalSearchManager.class
+SHA-256-Digest: P24AKefabqYfMSF7TVpSGmB0hYwhFoRFCKXuJoY4NG0=
+
+Name: org/eclipse/help/internal/workingset/AdaptableToc.class
+SHA-256-Digest: lIUT/t389UTSZetM24TJJKuMvtCZ43Zhzayk8dNY04E=
+
+Name: doc/e_synch_toc_nav.svg
+SHA-256-Digest: 8cP3vAef+NyFL0azNMwZqorRyEi1AykAQQ5M6Lw+Zuw=
+
+Name: org/eclipse/help/search/SearchParticipantXML.class
+SHA-256-Digest: 8tZs7fNSv4OtHl9uSTTgKSEBRFRPMoSlzyd1lTh7NfQ=
+
+Name: ant_tasks/helpbase-ant.jar
+SHA-256-Digest: aBtGSkxgBbV946NNHto3r8gg9Jq6l2NWEIUXUb/BEg8=
+
+Name: org/eclipse/help/internal/base/remote/RemoteIC.class
+SHA-256-Digest: az+0BoSHOziAYFKEPFIcsCZL/fInSb+cbL0lT4qcMSo=
+
+Name: org/apache/lucene/demo/html/SimpleCharStream.class
+SHA-256-Digest: +NExjoywpkiK4pmzLcDTn97XNneRdar26RU7VPX04iE=
+
+Name: org/eclipse/help/internal/browser/CustomBrowserFactory.class
+SHA-256-Digest: 6j9ltXH7Xamg7WaL+4HsP80j5i35dZopl/JTD7osO1g=
+
+Name: org/eclipse/help/internal/base/HelpBasePlugin$1.class
+SHA-256-Digest: KeDmKvR569/hUkMKOgdZkiCOHnjfHLmFyoYIEw1M/L0=
+
+Name: org/eclipse/help/search/ISearchScope.class
+SHA-256-Digest: xr8jLGeTDTyAswobgmjJmyP08vfALzie02qntO2kYIQ=
+
+Name: org/eclipse/help/internal/search/InfoCenter$Scope.class
+SHA-256-Digest: 2TvsLe5XTkJSkz+hLoBCU3McMMvrwarokR3Kcl1FtqM=
+
+Name: org/eclipse/help/internal/standalone/EclipseLifeCycleListener.clas
+ s
+SHA-256-Digest: V4dw93Qok03NluXJSr6qKeMNtdbuz1Nv1YGOcYePP7k=
+
+Name: org/eclipse/help/internal/server/JettyHelpServer$StartServerThread
+ .class
+SHA-256-Digest: 1jf1gDGO9PiHHU0qAcgPG7TOFWfyUw4Uf7dbKem0O7U=
+
+Name: org/eclipse/help/internal/base/util/TString.class
+SHA-256-Digest: lysPDLx3AyWH2rJdHO/SnFWYm2r0DH+csyJjBcEcZ6A=
+
+Name: org/eclipse/help/internal/search/CharAndDigitsTokenizer.class
+SHA-256-Digest: 5HM/g16fGTpTb+SWkLgJqyawTmAMKhjyDnA95xSVNlo=
+
+Name: org/eclipse/help/internal/search/SearchResults.class
+SHA-256-Digest: /95ed04eWNFYY8SAC1KnxKia9r8WID+uOLXwVWCZ6Ak=
+
+Name: org/eclipse/help/internal/search/HTMLDocParser.class
+SHA-256-Digest: ueDLy50nJOVQP3iB5zrKzPC+nygqJSLl61pGFCes+1M=
+
+Name: doc/e_index_view.svg
+SHA-256-Digest: kqP2c15qaCV5gN8ZnioM/kjaNve3vId2jQ5R3cJokPM=
+
+Name: org/eclipse/help/internal/search/QueryWordsPhrase.class
+SHA-256-Digest: 7Cfb/3wFOjO29uMsOIk0GEXpiHx+iSSEOU1B6+P/wE0=
+
+Name: org/eclipse/help/internal/search/SearchQuery.class
+SHA-256-Digest: tfoqK18bnpWlAkeiA+ljjtrNrUrWTXQFSctHmG+Ezvo=
+
+Name: org/eclipse/help/internal/search/SearchHit.class
+SHA-256-Digest: DGB+ZmjK99QgY+YIM7tmME+9GYUBRoEmU6vCulcR6fM=
+
+Name: doc/search_results_view.svg
+SHA-256-Digest: Yd3Nzu6N0TSBCIcZZAvMoLuj2AaxeWLbHFSCXZarS/Q=
+
+Name: org/eclipse/help/internal/xhtml/DynamicXHTMLProcessor.class
+SHA-256-Digest: tAJlleotXtIECkQ17gM/Ep03A9x2lCL/0rrFiBMsvMA=
+
+Name: org/eclipse/help/internal/search/SmartAnalyzer.class
+SHA-256-Digest: 2kLlFXDMONhJBq+YybNG0cp1yyedIEtV5cKb0B4v+bI=
+
+Name: org/eclipse/help/internal/base/scope/ScopeUtils.class
+SHA-256-Digest: y2WI6n8s/KdjEATyaUUijDCi9Vwc6dUSqiiRk8t0pfY=
+
+Name: org/eclipse/help/internal/search/LazyProgressMonitor.class
+SHA-256-Digest: okaSvUn3XdGpf/ngAlhC9D6Y9LshIYXGI1AZGp6WX1Q=
+
+Name: org/eclipse/help/internal/browser/BrowserManager$1$1.class
+SHA-256-Digest: cheGNUcdMBbmmynIQpbKgrrhTUYFYnM9cFqKHb5eT6A=
+
+Name: org/eclipse/help/search/SearchParticipantXML$IParsedXMLContent.cla
+ ss
+SHA-256-Digest: vf8BnWZBNH7uuL7SVBhD9gRaFXSy0l3wb39hza/fYe8=
+
+Name: org/apache/lucene/demo/html/Entities.class
+SHA-256-Digest: VVSrlHgAKudhGFbpKqo2KHEuAfoKVvCjr+bvpbEKpLs=
+
+Name: org/eclipse/help/internal/base/scope/ScopeRegistry$TempScope.class
+SHA-256-Digest: EUEmF9wQC4ytJQkygQKeze9l9ce9Lm0PDLsZmYM0q2w=
+
+Name: org/eclipse/help/internal/base/HelpApplication.class
+SHA-256-Digest: SL9oV/WpZyrjO4+Xmf4SrTv4R7w7cPNEgkZZjblfCJo=
+
+Name: org/eclipse/help/internal/search/InfoCenter$InfoCenterResult.class
+SHA-256-Digest: BFnQiqK0RfwnXS7ZgW661VuJktPLtAkIhE2TlOwHaAY=
+
+Name: org/eclipse/help/internal/standalone/Eclipse.class
+SHA-256-Digest: W2m8Tm/HQfQOV+xIW+BYnDcnS8uP0iAXT6pnnf1fGw4=
+
+Name: org/eclipse/help/internal/search/SearchIndex.class
+SHA-256-Digest: 8SgwaeEDS7I4yt8Z2d8zTJwwaipdbKMh85+MlfCxRsA=
+
+Name: org/eclipse/help/internal/base/DisplayUtils.class
+SHA-256-Digest: XMuhojlkYuGgt5F5G3hkccLqK1Cl9IC3FrFKgqq7/iI=
+
+Name: org/eclipse/help/internal/workingset/IHelpWorkingSetManager.class
+SHA-256-Digest: hvocy33290e6atNril45EiyRRSKy9u60gp4dgU57hXA=
+
+Name: org/eclipse/help/internal/validation/TocValidator$Filter.class
+SHA-256-Digest: edOyZFKC09ZJB5fwWiOpT30Ug1KoW40MKfXHG0EL0jU=
+
+Name: org/eclipse/help/base/AbstractHelpDisplay.class
+SHA-256-Digest: GSg1Y28AfZ3JlTkhzGrW2lp84nj9SSNzE1fksSoU2FY=
+
+Name: org/eclipse/help/internal/browser/CurrentBrowser.class
+SHA-256-Digest: +7Ri3jKNC8HhSmF+8ehCEY5FD5alFvTuBGlJ3GxcRsI=
+
+Name: org/apache/lucene/demo/html/HTMLParser.class
+SHA-256-Digest: 3Jp5SpIp49mjU4O6nwKf72+gOSQLRM5+ccEZ+hr9mgw=
+
+Name: org/eclipse/help/internal/search/WebSearch.class
+SHA-256-Digest: YHru3hFKcZ1Sha9sfAbEqKUmdE1x2j/Kd2zBLkHRZQU=
+
+Name: org/eclipse/help/internal/base/remote/RemoteContextProvider.class
+SHA-256-Digest: pRhpgDucl9ZzdqVqp9bYZ1/3AKVA2t9uoz3OFydQ3qY=
+
+Name: org/eclipse/help/internal/base/remote/RemoteTocProvider.class
+SHA-256-Digest: RM6WeZTT7QCbOGUgt/xim3B/Rr7R7CSLZe7yskhjj8Y=
+
+Name: org/eclipse/help/standalone/Help.class
+SHA-256-Digest: +UgIArQffUiAlPjBGjYcgbJwZJs5Vwfx0DELslQbysY=
+
+Name: org/eclipse/help/internal/standalone/Eclipse$StreamConsumer.class
+SHA-256-Digest: uToLHP2TzSQiPPTO58hbM/mPw83g7typT659IZ/iisE=
+
+Name: org/eclipse/help/internal/base/HelpProvider.class
+SHA-256-Digest: qxb77m07ubNqn2mknBpupMuTjHCmbF2p2Jm+st4sA3M=
+
+Name: org/eclipse/help/internal/search/IndexingOperation$IndexingExcepti
+ on.class
+SHA-256-Digest: xIQxKxyckmcWnb8LxzykNC7A3Ixljovf7PQT4NCiZM4=
+
+Name: doc/page_not_found.html
+SHA-256-Digest: VKDNV1tJCicO52B+99k/CQxTClkQH87XhSg2u6QHOnk=
+
+Name: org/eclipse/help/internal/base/scope/IntersectionScope.class
+SHA-256-Digest: v9Kl5fWAJQk4AHqlSxHVW6gK/gxzg9nRooR65UUSA7s=
+
+Name: org/apache/lucene/demo/html/TokenMgrError.class
+SHA-256-Digest: l69RS90YZdJieJy+3ky1F/DOhs29JJBc8akMyS97OWE=
+
+Name: org/eclipse/help/search/HelpIndexBuilder$IndexerPluginVersionInfo.
+ class
+SHA-256-Digest: mjiMvlEVnb/7cw1u7FZyuJrOTslzhAzBX/gnQnv2FGY=
+
+Name: org/eclipse/help/internal/browser/BrowserDescriptor.class
+SHA-256-Digest: aO2Q1N7beqVTYowpXDq06mUNjVZLqDyUyH6i4lxXlHM=
+
+Name: org/eclipse/help/internal/search/WebSearch$Scope.class
+SHA-256-Digest: bljK/FS64itAks52E3zNJPP9HFIBMdyUxU4ULzFU8Zs=
+
+Name: org/eclipse/help/internal/server/JettyHelpServer$StopServerThread.
+ class
+SHA-256-Digest: xWVPWpMGOf2g0KN5B3Z0Xq3NuQhAjVOCbdt143XEINI=
+
+Name: org/eclipse/help/internal/base/HelpBasePreferenceInitializer.class
+SHA-256-Digest: hdkbuPhkb7ujdCRDV/qhBNigrxOADQcArUEs9pF/Vcg=
+
+Name: org/eclipse/help/internal/base/HelpBasePlugin.class
+SHA-256-Digest: 7E58KevGDTnt1tDlZD5VB91XNKRpXIrWfvG9L2V6ZRw=
+
+Name: org/eclipse/help/internal/base/remote/RemoteHelp.class
+SHA-256-Digest: vFNt2WjV4Q6F6enqHzyeGRi4/aCv5QioUd84VmC4H+Y=
+
+Name: org/eclipse/help/search/IHelpSearchIndex.class
+SHA-256-Digest: 1Zc9ceXVRLhO9ogXfw/XJTIHnHTQXPY5MX0Ev/4+q84=
+
+Name: org/eclipse/help/internal/search/XHTMLSearchParticipant.class
+SHA-256-Digest: SaT7j9HsxkLWTyt/J01cwEVUXP3glemkzXMke6xkvPA=
+
+Name: org/eclipse/help/internal/standalone/Options.class
+SHA-256-Digest: DHXArea9Obpthg6L+TeBDnJWGO4kQ92e5AZ33tbyeWI=
+
+Name: org/eclipse/help/search/ISearchEngineResult.class
+SHA-256-Digest: U1jG5fVK1DeHMLGEojcCiMgtAgSfrSBD/gr6F3kYfG0=
+
+Name: org/eclipse/help/internal/base/remote/HttpsUtility.class
+SHA-256-Digest: azsvNMlYr5h7y66qZDCopBSs4MwByH0hPsoy8w0N5w0=
+
+Name: org/eclipse/help/internal/base/MissingContentManager.class
+SHA-256-Digest: QBA0KBJHiIPu7RNCKHGnuF2oN8e5Mpp7P5RGdSH8dss=
+
+Name: org/eclipse/help/internal/search/SearchResult.class
+SHA-256-Digest: 0s3y9F6PExOtcJRqQ1WKCvOVxh1vbxXUrgBtb2+KN84=
+
+Name: org/eclipse/help/internal/browser/macosx/DefaultBrowserAdapter.cla
+ ss
+SHA-256-Digest: H3wg1KTg6JZugdQGlmT4e+T2v0dqeOS4+VITV0UuTxc=
+
+Name: org/apache/lucene/demo/html/HTMLParser.jj
+SHA-256-Digest: e0tpI0qrI/b6VPK8z9sTbLZmc59YCw0jNEAJEf1UC1g=
+
+Name: org/eclipse/help/internal/base/remote/PreferenceFileHandler.class
+SHA-256-Digest: k/FgmDZ9dL2xLXKUkwpeHl28xicpHLhDiu/1HZRi6/k=
+
+Name: org/eclipse/help/internal/search/PrebuiltIndexes.class
+SHA-256-Digest: 4muceGStzxcM/jUn0dpAr6Aiuf6HMiGIKTCOajx0k6s=
+
+Name: org/eclipse/help/internal/base/BookmarkManager$BookmarkEvent.class
+SHA-256-Digest: wgh8N45929Ddab1pwmue5hjvUy2qS5A+Wx+ByOnOOEE=
+
+Name: org/eclipse/help/internal/standalone/StandaloneInfocenter$1.class
+SHA-256-Digest: 4Uzy5Oya0tv7cIyReO2P32nZ0al7GNoawrc2luy0h5M=
+
+Name: org/eclipse/help/internal/search/federated/LocalHelp.class
+SHA-256-Digest: CaE8neqk5F1bLgngIgPoHgnbKwVqgvQRkDcEkAu99Ek=
+
+Name: doc/e_show_all.svg
+SHA-256-Digest: jUvxqkh8IGUORzONCgJ+vyHylbpuAbB+4Z8G0tYy1OI=
+
+Name: org/eclipse/help/internal/base/util/ProxyUtil$ProxyAuthenticator.c
+ lass
+SHA-256-Digest: bYQL1cKb/4vUg2/pX7o/ffiHmbcXJUn0hI5GceCJ+ek=
+
+Name: org/eclipse/help/server/HelpServer.class
+SHA-256-Digest: nIuCsoymFPquhePz03GtqBy7l91ikdhwNyQaabctK8M=
+
+Name: org/apache/lucene/demo/html/Tags.class
+SHA-256-Digest: wKJANscre83KotTuBj2UzZTcyFsdCsdk2m96EXGLsJI=
+
+Name: org/eclipse/help/internal/base/util/IndexUtils.class
+SHA-256-Digest: ZvtYq1tvIMqZ47ZXrFIYbZ7sAYqzrXoh7rNhik9qg2I=
+
+Name: org/eclipse/help/internal/base/HelpBaseResources.properties
+SHA-256-Digest: 7FH0CCN1B6LCiRpVFSkWLrK3QB4WyjFmznD+9SzgS7U=
+
+Name: org/eclipse/help/internal/server/JettyHelpServer.class
+SHA-256-Digest: ZxJ6TW5ah6HXVJaEsi+lTOo/1yBdWjDeBYhsLjjb6sw=
+
+Name: org/eclipse/help/browser/IBrowserFactory.class
+SHA-256-Digest: dJyP7Wlgu/9rhsRovBrHRKBGDTh3ACo1psSMIbPh0os=
+
+Name: org/eclipse/help/internal/base/scope/CriteriaHelpScope.class
+SHA-256-Digest: tASjZgeSZrqHX1537ckWyDQiw297jTy2hXUxYX5LE2o=
+
+Name: org/eclipse/help/browser/IBrowser.class
+SHA-256-Digest: ExIc0WVQfgvWVPywHrg7qKI4XtzlQg6bNyCC9r+ikO8=
+
+Name: org/eclipse/help/internal/base/util/ProxyUtil.class
+SHA-256-Digest: LwbJEN5iETDWU7SHjfXG99fmshVn6QdC4nupY3BKPxs=
+
+Name: doc/help_home.html
+SHA-256-Digest: 2BB1S4WuNjHlb5B6w07J+FdcoqXC1QwGKjZA+Ik3BZk=
+
+Name: org/eclipse/help/internal/search/federated/FederatedSearchEntry.cl
+ ass
+SHA-256-Digest: o9yWxDJZ3wiICJL7G6+UjfJ+ZJuMkCAZnXsCe6ZwO/U=
+
+Name: org/eclipse/help/internal/base/scope/SearchScopeScope.class
+SHA-256-Digest: LVhpNEYRiP5B7DhWkgjFd6KVjkqrOoGpeN1lmPEDkM4=
+
+Name: about.properties
+SHA-256-Digest: Q3EJ2zu4e/yeNJVRskQYf8ueIg2hrgpecMOhtxmp/uw=
+
+Name: org/eclipse/help/internal/base/remote/DefaultPreferenceFileHandler
+ .class
+SHA-256-Digest: Z0vHtRRlPBSBqUIllxiPGEhDgyD+tarX4PRE9stAY4c=
+
+Name: org/eclipse/help/internal/search/LocalSearchManager$ParticipantDes
+ criptor.class
+SHA-256-Digest: Lbzfj31vheITfL9AbBP7Os9QPl+UXcivm/4RttEya1w=
+
+Name: org/eclipse/help/internal/search/SearchManager$SearchState$1.class
+SHA-256-Digest: xGb5EQDeMn7tj5EWSyLix96yapEAsfBi1OoI4AwcKTY=
+
+Name: org/eclipse/help/internal/browser/macosx/DefaultBrowserFactory.cla
+ ss
+SHA-256-Digest: W1sY2TSh6X4DmJR3/37CZi4CPBLt2cANOgqzCmFo5ZE=
+
+Name: org/eclipse/help/search/AbstractSearchProcessor.class
+SHA-256-Digest: a9/B3iPVGEnyNuFNtYkgDPiyuMJJQKW8KA5RsOgaDAA=
+
+Name: org/eclipse/help/internal/standalone/StandaloneHelp.class
+SHA-256-Digest: QlbF9S/uKg/uyTeJVmKa5PYRZ+a4EaIbPY0dEggThp4=
+
+Name: eclipse32.svg
+SHA-256-Digest: ZbgBJyg1biFTFiwQaGyl7agU6Ys6Q8NN4DV6LQ+wXpc=
+
+Name: plugin.properties
+SHA-256-Digest: EYD7IW4P2Rg5W4yXJDGD2egsQnRgrmm2wtaGOxQCl8o=
+
+Name: org/eclipse/help/internal/search/SearchManager$SearchState.class
+SHA-256-Digest: l4xrvjFMpq2oTxTD6QAfkZImDeYzPXOyweUy+/6BLoQ=
+
+Name: org/eclipse/help/internal/base/remote/RemoteExtensionProvider.clas
+ s
+SHA-256-Digest: WTdGtjFz/+s9ecSL2xhqXpbdYpjf7wADi0CAlQR4yiU=
+
+Name: org/eclipse/help/internal/search/AnalyzerFactory.class
+SHA-256-Digest: l3wmEECUSZT5vk62hYOw5XUB3ZfAW8NblMECfDES7sY=
+
+Name: org/eclipse/help/internal/browser/BrowserManager.class
+SHA-256-Digest: iaLxiivtBg8K0lHbTVajDkchdNUAPGB5VHRXt4vKN5E=
+
+Name: org/eclipse/help/internal/search/HTMLSearchParticipant.class
+SHA-256-Digest: NwwrSbYcc9IV9sdJX2/VmD2WA57Xkcuz1XofTlbmtBs=
+
+Name: org/eclipse/help/internal/workingset/AdaptableSelectedTopic.class
+SHA-256-Digest: qQEw/gNKYDSRAQ8iX267TrvuTRq9xh+qhZ/2oZfjQVs=
+
+Name: org/eclipse/help/internal/browser/MozillaFactory.class
+SHA-256-Digest: PFsOt/2hJ1KEC7gqctyAjE5QY3ZyTCRfnLxwzhFRJ6k=
+
+Name: org/eclipse/help/internal/base/remote/RemoteSearchParser.class
+SHA-256-Digest: AWIfFAABe75/2Qa0kOMMZwna1yKvDmIYOcORCcRAwZs=
+
+Name: org/eclipse/help/internal/search/ProgressDistributor.class
+SHA-256-Digest: Qa5tRhIzp7Kokrz5aP3/ecg3YKgOI8g4vaQi1jSXygM=
+
+Name: org/eclipse/help/search/ISearchEngine2.class
+SHA-256-Digest: ++0wZ+XIzsww51iRBfrusmRJWIdEKDcUTbvp6XIth8s=
+
+Name: org/eclipse/help/internal/search/SearchProgressMonitor$DummySearch
+ Query.class
+SHA-256-Digest: JSDo1auetXnAmBOU6pUFzFamQslOZF83RTDlTG2IxYM=
+
+Name: org/eclipse/help/internal/search/federated/LocalHelpScope.class
+SHA-256-Digest: D1aFyhanOdweNZppQlc/fgnb39rE9BFxHCTMiCidZLo=
+
+Name: org/eclipse/help/internal/search/DefaultAnalyzer.class
+SHA-256-Digest: biadKoTfjn4CHQ8+SjQlwnIsJMubkEaxbtHNPSVG1Uo=
+
+Name: org/eclipse/help/search/ISearchEngineResult2.class
+SHA-256-Digest: smDjd7m0gGiM536Z95nLEoU2tYCow5/BiUxVpxFOZCo=
+
+Name: org/eclipse/help/internal/validation/TocValidator$BrokenLink.class
+SHA-256-Digest: kSejmdLB2ffPGraEwMtvW0/vc9hIYakKJhvoYToKIeE=
+
+Name: org/eclipse/help/internal/search/SearchProgressMonitor$1.class
+SHA-256-Digest: A3Dl7NcziNQFnWOdumZug960KnaQM16CaoyiQ1MHDMQ=
+
+Name: org/eclipse/help/search/HelpIndexBuilder$PluginIdentifier.class
+SHA-256-Digest: VwLtopJ/K2Ba8wpxP/VyvdNNP7GNP2zDlCkifgft4qw=
+
+Name: org/eclipse/help/internal/search/federated/FederatedSearchJob.clas
+ s
+SHA-256-Digest: qUt28v4pT/f1BLba3z/FzWVskyJtWTK1x6E4Beh/7ic=
+
+Name: org/eclipse/help/search/SearchParticipantXML$ParsedXMLContent.clas
+ s
+SHA-256-Digest: iMQxYNq1r23qP8tRO9b64s7BasX14Ozf4WpwYrRKkNk=
+
+Name: org/eclipse/help/internal/base/util/HelpProperties.class
+SHA-256-Digest: kjzo+vhKpuaxUZBq9yMnDqRCA+Mah+8A8VXWpBHAngA=
+
+Name: org/eclipse/help/internal/search/PluginVersionInfo.class
+SHA-256-Digest: mxoBtB00/wsJy8e+yXwM67vWuhP0ZCgSNVeOQN5a2Lg=
+
+Name: org/eclipse/help/internal/validation/TocValidator.class
+SHA-256-Digest: It4G4FWcG/LLnWCUqb32hSissUJa3lUVP3rFRY9vB2E=
+
+Name: org/apache/lucene/demo/html/HTMLParserConstants.class
+SHA-256-Digest: sBpYlCi0P1yuzpB1K0y32B79X/Shqa03ome6zCM1rYQ=
+
+Name: org/eclipse/help/internal/base/scope/ScopeHandle.class
+SHA-256-Digest: aslL1qhBvqqWgydoKM8hzipjKlChgh51a3gyMtuLcbI=
+
+Name: org/eclipse/help/internal/base/remote/RemoteSearchManager.class
+SHA-256-Digest: DNUNUi+14U5aFFWQDWNzwArN4OTAmXjtS/PAX8x70dY=
+
+Name: org/eclipse/help/internal/search/Analyzer_en.class
+SHA-256-Digest: doeLBLWRKkJglP8jKCRZI835XITGR4P9+NzIi0FT9MU=
+
+Name: org/eclipse/help/internal/search/InfoCenter.class
+SHA-256-Digest: dhyur/3Gy+7LZufx31iYcw+oQdqCfAEneeACkWso0Ps=
+
+Name: org/eclipse/help/internal/base/remote/RemoteHelpInputStream.class
+SHA-256-Digest: swhT4Ent9f9TjubGqdSvOZJyUB71NA7LCEWhuTghEEc=
+
+Name: org/eclipse/help/internal/search/SearchManager$SearchState$2.class
+SHA-256-Digest: d4M97EPr1z6Lqrq1UMne41E2knmE7BVKmsuxXGO9cYs=
+
+Name: org/eclipse/help/internal/search/QueryTooComplexException.class
+SHA-256-Digest: +lLrGbQ6zRT+p8zYj6vnJxdWod+koVbupN0IFGgf3Gs=
+
+Name: org/apache/lucene/demo/html/HTMLParser$JJCalls.class
+SHA-256-Digest: fhIpkZroOslw4JAeyFvYGGwgUXPpGvvF+QtXsyunqwk=
+
+Name: org/eclipse/help/internal/search/QueryWordsToken.class
+SHA-256-Digest: FNYLsV3VZlHntJW82MFZloqoR754PrweiL658Z64iYs=
+
+Name: org/eclipse/help/internal/xhtml/XHTMLContentDescriber.class
+SHA-256-Digest: 2Ys37xHsPiMqfh0ZLZa+iFjGURnnOpmQDs4SfhDdfr4=
+
+Name: about.html
+SHA-256-Digest: ncO+WCNUIJ0JLCOl/ot53yopwTqvvtVu0qSgblesdYo=
+
+Name: org/eclipse/help/internal/base/BaseHelpSystem.class
+SHA-256-Digest: J0rI/MnNr84HwxKAED4epJMJn0E2lCBr44Ch2hR7xZo=
+
+Name: org/eclipse/help/internal/browser/BrowserLog$LogHolder.class
+SHA-256-Digest: lhyorjeeJwfUVkrXnF7ptDDpSc1rUx11Lf8Ip2vOojk=
+
+Name: org/eclipse/help/search/ISearchResult.class
+SHA-256-Digest: VT6Kf2Lio7fZ+C2Clx6GEsGgdbMXOVgc8OfsVdruve8=
+
+Name: org/eclipse/help/internal/browser/MozillaBrowserAdapter$BrowserThr
+ ead.class
+SHA-256-Digest: rZ6Gq3iNq2EEWoOsL+xjdKTWpApALaIcEqdSblIPB6M=
+
+Name: org/eclipse/help/internal/base/scope/UniversalScope.class
+SHA-256-Digest: sm0Utd2eCyFpx+uF5G3eCRXTrc1/cRU6zYhKT6sVnbk=
+
+Name: org/eclipse/help/internal/standalone/EclipseController.class
+SHA-256-Digest: TDoAumE4Ics47+oU3Jum+TKwRiUVZNqE0eWrYXRwzxU=
+
+Name: org/eclipse/help/internal/base/remote/RemoteStatusData.class
+SHA-256-Digest: mJPta76/UrFTemggZJ5sh8FZ6hBR0yY4R6bnF3xe0M0=
+
+Name: org/eclipse/help/internal/search/SearchManager$BufferedSearchHitCo
+ llector.class
+SHA-256-Digest: P+2sX4urlJUfF2S/ELuPVRr7y0XzpWhhRaSb3EDe2Zo=
+
+Name: org/eclipse/help/search/ISearchEngine.class
+SHA-256-Digest: B20ne5NPU5bD+Yq6lYHKFVXaQWregnquATy+RaNngjQ=
+

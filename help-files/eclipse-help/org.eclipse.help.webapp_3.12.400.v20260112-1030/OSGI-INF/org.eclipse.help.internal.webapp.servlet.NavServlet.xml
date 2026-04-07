@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="org.eclipse.help.internal.webapp.servlet.NavServlet">
+  <property name="osgi.http.whiteboard.servlet.name" type="String" value="nav"/>
+  <property name="osgi.http.whiteboard.servlet.pattern" type="String">/nav/*</property>
+  <service>
+    <provide interface="javax.servlet.Servlet"/>
+  </service>
+  <implementation class="org.eclipse.help.internal.webapp.servlet.NavServlet"/>
+</scr:component>

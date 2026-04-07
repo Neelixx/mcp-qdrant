@@ -1,0 +1,1175 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.6.5
+Build-Jdk-Spec: 21
+Bundle-ManifestVersion: 2
+Bundle-Name: %help_system_plugin_name
+Bundle-SymbolicName: org.eclipse.help.ui; singleton:=true
+Bundle-Version: 4.8.300.v20260112-1030
+Bundle-Activator: org.eclipse.help.ui.internal.HelpUIPlugin
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: org.eclipse.help.ui,org.eclipse.help.ui.browser,org.ecli
+ pse.help.ui.internal;x-friends:="org.eclipse.ua.tests",org.eclipse.help
+ .ui.internal.browser;x-friends:="org.eclipse.ua.tests",org.eclipse.help
+ .ui.internal.browser.embedded;x-friends:="org.eclipse.ua.tests",org.ecl
+ ipse.help.ui.internal.dynamic;x-internal:=true,org.eclipse.help.ui.inte
+ rnal.handlers;x-internal:=true,org.eclipse.help.ui.internal.preferences
+ ;x-internal:=true,org.eclipse.help.ui.internal.search;x-friends:="org.e
+ clipse.ua.tests",org.eclipse.help.ui.internal.util;x-friends:="org.ecli
+ pse.ua.tests",org.eclipse.help.ui.internal.views;x-friends:="org.eclips
+ e.ui.cheatsheets,org.eclipse.ua.tests"
+Require-Bundle: org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";vis
+ ibility:=reexport,org.eclipse.ui;bundle-version="[3.206.200,4.0.0)";vis
+ ibility:=reexport,org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.
+ 0)";visibility:=reexport,org.eclipse.ui.forms;bundle-version="[3.5.0,4.
+ 0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.help.ui
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"
+Eclipse-SourceReferences: scm:git:https://github.com/eclipse-platform/ec
+ lipse.platform.git;path="ua/org.eclipse.help.ui";tag="I20260112-1800";c
+ ommitId=74f91b37db3a1a2f08ddf35aa6e17487cad3b79a
+
+Name: plugin.xml
+SHA-256-Digest: nNwObrDSyAVsCsvOT7UmBzC6GoDNeP1q61IFRWKv4og=
+
+Name: org/eclipse/help/ui/internal/views/ScopePreferenceManager$SubpageP
+ referenceNode.class
+SHA-256-Digest: wnaDJbsHmJ8X5LGHXnq8qo3CmmfaWqmivhz5Y+y3GsU=
+
+Name: icons/elcl16/openseparate_co.png
+SHA-256-Digest: cssJ6TFQSGJV1S79jJ4txqnIW8fcFYxPzK/gKMuQ/U0=
+
+Name: org/eclipse/help/ui/internal/handlers/ShowIndexHandler.class
+SHA-256-Digest: JbJr6Y10QQ6k9DKWOw4aD8KOZwznoZAMbEFAfx5+sGk=
+
+Name: org/eclipse/help/ui/internal/search/WebSearchScopeFactory.class
+SHA-256-Digest: poQY9o3mn3KilMCRfoaFGBofZEQ81fZDWWYuhKNSLcU=
+
+Name: icons/elcl16/show_categories.svg
+SHA-256-Digest: +ZGtJJFjyZU1BN9SgEozRwTc/3vXcCHM5GrhB+dW2L8=
+
+Name: org/eclipse/help/ui/internal/views/EngineResultSection$1.class
+SHA-256-Digest: YGvu0rXLzh8z+dYSgM41vX1UO06uJJPNIQvfdWrX9NA=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$HelpPartPage.c
+ lass
+SHA-256-Digest: NOc/ayd6/YADEtIOjeGJaKkfhUTS11n6konpKzc9QvE=
+
+Name: icons/elcl16/close_hot@2x.png
+SHA-256-Digest: +Vt7smaHoNq8GCctrSJUBndPdsAohF79GGmHlsonqGA=
+
+Name: icons/elcl16/collapseall@2x.png
+SHA-256-Digest: 9QbKQz6Aztk32MS3StiygbtlrzzDuY1BXCncXdgA7nE=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$8.cl
+ ass
+SHA-256-Digest: w/XuhlAq3imKsNMmeNTrN+RochcrM2nZrhycsm5mLHI=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpPart$SearchTerms.cla
+ ss
+SHA-256-Digest: ByPUrjwhGg0el5NcAygvHxANVq3Dbw3uR9YcQyzterI=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$9.class
+SHA-256-Digest: Q1Ukv3nUXseQkPoMOlXN4GW/WYWO/XouAxYYPRr4Up4=
+
+Name: icons/elcl16/collapseall.svg
+SHA-256-Digest: p0FFKEJCOc93cYNmkyHC+udJhd/X5FslXAr/haKcSec=
+
+Name: icons/obj16/topic.png
+SHA-256-Digest: op/7RkYd3tnAmaESZBb2rvq2srC2STje28KVOlVIQzk=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart.class
+SHA-256-Digest: XEGSnKS2JmO5eJ7k4H5zBSwZU9daqrMgZOAK7+ij+fY=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$NonDefaultFilter
+ .class
+SHA-256-Digest: ruq82N9+utKfaNAhAT5Bb+lfy7Lh+GNZrFmjTZgujrg=
+
+Name: icons/dtool16/alltopics_co@2x.png
+SHA-256-Digest: nmeqDD1NqxyBeFQ9Lsdb7DXgcu6wgUif++Yz5b1kRuQ=
+
+Name: icons/dlcl16/showcat_co@2x.png
+SHA-256-Digest: gASYr9KhW6gbaCaciU9eKH3JC0G02Uap54fpBBKpKIA=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$10.class
+SHA-256-Digest: MuYj+7Jw8h5hYGWoX7iuD9ENXBqVmDqbDfl/I/l4P68=
+
+Name: icons/elcl16/show_all.svg
+SHA-256-Digest: nEYNyn7Zy1u7fVLcMgDsMhIoGFkdqylnwDYIuxjy0OY=
+
+Name: org/eclipse/help/ui/internal/views/IgnoreMissingPlaceholderHandler
+ .class
+SHA-256-Digest: PUy6QemBhuYT/cnDWAd9zpbUSh92i81DZW8Y7u7QcAc=
+
+Name: org/eclipse/help/ui/internal/views/IndexTypeinPart$2.class
+SHA-256-Digest: ZnR5YLP5Ct7c8fLtffe+wjjLl0zNxUFPhivGn2ZLH0k=
+
+Name: icons/elcl16/showdesc_co.png
+SHA-256-Digest: OAwo2p4jG24FQHmxMaQQVJiV6kKMLIasowwVnzgbKkk=
+
+Name: icons/etool16/helpsearch_co.png
+SHA-256-Digest: b17mEADxZVTJZq5Dw95fXAm3TICveVvg/5XHsdOigXs=
+
+Name: icons/etool16/reltopics_co@2x.png
+SHA-256-Digest: bVJkPs/ynbwVJUzD8Guj3XmF/bZeWE2cWnXXd44Ko38=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart$4.class
+SHA-256-Digest: q6QiKmwabE91L5WsXZeHwNBPWymGsICBVEkZ4IsSMiM=
+
+Name: org/eclipse/help/ui/ISearchScopeFactory.class
+SHA-256-Digest: 3OexWeRl4BGbGJDhbjhRFyidc0Njd4uHfwcWCWQIO7w=
+
+Name: icons/elcl16/addbkmrk_co.svg
+SHA-256-Digest: yDc8686v2afzfiACfSrKQRCy7gU9ztALHu7TIU3TzbM=
+
+Name: org/eclipse/help/ui/internal/views/Chevron.class
+SHA-256-Digest: A6f4BXa6BNHYIysJjbojdARldq2tc4/I1jCtgBA+8sg=
+
+Name: .api_description
+SHA-256-Digest: +QQF9foiw4lWBwtoZ2m6Tv/2mDo5lMEM9i01I9Srr3Y=
+
+Name: org/eclipse/help/ui/internal/util/FontUtils.class
+SHA-256-Digest: 0l2OViWI/WI3q8g2jA5/wVZLVWE5lwfnVy3VOsMoEfk=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$3.cl
+ ass
+SHA-256-Digest: O9OFwFaPvkwep/B7up3JmMYz3wHqrNs/Kj2M7Jy3JnM=
+
+Name: org/eclipse/help/ui/internal/views/IHelpPart.class
+SHA-256-Digest: fNHoiJKARuKovmAc23eUfslsiiyObm2D3G9ZmVl+3xI=
+
+Name: icons/obj16/topic.svg
+SHA-256-Digest: THKbY+6QmX8ZMrzbV5JSufXJKrLy+2yGXJ2H605fXuE=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel$2.class
+SHA-256-Digest: +7ahMzJgeYlxStZKxwmX3sWA0fbuDb+17KH5YHfR7l8=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$5.class
+SHA-256-Digest: 253z7lLg9+r1+zB63w1gNX8/V4GqUzGcjQcqqjwm/Ic=
+
+Name: icons/dlcl16/showdesc_co.png
+SHA-256-Digest: spfSqHBZ+HuKSn3UpUDLDymCtv05ARL8P3D5Bpr/Weg=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$PartRec.class
+SHA-256-Digest: yIDH3NZQPEhFIzGvP5yhkY5tO/5LM59ztOCYp9vZ4lw=
+
+Name: org/eclipse/help/ui/internal/preferences/HelpPreferencePage.class
+SHA-256-Digest: DtJNDpK+YiUAAJD0H/kjgACJTj6QwGmghikpwk0s2ps=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$RemoveOperation.
+ class
+SHA-256-Digest: E7nE2ZhAa68kgpw9COCGc4mgSz6fWFgVRYbPwvs/X3Q=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$5.class
+SHA-256-Digest: r0wMWuZOFCL5YBQDBdk2qgaGt1UbROeI1+rMRuBx+Ds=
+
+Name: org/eclipse/help/ui/internal/Messages.class
+SHA-256-Digest: bGVz9+gHSsJF2y/HFGRwjgKsGEZG5hyFAabnuzhp0fk=
+
+Name: org/eclipse/help/ui/internal/views/SearchResultsPart$3.class
+SHA-256-Digest: KRkNLnLPla7e8B7/zOrAUJss3+UxBOfN2avAs5v59jI=
+
+Name: icons/elcl16/reduce_font@2x.png
+SHA-256-Digest: n0CBPqYKdVZZwmPT7MGZRPm2cJVHbRptOkn0zURr8a0=
+
+Name: icons/elcl16/close@2x.png
+SHA-256-Digest: jgNNJyIM3H+t4CrKiXHetfOSdJSuqU/9dU7i30989qc=
+
+Name: org/eclipse/help/ui/internal/HelpUIPlugin.class
+SHA-256-Digest: LCDS2bIJ0SSosbJA1HzAP77CjM9PQas6SwoBtxqjOUE=
+
+Name: icons/obj16/sinfocenter_obj@2x.png
+SHA-256-Digest: y/0O8pKOKwZnrkf/ypVMe9GIS74UZnd35C2H20hCizA=
+
+Name: org/eclipse/help/ui/internal/search/LocalHelpPage$2.class
+SHA-256-Digest: fhyKpULUYpP89/HDauaWBrnkvHya33DUiNUl/eVOLZA=
+
+Name: org/eclipse/help/ui/internal/views/AllTopicsPart$TopicsLabelProvid
+ er.class
+SHA-256-Digest: 0/VsVsLPTsZwSuPxSWLY1befLm7xiVtA2yP2lrPfcPs=
+
+Name: icons/obj16/sinfocenter_obj.svg
+SHA-256-Digest: LJf0ICqlJxOIe7eJAeSDxDnkmCxCejG8BAcPTXbnuJ0=
+
+Name: icons/ovr16/doc_co@2x.png
+SHA-256-Digest: ouMJB/E/SQLt169qjDuFHkqtKYq3T7bzjX6eRlJl2lc=
+
+Name: org/eclipse/help/ui/internal/ShowCapabilitiesPreferenceAction.clas
+ s
+SHA-256-Digest: QR3u6jLPNhahdJt0IHyirUH0H1uSOmU9CIaqnw+JVTY=
+
+Name: org/eclipse/help/ui/internal/dynamic/FilterResolverExtension.class
+SHA-256-Digest: 4h1023/ytOzQmyc8psR7TtnP2hHIMZ+ux721KmZFnyM=
+
+Name: org/eclipse/help/ui/internal/preferences/HelpContentPreferencePage
+ .class
+SHA-256-Digest: PuZBlCc+ianA6WlnuT+7Ut9aORkgdiFLmHY9l/n9m80=
+
+Name: icons/obj16/sweb_obj.svg
+SHA-256-Digest: MBHMjwYaa0U5knu/Z2bo0TvEGinKHkwhWPCfIFR0mRY=
+
+Name: icons/obj16/topic@2x.png
+SHA-256-Digest: ZIjwzRb5Im5Ioa+573WeEeNDSYsz+1XZnGXXVW7CkT8=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel$3.class
+SHA-256-Digest: bUQ2GtvBfcDxdKqbco2fu8GU9x58IpZ0L53+SH70w9I=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpPart$1.class
+SHA-256-Digest: Bzqty6eXlrb8dDXTLstVbn98Qb/xxLq4M956HfZJSB0=
+
+Name: org/eclipse/help/ui/IEngineDescriptor.class
+SHA-256-Digest: tK5cDiJ1YNiuZ3ZCUG1R6MWMKJW/+QOgeqg/vWa7qoQ=
+
+Name: icons/obj16/toc_closed.svg
+SHA-256-Digest: KGOm1+JQVWp/1DzrPBJwKrahbgy0RAh+GtA3318PwhA=
+
+Name: org/eclipse/help/ui/internal/views/HelpView.class
+SHA-256-Digest: 6qgVlFqHPzB2xaY+Rxc7Zo2Bsr6uPHJnmVAiYbZh4tI=
+
+Name: org/eclipse/help/ui/internal/views/HistoryEntry.class
+SHA-256-Digest: eWBZbwS9Arlj1iGKdcInNKvOiod/C3iSwrkd+mdv6T0=
+
+Name: icons/elcl16/synch_toc_nav@2x.png
+SHA-256-Digest: dbsB19VNoj+f8NPMAwxLZmNLqrzjDSfec1B0YIbWUmM=
+
+Name: icons/elcl16/openseparate_co.svg
+SHA-256-Digest: W51TP3+H5E5FoIQR32fU7SjzxI6O0x7gKL6U/rC1uO8=
+
+Name: icons/elcl16/collapseall.png
+SHA-256-Digest: T5Z8GCi10mvgwjbIuO/azMVSnvcT8/J5MbnNW1ydx+o=
+
+Name: org/eclipse/help/ui/internal/views/ScopePreferenceDialog$PendingOp
+ eration.class
+SHA-256-Digest: sDykrHsqx2eb46hCH/yl8GRJOvPeLkMpRyFGrOvLxA8=
+
+Name: org/eclipse/help/ui/internal/views/IndexTypeinPart$1.class
+SHA-256-Digest: CNe9s6trHjWd6rbMcNG3OFUDpshlOXv5rQ0SabYm/F4=
+
+Name: icons/dlcl16/showdesc_co@2x.png
+SHA-256-Digest: dPizUODfmCngJxU5TvPq2Ri17DGaH1dyTb/4AALjwpY=
+
+Name: icons/dtool16/reltopics_co.png
+SHA-256-Digest: DLZxaJekIgt70cSq4yBjIZHdRZH70Koi6hrYw/0HkrM=
+
+Name: org/eclipse/help/ui/internal/search/LocalSearchScopeFactory.class
+SHA-256-Digest: f0CirI9OrVXLMiDWq+fa7InoGEHT5DjC5MZ/8Ks9uRE=
+
+Name: org/eclipse/help/ui/internal/Messages.properties
+SHA-256-Digest: v8gaZMb7bMAW/hu5da9TEsoOn6SNFX/SyuDypMc9+cI=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$6.class
+SHA-256-Digest: ibTZyEQL09Xr4tIyncpQl4Hh3SbJyt+eKqlQ3YwylRk=
+
+Name: icons/obj16/sweb_obj@2x.png
+SHA-256-Digest: tV5v1eYNb7vdvYtrAzExGoLUBzTCzzYS2hrCvzyj4zs=
+
+Name: icons/obj16/command_small@2x.png
+SHA-256-Digest: jxR89OhdZi3/Z2Tpt52cL9iylo+7DrxjRVvlmAtxrYw=
+
+Name: org/eclipse/help/ui/internal/search/LocalHelpPage$1.class
+SHA-256-Digest: uyNwv/8Ew5NvqSoDFARMMzColBoduKAr/iAcEI6yp+c=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart.class
+SHA-256-Digest: Mf0U+hBLJQt0M3ycLvn+W8sKUN9qxXxCcWHgneGfkso=
+
+Name: org/eclipse/help/ui/internal/views/AllTopicsPart$TopicsProvider.cl
+ ass
+SHA-256-Digest: 7X4mOS9MGifVhg6LZoIcv62s6Cl57mojy726C9QCKiU=
+
+Name: icons/obj16/sinfocenter_obj.png
+SHA-256-Digest: b17mEADxZVTJZq5Dw95fXAm3TICveVvg/5XHsdOigXs=
+
+Name: org/eclipse/help/ui/internal/views/RenameDialog.class
+SHA-256-Digest: 7mqAHRitW0JtsvCxGmpQVYnpy23Za7YE+ldLvCAE270=
+
+Name: icons/obj16/bookmarks_view.png
+SHA-256-Digest: EJHvIQfez7Oo/AATFU7BniouGtIeSXMzSPb3ATHOIpw=
+
+Name: icons/elcl16/show_categories@2x.png
+SHA-256-Digest: IVV3NOHMSK0z6YIOC3hljR100k6g5Ns8DxJfKnqFZ7I=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$ScopeLabelProvid
+ er.class
+SHA-256-Digest: lvPe0BshG+pWoG7Fy0H+MclYWMHlftWB4NpsoKHpmHg=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$RenameOperation.
+ class
+SHA-256-Digest: +dKOxo1Mnrcfs8uZWv59wz1/zk2iaPwAnwXkA3ip0lQ=
+
+Name: org/eclipse/help/ui/internal/ExecuteCommandAction.class
+SHA-256-Digest: 3LkYGCgsfZJ8y+k3U1TQG9uepCR4HbFK8LNdH/GSk2A=
+
+Name: org/eclipse/help/ui/internal/HelpUIEvaluationContext$1.class
+SHA-256-Digest: VMddZ4Ws/SYyw7UqEpvFQEDvIvirAnrvwWYs9XO0KeY=
+
+Name: org/eclipse/help/ui/internal/preferences/ICButtons.class
+SHA-256-Digest: RY2s/cBnMsNVyIq/xJOTbkHE0n+hFE1yY9vX96IF1Yg=
+
+Name: icons/obj16/searchhit_obj.png
+SHA-256-Digest: Vgm6US+Xt+aijJIOkD+q3xb9vupZWrlv3NpUGn1wsMY=
+
+Name: org/eclipse/help/ui/internal/views/BookmarksPart$1.class
+SHA-256-Digest: IGP1cwwoH1dmHjT9fZ85Cn5PDa2iPN1QR+im/cxPlGk=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSelectPart.class
+SHA-256-Digest: Mmf1B3Xr/1d7YGHKcWvS+7REmrE+vwxoU7fDlrMOvdE=
+
+Name: icons/obj16/command_small.png
+SHA-256-Digest: ZJE1pW5y5RpXq2YXRfb1Zt7tl+YcV7QTColbI1NXslg=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$7.class
+SHA-256-Digest: RqMh7iPIUtII3j04rv7EhcdMf2KpaWwNrkqRtRL/5bM=
+
+Name: org/eclipse/help/ui/internal/preferences/ICDialog.class
+SHA-256-Digest: fN5XnLRmtBaEdWA/hVfbw2fx+91NHr54tvVd0Xot0+w=
+
+Name: icons/obj16/searchhit_obj@2x.png
+SHA-256-Digest: fjjtVbAdg7BONOcO9LIqrbTuc+oa6dnlvmlnuOYU370=
+
+Name: icons/obj16/sweb_obj.png
+SHA-256-Digest: YdgPtvAEtJYQBs0/VZlaxg3p6TW79MhAvhcAlb775P8=
+
+Name: icons/elcl16/addbkmrk_co@2x.png
+SHA-256-Digest: rRHhZMUR0vV7AkSOOmKwTZBHyQRCGNGSnX8efpgD3q8=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$AddOperation.cla
+ ss
+SHA-256-Digest: TM2emx1Fs5VQXfX0KQHh3+q/Dq19lpx4xVHlyTA5Pjc=
+
+Name: icons/elcl16/highlight.svg
+SHA-256-Digest: 6UKTd78J6bMo6k6/I+6tQ/wAZNiaZiusEAeS4j7hGYA=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$2.class
+SHA-256-Digest: CTMqLVUwo7ejKSyzjWDS4pHUcU8m4DsdS1E4qpkNMa4=
+
+Name: icons/dlcl16/magnify_font.png
+SHA-256-Digest: 6bO31HDXJbIGrXEYQFJzQxEMnr1GVpjUOGHoTrH9L1Q=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser.clas
+ s
+SHA-256-Digest: oxwUvzGZj7V/r8Cs9OPRlz7piYNmlJQo6jhdizFdZSI=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpPart.class
+SHA-256-Digest: O80q3hwNFssv//whdnkWlUpHdYdxU6GIfNMQCz0al+g=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpProviderInput.class
+SHA-256-Digest: lYWHjNWxzL14jJZvTZuwetiOOLuLz6yt0AGpEEMUzxI=
+
+Name: icons/wizban/newsearch_wiz@2x.png
+SHA-256-Digest: rUAkoxZhHQuMqXHS9T09Fd9QXYB1Fw45mV2z9t3APi4=
+
+Name: icons/etool16/alltopics_co.png
+SHA-256-Digest: YANybcvBbyibiddg4QEtS9s/u85OWPsly2dgkW3+Vwc=
+
+Name: org/eclipse/help/ui/internal/views/BookmarksPart$BookmarksLabelPro
+ vider.class
+SHA-256-Digest: KXtm+m3jyYP1sDkFpR772OYYQwW3/OdU2IcjiWsBWEw=
+
+Name: org/eclipse/help/ui/internal/search/HelpCriteriaContentProvider.cl
+ ass
+SHA-256-Digest: kizCA1NkFCeFOhN/e7X3SOKfuP0C74u6baPPjmFZ+AI=
+
+Name: org/eclipse/help/ui/browser/LaunchURL.class
+SHA-256-Digest: Bl7aaYtbhGKnRG0CkHOJS04eGX4NTTuP+rfkcv4hof8=
+
+Name: org/eclipse/help/ui/internal/HyperlinkAdapter.class
+SHA-256-Digest: 2dgEt7/fm1n1K8rdq1GLGTs/r/PQRKvqRyTW06OwG9A=
+
+Name: icons/obj16/bookmark_obj.png
+SHA-256-Digest: d8J3oeAxA8ipTKa9EO/dJH3iCdWcVtdlBrUssYvsz9g=
+
+Name: org/eclipse/help/ui/internal/views/ScopeState.class
+SHA-256-Digest: 5/twuBkdg6JxiL+bsC7FvNlp7dtO6ZZGDMCq2GRSNVg=
+
+Name: org/eclipse/help/ui/internal/ShowInTocAction.class
+SHA-256-Digest: boWFiikCWBNy0jEd5HYqOYHebk6zHyvTnvum8snsWXg=
+
+Name: org/eclipse/help/ui/internal/views/EngineResultSection$2.class
+SHA-256-Digest: XvW3Bf43QO+KSTnCqKNRLzvGg4Xv9G8mhIYEUxTZziw=
+
+Name: org/eclipse/help/ui/internal/views/LocalScopeDialog.class
+SHA-256-Digest: qtl+BQAti7rNBxZRVLuoRcnYO3oWOhJxVsYr1GTW+cE=
+
+Name: org/eclipse/help/ui/internal/views/RelatedTopicsPart.class
+SHA-256-Digest: c04mbTv1/am7HMtEMQGJK3OIBprf1NcwmS7sevUUOzE=
+
+Name: icons/elcl16/magnify_font@2x.png
+SHA-256-Digest: ZfzNQ5XWjhcTSj2KELGSDFVBkoTDHvi/U4TkKB9Hoj0=
+
+Name: org/eclipse/help/ui/internal/preferences/ICTable$ICContentProvider
+ .class
+SHA-256-Digest: 0R+xAJ1P9Xk1guessJIw6sI2ZGVd/iyLOPpfa4epJeI=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPartHistory.class
+SHA-256-Digest: kPwe2vvxYb0rRWC9X3HGw5qB4RZ7hg33a7dhFG0cPjM=
+
+Name: org/eclipse/help/ui/internal/HyperlinkHandler.class
+SHA-256-Digest: o9rzj7F5US3JfNVSvwkUQWkNmjnTX7GL9iQYnjrahgk=
+
+Name: icons/etool16/index_co@2x.png
+SHA-256-Digest: KErZdq7vfm32fyLidAa9tkORMRPqBijGua2CBB2gpqw=
+
+Name: icons/etool16/alltopics_co.svg
+SHA-256-Digest: EVK/GedupRPfYhQ5dH8HFAUa9lZcJq2xzlkqagV/ccU=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowserFacto
+ ry.class
+SHA-256-Digest: Ucr6h5sodx2D+xQPlpj9aQ6K3WLZF6bpxtkdIYSY1NU=
+
+Name: icons/etool16/helpsearch_co@2x.png
+SHA-256-Digest: y/0O8pKOKwZnrkf/ypVMe9GIS74UZnd35C2H20hCizA=
+
+Name: org/eclipse/help/ui/internal/views/EngineResultSection.class
+SHA-256-Digest: A99eDCUsreXuM6Ttaf1UI/IaVDRkLGYcVVS+mPH+Ujo=
+
+Name: icons/dtool16/reltopics_co@2x.png
+SHA-256-Digest: 1BTNj7vl9p3PC9Z5wlBqcHpO/7Xoi3WVBO91Lq2lLGI=
+
+Name: icons/elcl16/reduce_font.svg
+SHA-256-Digest: AdZQ02wX41601KJeo5igerqxNRZn/6Jx4e3tC3lMMcM=
+
+Name: org/eclipse/help/ui/internal/StyledLineWrapper.class
+SHA-256-Digest: URTFEiVQYqZ1+nutQmp2L66OaYC9UNuVGnnbMET4ut8=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$7.cl
+ ass
+SHA-256-Digest: zGO3K02X6hoCCoTFnyyhXMmnSXYxAAhYyXhmDUp0b3U=
+
+Name: org/eclipse/help/ui/internal/views/EngineTypeDescriptor.class
+SHA-256-Digest: JWiWTNY+iD4WVH8DeUdPAOC1K0RmSqPIPFIzxkl8eNE=
+
+Name: icons/dlcl16/addbkmrk_co.png
+SHA-256-Digest: AeTvzsf4Vd8s7BMrkJ1A9NhAfndUpcKQwNS4dnWPRbo=
+
+Name: icons/obj16/bookmarks_view.svg
+SHA-256-Digest: vsr9k/R9IJ8dPJsf2nYeLLMDcaLtaav1rPDQ+WQnQJg=
+
+Name: icons/obj16/searchhit_obj.svg
+SHA-256-Digest: 0Q1wajn98Lb5ETZhvQDqBLdU0wFPO0UxJ6Sx/qql/Kk=
+
+Name: icons/obj16/topic_small.svg
+SHA-256-Digest: LvAW6A5vjpuPo6BaTGhBNru+sBI11beEieg8e3qLZwQ=
+
+Name: org/eclipse/help/ui/internal/search/HelpCriteriaContentProvider$Cr
+ iterionValue.class
+SHA-256-Digest: OfI5KNMO5ulPNK8smfC8eNoTtP4EqnT3xC+wmDAoDJ8=
+
+Name: org/eclipse/help/ui/internal/browser/SystemBrowserAdapter.class
+SHA-256-Digest: /NYGommFCszBVi+VOiLrXmEn2epQO5X8VUla+KSYlkg=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$5.class
+SHA-256-Digest: q13u4MwjFFcPop6w2vqd//73wKwtZEwdDcHMVTCyvVM=
+
+Name: org/eclipse/help/ui/internal/views/IndexPart$IndexProvider.class
+SHA-256-Digest: AhKG28IJCeayiQ6L+MObPIIVN6+jFPJuF7WVM1J7Wtk=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSet.class
+SHA-256-Digest: AIwXOIsx0dx3doe7Y3rpJiwFLxOujnzw27XaNgJeRwI=
+
+Name: icons/elcl16/highlight.png
+SHA-256-Digest: jOqIvNWo/Axaj2i+6lfnSxBpPbXBHaaLqjLXlntwY+Y=
+
+Name: icons/obj16/bookmark_obj.svg
+SHA-256-Digest: lXNbPSKVaFOq7SCkoY2UxDFd+0LsZr2ziVaOF4WIFS4=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$9.class
+SHA-256-Digest: HIqcXt1tdk5CkhGBhNFl4Atys3Ht6AxsxA6HHGsu1H4=
+
+Name: org/eclipse/help/ui/internal/search/LocalHelpPage.class
+SHA-256-Digest: R4rkPdWpUrT4QEz4RAnZKtmccH5hB4bRtZBEaT3qQ0I=
+
+Name: org/eclipse/help/ui/internal/search/HelpCriteriaContentProvider$Cr
+ iterionName.class
+SHA-256-Digest: alXpPjVs36TfVmElfi2CQ7lwTQO8s55zl5QcNdOTOrM=
+
+Name: icons/view16/help_view@2x.png
+SHA-256-Digest: 48xu0eGefSHWbGRL+8K93ni/KUgwn5nTFkbZfU74muk=
+
+Name: org/eclipse/help/ui/internal/preferences/ICTable$ICLabelProvider.c
+ lass
+SHA-256-Digest: 8suXYNHwr9xBDroDCQyPFr9orMJKLQT3pcbyF2OpCgc=
+
+Name: icons/etool16/print_topic@2x.png
+SHA-256-Digest: v7Ofz/4zqZZt0yAqqlKeiC4e3FGOG8klHuc9xr2k8uY=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$Description.class
+SHA-256-Digest: Cw8AGi34ozU9zxPsZ87v+U8M/JBl2ALhgK0Oz/nL6qk=
+
+Name: org/eclipse/help/ui/internal/views/SearchResultsPart$2.class
+SHA-256-Digest: nBkYUaI0eN88MAm55L4EeooFWyaA/rjU/b225eUi5yw=
+
+Name: icons/elcl16/show_categories.png
+SHA-256-Digest: StHCCv+mv4cR0grqOLTbCepMOKvkQjbcP9W4+v8I72k=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$4.class
+SHA-256-Digest: QB5ZS76N/g3kA+s+TRR6HdnTbYUxQWhj+4iB3hAbwrY=
+
+Name: icons/etool16/help@2x.png
+SHA-256-Digest: nSGp1rg10PrRbjt5rByu1iZIQSDzQPE3y3DfBQsu/B8=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel.class
+SHA-256-Digest: aeyKJWPGLxbIJzFq/O2SWBxagE7927K7t0DwWb1YZLo=
+
+Name: icons/obj16/scopeset_obj.png
+SHA-256-Digest: mz8THPOhphmqc1celdb4rO/+yYjZaOOL+8WX12Rww/M=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart.class
+SHA-256-Digest: p9PGwEPGBrpAlxUkxvA1HaTHJD+segmSPHpTFU0Ejs0=
+
+Name: icons/elcl16/show_all@2x.png
+SHA-256-Digest: RWshwcfwyr4DcI9c/2jkZVVV8IEaIvxqmL/VNibV/z0=
+
+Name: org/eclipse/help/ui/internal/views/HistoryScopeSet.class
+SHA-256-Digest: 5Eyfglj7JUJ1SDb4VnTPUwdwHM4FTSC94rvw3hWgwyg=
+
+Name: org/eclipse/help/ui/internal/IHelpUIConstants.class
+SHA-256-Digest: geF9K/TV9iryiaNE8BuvrispQjGMwbel1BHf2/lyOuY=
+
+Name: org/eclipse/help/ui/internal/views/SearchResultsPart$1.class
+SHA-256-Digest: k5yXkgIk37nojbWaiTKhu7fG2s2aYDfvGMzO2baxmko=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart$ScopeFilter.c
+ lass
+SHA-256-Digest: FgoWI737HYdS3CcsdjovthPWL+SNEVz9uatbOWpwqyA=
+
+Name: icons/etool16/helpsearch_co.svg
+SHA-256-Digest: LJf0ICqlJxOIe7eJAeSDxDnkmCxCejG8BAcPTXbnuJ0=
+
+Name: icons/obj16/toc_closed@2x.png
+SHA-256-Digest: zj1ciNerjZ3ljyYifC3W9j2zy6cBr/xwyrCW4TRF3GI=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowserAdapt
+ er$UIThread2.class
+SHA-256-Digest: hf4YjK1mzxvs6YCLyoeR9W+YVXjjko5MOwVcMhXA7C0=
+
+Name: org/eclipse/help/ui/internal/views/IndexPart.class
+SHA-256-Digest: VN31iMeKF7Pi08YaNrLghl1PVogzrgbl3HSWos479L0=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$3.class
+SHA-256-Digest: 7Q6oZXxtoB87W+AAUhFVx9yByK9mjStSIQmB/6txEsw=
+
+Name: icons/elcl16/reduce_font.png
+SHA-256-Digest: hOac4C1UaE2CNJeG4y2AHErlKsZC3al3Ie+79NtDIZ4=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSelectPart$ScopeObserver.c
+ lass
+SHA-256-Digest: Oh8JdV/DGi8GER5IzuRwek/X/mZPtDrmwEGSaLjCDBU=
+
+Name: org/eclipse/help/ui/internal/search/HelpWorkingSetElementLabelProv
+ ider.class
+SHA-256-Digest: Yd+gFzl5A2uj/bsOlyvRYsVVhbTx6trn1aFXp9MxnXQ=
+
+Name: org/eclipse/help/ui/internal/views/ComboPart.class
+SHA-256-Digest: EmZ0iWFc2EqpNcSXI8Eopo9LwWOhK6uac43JyHTIv18=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$7$1$1.class
+SHA-256-Digest: iCaMnCNVgaNud/OipnkkKMAdN1zpvQlAgw0h13LXuLI=
+
+Name: icons/dtool16/helpsearch_co@2x.png
+SHA-256-Digest: qPHbIA4MisOvEPl+hBYjd/mlEf4xiS5uYhlwhmo2EKQ=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog.class
+SHA-256-Digest: bR1jUs17Kcbh29aRdnUQX6VhXN6MEopfraBOk9qp1z0=
+
+Name: icons/etool16/reltopics_co.svg
+SHA-256-Digest: I1ZkeHSOT0s9jqvHGhTEY/7JE8V8TbT4i0IRPD9GfOc=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel$5.class
+SHA-256-Digest: fj7S7o+xRS7Ex36bK6fvRN3smTkdTg1lvdcwcxUTTYc=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterPage$2.class
+SHA-256-Digest: /a4a3IPGw1g6u+N6iYaCSUOV7dp/RkyAA/tcmdVRbwU=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$RoleFilter.cla
+ ss
+SHA-256-Digest: fSzQ6KB9cROjTkGn13wRiV/g94SmzSWJOZ4Lc62NbhU=
+
+Name: org/eclipse/help/ui/internal/DefaultHelpUI$ExternalWorkbenchBrowse
+ r.class
+SHA-256-Digest: bUpZY1ja5I464FT9PgkiQ4X46h8r4/x8D10CsbpAymc=
+
+Name: org/eclipse/help/ui/internal/views/AllTopicsPart.class
+SHA-256-Digest: t7QyiW+Q0KC7HXFKxQ9ndqO637BWipdj/MuuyGZiYEI=
+
+Name: org/eclipse/help/ui/internal/views/AllTopicsPart$1.class
+SHA-256-Digest: nGy+A/CIA77TPOitaXPTOLpmWGVCKr7brg+8s1dVRps=
+
+Name: org/eclipse/help/ui/internal/DefaultHelpUI.class
+SHA-256-Digest: QsCGxvFOnIuDmC0MtsYTN/+eQHPU++s5fb6tQuRd5tA=
+
+Name: org/eclipse/help/ui/internal/search/LocalHelpPage$4.class
+SHA-256-Digest: 31NRHmU1Igdf354ua/tGZDCTia872i5vwT/ysQBU1yY=
+
+Name: org/eclipse/help/ui/internal/preferences/ICPreferences.class
+SHA-256-Digest: 2X7bipvNsTJFfvnpMI728mOGxnry3bZTOh07fwTSeUs=
+
+Name: org/eclipse/help/ui/internal/views/AllTopicsPart$EmptyContainerFil
+ ter.class
+SHA-256-Digest: s0Zqd1s6TuAvkJXRJX7DW+k1gRTYPjSgVfih4ArNolk=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$2.class
+SHA-256-Digest: cCOqarKXCgwimkgz1TabWdaKk2cSlQnqfyg663+kg6k=
+
+Name: org/eclipse/help/ui/internal/search/HelpWorkingSetTreeContentProvi
+ der.class
+SHA-256-Digest: fDnYsRBKXmJTPcetS/NLbwIAJjopPmH1m4OMFxoPHMY=
+
+Name: org/eclipse/help/ui/internal/views/SearchResultsPart.class
+SHA-256-Digest: PFF6jmYBLTG+Q4AbOkHTnu2MItu9xgYZTkdS4RWfDc4=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart$3.class
+SHA-256-Digest: 548lKWy+HF8umb6k2J3iFTf9E/xGUSk56U/1fPQULy0=
+
+Name: org/eclipse/help/ui/internal/views/BookmarksPart$BookmarksProvider
+ .class
+SHA-256-Digest: UjMRKxkPU55VeuMu/WcVE93SRggR+9mWzX0nUX01GGY=
+
+Name: org/eclipse/help/ui/internal/views/SorterByScore.class
+SHA-256-Digest: Kf1xmDknsncX5BSjtkxk3KdDGHiXuCNT9gfb/tFuzqU=
+
+Name: org/eclipse/help/ui/internal/views/BookmarksPart.class
+SHA-256-Digest: OQTbnoY465oEXKjMpVrsNzKZLt0lsZ6cEJ37AdUFRVg=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$ShowAllListener.
+ class
+SHA-256-Digest: YwUuwqNnua26L1J/QPo0myVtXPiEA7mp17n4W3BpOcY=
+
+Name: icons/dtool16/helpsearch_co.png
+SHA-256-Digest: Ipm+5wyEH+lkVzJPqsKpana0Un1dmnz4dpXFC7TO2xU=
+
+Name: icons/obj16/scopeset_obj.svg
+SHA-256-Digest: i6Do+bRL9pgoLAhenfgyWG3CKI6v+JTDhT6KTVIZmtk=
+
+Name: icons/obj16/container_obj.svg
+SHA-256-Digest: cDNrLWdt29a1PaZavQPiaJYDdNdh2RA91q+xje/WynQ=
+
+Name: icons/elcl16/close_hot.png
+SHA-256-Digest: /NU0qCCPDcU7gEb7UCLXrS1WiirF+Tc2s9IrOpEMD/8=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$UAFilter.class
+SHA-256-Digest: 8RVDOplU0MkytevQl08PoNzZ8CHJJxaDThNxr7UbjyU=
+
+Name: org/eclipse/help/ui/internal/views/EngineDescriptorManager.class
+SHA-256-Digest: EmeHHmyz+bmG3DXYFjP8Cna9VhiUJP48Brf+SawxGrk=
+
+Name: org/eclipse/help/ui/internal/HelpActivitySupport.class
+SHA-256-Digest: pGrVOiiRPd3zLIqLFHQI3mVA42vyPMCpfWqoYOhVXLo=
+
+Name: icons/elcl16/showdesc_co@2x.png
+SHA-256-Digest: 4WyjdT9j517tbzvZL7nKHnxqeOSUeclFAAu8yn3kOz0=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$1.class
+SHA-256-Digest: PS7FPR75sUdUxnnqT6vRI6wFcyb4ASJfWgPcPa1aEQw=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowserAdapt
+ er.class
+SHA-256-Digest: nSBtaLRaFiWDpmzOVEkRngllp8eHcT/UJYzhsGqP3Ko=
+
+Name: org/eclipse/help/ui/internal/views/HelpviewProtocol.class
+SHA-256-Digest: QeBqMJoo7xFudWAR+fJeFAJMi+HVUuWJN9+dSAjZGiA=
+
+Name: org/eclipse/help/ui/internal/HelpActivitySupport$ActivityDescripto
+ r.class
+SHA-256-Digest: ORIHP4umZ8IQCW/wsRBleEwDH4MhuZS+ZcIafA6Eozo=
+
+Name: org/eclipse/help/ui/internal/DynamicHelpAction.class
+SHA-256-Digest: kc+w6YIcbIH5XbnT2dnSKwo/UUedZDIzA84AhgnmN4Y=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$8.class
+SHA-256-Digest: 4wSJBvLj9yCf9pbi8IOPZGTtZex3FRd07XBLrIj8twM=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpPart$3.class
+SHA-256-Digest: 7om+ASJJu4gy2WaqahSUq8bNW84OOeJF3stZhasihQ0=
+
+Name: org/eclipse/help/ui/internal/views/IndexTypeinPart.class
+SHA-256-Digest: FxqmQcrvv0ss5e7AbPPjDG5XZdv4JqQBxMKmuzOQmyE=
+
+Name: org/eclipse/help/ui/internal/IHyperlinkListener.class
+SHA-256-Digest: Nt5997mJQktYnJCMuKOIjSrqNG2s3VaAIBfG7Xc1fl0=
+
+Name: org/eclipse/help/ui/internal/util/EscapeUtils.class
+SHA-256-Digest: 82XDDQnkN/9FQPO+RgqR71nZWMblbuusJ6eC1lP/lqk=
+
+Name: org/eclipse/help/ui/internal/CloseHelpTrayHandler.class
+SHA-256-Digest: ifQtdElATj6sgHb7Vjd6PRtJav4Guao/Uj+lGFoM8i4=
+
+Name: icons/etool16/index_co.png
+SHA-256-Digest: qCVX63jNvNSnSZwmkZlhhS+gIhEwwoA2F4GHk7Z3lkU=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart$ScopeObserver
+ .class
+SHA-256-Digest: mKWVbCCgyelt/JRBym0QTBE57dDRXB9aP/wf8i0ACJo=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterPage$RemoteWorkingSe
+ t.class
+SHA-256-Digest: QIkbDw58GX+6qI3oU4+3yRDkqkvYAuw0Nwu3/LAKkKM=
+
+Name: icons/elcl16/showcat_co@2x.png
+SHA-256-Digest: 7TMuMYUJe3hRy4Cp9n30qyCFtvWmsrehDlHxEr66Z1g=
+
+Name: icons/elcl16/synch_toc_nav.png
+SHA-256-Digest: iDmlyu4okwoGTURXTEJ7YIB9edKJ45IeYImDqX4LEaU=
+
+Name: icons/etool16/help.svg
+SHA-256-Digest: Gfg7ZLGj69Rk2KKjX10BYUWjfeTK+qbmOftUAHCcgjo=
+
+Name: org/eclipse/help/ui/internal/views/RelatedTopicsPart$1.class
+SHA-256-Digest: 9m5PTGhH4GszvyIj/kHNd3Iwet+MraHAnwYweKZXoqA=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart.class
+SHA-256-Digest: d3BYoVgeYXLI5ul8/e8mB3jfcJdRuVGGgN/ke8bUdyc=
+
+Name: icons/elcl16/magnify_font.svg
+SHA-256-Digest: lEacQBoKvNMkGzRllZSKEioWZr5ewgDcgYaxOSJlOh4=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$7$1.class
+SHA-256-Digest: 4F2z+E8MmsqtQG5flRCUClxa+vUMRdTWoFS8stzFr+U=
+
+Name: org/eclipse/help/ui/internal/views/EngineResultSection$3.class
+SHA-256-Digest: hSmcryXVXywTRQiChJtmKHpgvJ3e5Wjrg7wfWT0KMEY=
+
+Name: icons/elcl16/close.png
+SHA-256-Digest: pQMC8nHwhtTQdx15nsVXUv7uxPPK/qUihJ3tEho3Ni4=
+
+Name: icons/obj16/command_small.svg
+SHA-256-Digest: utptejLE3nwExq2Pyj0/67Oll56oLXf8WwkgW9tFi5M=
+
+Name: org/eclipse/help/ui/internal/HelpUIEvaluationContext.class
+SHA-256-Digest: 2GHOz4AJS6ZpM3xoe6qRrvPlevCfDzcz9+tn7X3goI4=
+
+Name: org/eclipse/help/ui/internal/views/MissingContentPart$1.class
+SHA-256-Digest: NVlbzdCwgx+AQQw2kx9BrFnGilnhc6s7/NHimoFeyMw=
+
+Name: org/eclipse/help/ui/internal/search/HelpCriteriaLabelProvider.clas
+ s
+SHA-256-Digest: /n4UXLUAAJOzBCNAYK0Q6X6ar10wkGtxCJqOiFUzP6w=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpSorter.class
+SHA-256-Digest: Lh1P8TPLvYW38p0OyunwgcOJnArM8rlFIyaIP2S495o=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$7.class
+SHA-256-Digest: csPN2v5oWY0e3At5AzfTUGU7g6Jc/R6+/JL0qo97xdg=
+
+Name: icons/dlcl16/openseparate_co.png
+SHA-256-Digest: Ndk4Bsl27ts3wa9VAxXhqlwhubKeYjaqdpYE/PVp2Zk=
+
+Name: .options
+SHA-256-Digest: gF5SminLSaVhSrKcxJLZIllQrJ88XrCXt8b6SDHpp4A=
+
+Name: org/eclipse/help/ui/internal/handlers/OpenBundleResourceHandler.cl
+ ass
+SHA-256-Digest: 0yax8VgE3yhu++3seMXFBC65V6MrBpWQnQJMHZtzz30=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$SearchScopeObserver.
+ class
+SHA-256-Digest: 5cPiwxn1d5zVuINU3+chUSeKXGZuJINM1bZxEoUlGLQ=
+
+Name: icons/etool16/reltopics_co.png
+SHA-256-Digest: Vv4LDjKDeD/hyvRMKV18ebS5jxRlq0KlrL32tbsBK58=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$4.class
+SHA-256-Digest: N2wpPokXgb+uPFX5/IJtPwBW+VGHKWb5Gra8R0qRN7s=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$7.class
+SHA-256-Digest: Vmo4E2TfNwN+Dplww1F/RG5cRWlTK3R168wV3PTtclA=
+
+Name: icons/obj16/slocalhelp_obj.svg
+SHA-256-Digest: bj/eayP3jBur374wWdMvw9JblPS3k6UZdoBZBGcdUMI=
+
+Name: icons/ovr16/doc_co.png
+SHA-256-Digest: bfkcq48r+6hPX7WkCmGphNjlGtQd6Rdir9KUibD0paI=
+
+Name: org/eclipse/help/ui/internal/SearchAction.class
+SHA-256-Digest: 4YhBtm8TZvpiIo6iLycXEGj+mPrsyci2RfLviDf33GY=
+
+Name: org/eclipse/help/ui/ISearchScopePage.class
+SHA-256-Digest: VVvwr8FvFsqwuiPyiBC+98O/bIR5QZsAJWqqGK4Kgyw=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterSearchScopeFactory.c
+ lass
+SHA-256-Digest: mZ4ENquxgEwC5chqxT/rf5zYovpIndvra3RMqJLiaxc=
+
+Name: org/eclipse/help/ui/internal/views/ScopePreferenceDialog.class
+SHA-256-Digest: WMcHe35gJeu8fxgFx1Zj6qRaeESP3RTQc1+Xywliu68=
+
+Name: icons/obj16/container_obj.png
+SHA-256-Digest: EAXn68kMXQ8m1ixAAIQkmkt1WMSwJj7Gok7tZK4KOx0=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$6.cl
+ ass
+SHA-256-Digest: eh8c1mgwLdI+xPUqcuyv0BvnFxMx9U1c+3dOfOaXmB8=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$1.class
+SHA-256-Digest: SYU0DQ92bq0g9vBuP/YxPXxPJrlNRE0Glpsxp56mSJc=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$6.class
+SHA-256-Digest: TFEnodS85hzTVm20n0llBuFGSOXzR6sWbUF0fQbi9IE=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$5.cl
+ ass
+SHA-256-Digest: 3IKbmNO6UPfybDWUT2NPe2LGFQ4bHb7YxUgVM4ofP7U=
+
+Name: org/eclipse/help/ui/internal/views/HelpTray.class
+SHA-256-Digest: JwaIlNKpbQeaoHYwL0mqGnYObpF6wcSW/yrH4qE7RwY=
+
+Name: org/eclipse/help/ui/internal/views/EngineTypeWizardPage.class
+SHA-256-Digest: F/TOkSLDXBVCzF/6qr4usEVm+rQ24BC/A2IezT9BbN8=
+
+Name: icons/obj16/bookmark_obj@2x.png
+SHA-256-Digest: yq2QzwqQU+TWXw2r5pNT+TUAZGIuKv22TktoXYre0ng=
+
+Name: org/eclipse/help/ui/internal/views/BookmarksPart$2.class
+SHA-256-Digest: CUvRKcVmf8XTwT9w1RWMQZbst+cZ6BYTOVHbnAiBTG4=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterPage$1.class
+SHA-256-Digest: z4xRD/mveQWjUeTGqkzzatOflFXGRAMR9OQSBtIWoaA=
+
+Name: org/eclipse/help/ui/internal/views/EngineDescriptorManager$Descrip
+ torEvent.class
+SHA-256-Digest: cRTTpjzvzZVdIUNbhf1wlSofSSaTl1uM6WJUSCbj2Q0=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$CopyAction.cla
+ ss
+SHA-256-Digest: zPt8YJB5FJXHtw9b3ZKcSJyCpZyuiHAebXIjmlAPJyk=
+
+Name: icons/elcl16/synch_toc_nav.svg
+SHA-256-Digest: 0kOrVr7owx3j/4lpDlPe2Vrjw97sKKudtKrjhl3uRLQ=
+
+Name: icons/etool16/index_co.svg
+SHA-256-Digest: nMSMx/7Bsd1uQu2fwoTSPAhHmzbHLchfYSVhLPTDNgY=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel$4.class
+SHA-256-Digest: BZemM81BJi68Tz5U1+6ibo0XVktHn34fTjo8GKEbBgk=
+
+Name: icons/ovr16/doc_co.svg
+SHA-256-Digest: onK3Bt5gnuRi6TdPgAS6/SwuuCGhV+6cTFjbJZjyQKM=
+
+Name: icons/obj16/topic_small.png
+SHA-256-Digest: a6g282AN6kMNIWqmBTVRccjJWvp3u4EKXQcNcyHwKUM=
+
+Name: org/eclipse/help/ui/internal/views/EngineResultSection$4.class
+SHA-256-Digest: NFaX0IsEuudobABrJI7U8f61dbCpzs8fccpxpvMJltU=
+
+Name: org/eclipse/help/ui/internal/views/HelpTray$1.class
+SHA-256-Digest: 1DV7VuIOgYm4/nS+Hy/1hq20Bvje7gvJFlavLMYj/XE=
+
+Name: icons/view16/help_view.svg
+SHA-256-Digest: Dov+4ZzWdPvBdh6MQblW4PoIK+vN+NlFmAXc6voi9B8=
+
+Name: icons/elcl16/close.svg
+SHA-256-Digest: OeFwhbuobynjpvcVVceaWDqZFLPyT/O18jzoXLYSwsQ=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$BusyRunAction.
+ class
+SHA-256-Digest: jRosJjn0mBOaXtGmGGYtTgQo0IpZ/0YSVloyvOYeGOE=
+
+Name: icons/etool16/alltopics_co@2x.png
+SHA-256-Digest: NQKSNAISfvUne4/06kvsVqSEn9y6mxXi4D+0pUqqyFM=
+
+Name: icons/wizban/newsearch_wiz.png
+SHA-256-Digest: 46erL/NDLDxVvAi/T/ytRWaNXcaaQO4scAB7uZNGsII=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$OpenHrefAction
+ .class
+SHA-256-Digest: IB6gq/HuA4DZQNKuddROxuYF1gIHdKU2OEwn0t3jV4M=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$4.cl
+ ass
+SHA-256-Digest: SOPhg7V+wGwJkDW9T4/x0Tn2/N1arYbgKxRIJNaeQi4=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart$3.class
+SHA-256-Digest: Q03E1dXyuwK5mpTTuh6R8iVKCj2KvPTseGaX1Pt5bjI=
+
+Name: icons/etool16/print_topic.svg
+SHA-256-Digest: rINvQz+1WVgn+mctA2Z73Nqk6Ku4vN91lMpgea9av5M=
+
+Name: org/eclipse/help/ui/internal/preferences/ICTable.class
+SHA-256-Digest: F5jrUmdF/Z22XShoxNDfrGve+zRST2kbCElrdyoboF4=
+
+Name: org/eclipse/help/ui/internal/views/ContextHelpPart$2.class
+SHA-256-Digest: 6v2pMpty04/005Q+m68L9x3wfP8vtRRIhx5tvnjdhVk=
+
+Name: icons/obj16/slocalhelp_obj@2x.png
+SHA-256-Digest: a4k+3FS5YnlOsVb2Nl4qHB4MC/mIVj5IZse7wsOgx0Y=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$6.class
+SHA-256-Digest: UepYAwb/hKbNIOSMu13+T5o3vqh4li14gFSFpg7cyvE=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$4.class
+SHA-256-Digest: pXEOyO601RXg3ULanY7pIICLpJl2BZhTrgGT+7xTFyU=
+
+Name: icons/obj16/slocalhelp_obj.png
+SHA-256-Digest: pZRP4KqgB3eQPJIB68oJFFBfrdpPl3AWTRz4ZmFG8Po=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog.class
+SHA-256-Digest: DwHK/VdPq/VyioIeKRNbHJ3GbJwFM3WlHCgDR8x9Vn4=
+
+Name: org/eclipse/help/ui/internal/HyperlinkLabel$1.class
+SHA-256-Digest: S+4m7UBrlcy2mcC091iAOTgpfjAln969b4FFq3sNP6I=
+
+Name: org/eclipse/help/ui/internal/views/SeeAlsoPart.class
+SHA-256-Digest: vSEbC+EYbkcKEN/wp/PaUolq9lHSiVjYjqteEzHrqh8=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSelectPart$1.class
+SHA-256-Digest: 5niDXHPUl9jG077hjx29YoyjKsKFvyCJ3kJzvLQgwIo=
+
+Name: plugin.properties
+SHA-256-Digest: fGbUGSR2xe2W5eOSToR2dkkUtIJh4tiIZV+eW5KnygU=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$1.cl
+ ass
+SHA-256-Digest: UFyaHHkLRURwJ4D854NcrdKtBXvpnnZe3lxPVk4Ewpk=
+
+Name: org/eclipse/help/ui/internal/views/HelpTray$2.class
+SHA-256-Digest: hrNQbjPNNMgpHiEP/PYEWIj2FVb/PcMqVra6r+RpZ9w=
+
+Name: org/eclipse/help/ui/internal/views/NewEngineWizard.class
+SHA-256-Digest: MRrll+NgErQI4aqGHEQ2/FqmNOvT5EJ1i/MQpL13pNk=
+
+Name: icons/obj16/toc_closed.png
+SHA-256-Digest: wP2BiBvPei4RDCJ/ZdR1J8ToTVK7aEJ5MhLEfs2pFLE=
+
+Name: org/eclipse/help/ui/internal/search/LocalHelpPage$3.class
+SHA-256-Digest: DkxonX6fC28HgB2hMNkxbntZbZb/1FhY/dWXNUZqbg8=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$HelpPartLayout
+ .class
+SHA-256-Digest: q7CsqFegkqBZBWrA+9u53/cHR9QubuWCru4mRQIVrOY=
+
+Name: icons/dlcl16/magnify_font@2x.png
+SHA-256-Digest: cGrbqqXulm3gxhohBCROBn7NmOQTk5heAQYTmEDQ9JM=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$1.class
+SHA-256-Digest: O1g7PWw8ORNijcjOHbypXioRiwgYDcAFeczc13nNqqU=
+
+Name: icons/obj16/scopeset_obj@2x.png
+SHA-256-Digest: OE+SAfj5NYUJNtSW//6VWHoOM3aivRqFvWYVwV2NSSU=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart.class
+SHA-256-Digest: n0DA0JBaXNP41CuCO/UBGWpgQuXzDN8QbuGKJdk8+Ek=
+
+Name: org/eclipse/help/ui/internal/views/MissingContentPart.class
+SHA-256-Digest: sNZXdD8+JTv0lU29T+mYZ5tH1H9jW4wW0hsZr1CdX9Q=
+
+Name: org/eclipse/help/ui/internal/HelpUIEventLoop.class
+SHA-256-Digest: JDiQBJhQ7G4ERo+yM4WHU90lbculaARzPtIFO6zPros=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$1.class
+SHA-256-Digest: IcRqa7PXRroCYmFF02qqkEJOsPRcbY4I9k7+YdeGoek=
+
+Name: org/eclipse/help/ui/internal/views/SeeAlsoPart$1.class
+SHA-256-Digest: Np18AD5bxvHHcjwJiEfAxIT6JVHRWqkhQwfJyLhoGkM=
+
+Name: icons/dtool16/alltopics_co.png
+SHA-256-Digest: OlWRFHj25VrABPlC/fatjwh18qBUL1S+o0sibH1P6e8=
+
+Name: icons/elcl16/showcat_co.svg
+SHA-256-Digest: IRS2izvd0p+uEdP8XTXjtw0JHuL1dZ++Kchfysau3kU=
+
+Name: icons/obj16/container_obj@2x.png
+SHA-256-Digest: JKzrIcIpXZN5PmbAyOpjHXM9dP8pdU1kFKenGC60++0=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$11.class
+SHA-256-Digest: uJR/pB3/p3NXdwyimFQ99H9ZG7r2HVWpXqXyq8xvHIg=
+
+Name: org/eclipse/help/ui/internal/views/BrowserPart$8.class
+SHA-256-Digest: DmrdtgM8OajrAp8EiFdbnVCtZQUd4kExQuYzalMSmjA=
+
+Name: icons/elcl16/highlight@2x.png
+SHA-256-Digest: O1Izm3NKQeELtSBItbfuTdnzP4BUrEjwto4AKlRdYTA=
+
+Name: icons/dlcl16/addbkmrk_co@2x.png
+SHA-256-Digest: DMDTwbdK/Kd8RNLW0Bundf7C4sQXTVn5IpmlZCKKvuw=
+
+Name: icons/dlcl16/openseparate_co@2x.png
+SHA-256-Digest: wMwXBep4V+GcwQgoVkaf8W7vgD2/hBy3aRFysgh4fS8=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$JobListener.class
+SHA-256-Digest: aYCQhawBuBLZzQ2j7SfTIYVUVW4gwIJ+TfvyifTrSV4=
+
+Name: icons/elcl16/showdesc_co.svg
+SHA-256-Digest: FHyaIFWommOzYdz7rfZr8scIOIuwY0UcIoCkzBtH+Mg=
+
+Name: icons/obj16/topic_small@2x.png
+SHA-256-Digest: p7Z07OJlY9fTB4xlmhS6BkTYTVgy3LCd1hG7Fyyej0g=
+
+Name: icons/obj16/bookmarks_view@2x.png
+SHA-256-Digest: 8sq9ymynk7XKdhCRMIC+KwXrDTC+iO7mwsjC+KicQj8=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$4.class
+SHA-256-Digest: 2OPRwYdDSoUVTF8J1kNr3btUpMpHBEMNjz9pUEc6Hg4=
+
+Name: icons/elcl16/openseparate_co@2x.png
+SHA-256-Digest: cgJoIfdvQk968mLhukLuevLKQCAjse76hIq9XlS+ViI=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$2.class
+SHA-256-Digest: 0ug6QlPNN0Ku+CfotsLFYvD/TOg6O6+x1WDeqDrnAD4=
+
+Name: icons/elcl16/synced.svg
+SHA-256-Digest: cThzidHRJDGW/zG3wDGee22oDv3Oi0FTb7iiIQgYPGI=
+
+Name: icons/view16/help_view.png
+SHA-256-Digest: sFOIHb/D2JpyRjsfR/MD7fBFqy1dxtPHzhMbvA+yCHw=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetManager.class
+SHA-256-Digest: Mdn3dknv3xS5YQWNPIJ9loNqeW0iVzxZ6Sp7ZwSIe8w=
+
+Name: org/eclipse/help/ui/internal/util/ErrorUtil.class
+SHA-256-Digest: pMa5EqRF9es6ly4XjbT0OWDaN3xNMpQzYwmYXAzYUTM=
+
+Name: icons/etool16/print_topic.png
+SHA-256-Digest: aizU6XeyDq3i7eAGS/2HNaWK0YBs3UwtslOY8T46+Fw=
+
+Name: icons/wizban/newsearch_wiz.svg
+SHA-256-Digest: pkWmw3Kxman3+6tzaONwcvtCUTj4XOr+zwExJybqexU=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$ScopeContentProv
+ ider.class
+SHA-256-Digest: m6kiMaYzD/zVGvGCnzK+PxMXJkn3c+JIMA4LvHSv280=
+
+Name: org/eclipse/help/ui/RootScopePage$1.class
+SHA-256-Digest: 7ES5xFxL2kBiPyvAiR6cBNgI+5Sgw+O6PEBJwIDiBpo=
+
+Name: org/eclipse/help/ui/internal/views/BookmarkHeaderPart.class
+SHA-256-Digest: dhzD4fWymmnizE5+BPrdiUyQveUjX3IYp55vh6EOXbY=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart$1.class
+SHA-256-Digest: i9Zj1zCVq8blJkjw1RvlomBxj/EZjyKnzUg/tGztbSg=
+
+Name: org/eclipse/help/ui/RootScopePage.class
+SHA-256-Digest: tzAqplIRrxgCszFUiMmZ18Oh2p/kLy40+o8Wj5CBa9Q=
+
+Name: icons/obj16/toc_open.png
+SHA-256-Digest: fSSkY9jyCi56OlaX7a0Lgt6fnIOIfvK6HtuSa4a7Lb0=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$3.class
+SHA-256-Digest: rWYyUKf3Q9xXVVaa9mjBfgM8vqUvWpAN0jM1wivpjfo=
+
+Name: icons/elcl16/close_hot.svg
+SHA-256-Digest: EoWpfXBqHUIpW7cCRCjwOrF1Y+z5JG14hbgswg022WQ=
+
+Name: org/eclipse/help/ui/internal/views/ScopeSetDialog$PendingOperation
+ .class
+SHA-256-Digest: KGxYg0BKCoQWZiG6M47rTLywnwVU7NRch25A5mzI7i4=
+
+Name: icons/dlcl16/reduce_font.png
+SHA-256-Digest: CSTWGPLFTKCWDmBuoPa6cubJhrw6oGP/ZsmWnkLzxQg=
+
+Name: org/eclipse/help/ui/internal/views/EngineTypeWizardPage$EngineCont
+ entProvider.class
+SHA-256-Digest: OUjrY/TvCADxdFO2JVHpfiOjhbn3fZZQxBbgN45uf0g=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart$1.class
+SHA-256-Digest: FkLY+pl7b0N1o2G2RGWSafH5eChWPFXvlbbtj9ef+/w=
+
+Name: icons/elcl16/show_all.png
+SHA-256-Digest: E3J2r2pg0dTHgWY9yzNvnl5kH6XUzHpRIqNkHRrXB4Y=
+
+Name: org/eclipse/help/ui/internal/views/EngineTypeWizardPage$EngineLabe
+ lProvider.class
+SHA-256-Digest: Zx0Udx91AE+F8EcJWJ3zS8dGBjULILISdj8jb3L7veE=
+
+Name: org/eclipse/help/ui/internal/views/SearchPart$3.class
+SHA-256-Digest: /fLnRLUM8asK2SrQseQcKp1NrKd48L3lo67XqAEkPe8=
+
+Name: icons/elcl16/addbkmrk_co.png
+SHA-256-Digest: PUP6mlQB8OUlQd5uRTPJdT6g2mbjRcQY1uWNojWtzO0=
+
+Name: org/eclipse/help/ui/internal/preferences/IC.class
+SHA-256-Digest: 59eCs/qCoNQsOBQG6uEIdZfS9MNwYcrIzot/Oni1DmA=
+
+Name: org/eclipse/help/ui/internal/search/WebSearchPage.class
+SHA-256-Digest: dtn2l+DK997KqI8N+kuVBAPYaL79k10gd8i2GPPDQ20=
+
+Name: about.html
+SHA-256-Digest: 7mbS+ztMDS7S5/aYvJ7U49bPd/pcr0CtAylhJdsaxfA=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterPage.class
+SHA-256-Digest: c304Oo4/u5fyciHkPUZrIdfkFmbKDVBTJVeB+/mVGFc=
+
+Name: org/eclipse/help/ui/internal/search/InfoCenterPage$3.class
+SHA-256-Digest: N+fcdBUgZa0RlSePVfCtwnQm2uXdiiXWkZ+0rEIgXf4=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart$JobListener.cla
+ ss
+SHA-256-Digest: pQsK9pPIrMgQIo8IAAIps8JinH7FGn3p5uBuJPfqTmk=
+
+Name: org/eclipse/help/ui/internal/HelpUIResources.class
+SHA-256-Digest: MEaXZEAbCprDcDK9FMzyK9vNhUVtUtdvzCm9aoPmnlM=
+
+Name: org/eclipse/help/ui/internal/browser/SystemBrowserFactory.class
+SHA-256-Digest: VTKRl2QdW3XCshtGUOdTXU1IgOnwsh2UycB4y/WUgW8=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$LinkListener.class
+SHA-256-Digest: tcEp/2Dy45YoVaQ+nMmgv7WQDN3muffuSGG0FO+b04A=
+
+Name: org/eclipse/help/ui/internal/views/IndexPart$RoleFilter.class
+SHA-256-Digest: oi0uuFA3KQuoGEDykVr/5RLxdyaz6Eyj9JAS/dWXDwk=
+
+Name: icons/obj16/toc_open.svg
+SHA-256-Digest: ChWrnNbqpISL0+57K6AlYxwQ5WrozCk8mPuzbF2dF/c=
+
+Name: org/eclipse/help/ui/internal/views/IHelpPartPage.class
+SHA-256-Digest: TVm5qr8tIVwSex+MpMf//BKLHfxz6Gyd6pBNeZBZAPQ=
+
+Name: icons/dlcl16/reduce_font@2x.png
+SHA-256-Digest: fhBGUUqo9K/nqIjM4vxCar3mhshFSxoxddtsIUQp96w=
+
+Name: icons/elcl16/showcat_co.png
+SHA-256-Digest: IKWbOMGzNobrtiJtHHDvp385Puore7nwixgYJ9d5/YM=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/EmbeddedBrowser$2.cl
+ ass
+SHA-256-Digest: 35T/tKUxW+y51sO0ZR6up9tWYKfgHxBzFvGs4Gxjq8g=
+
+Name: org/eclipse/help/ui/internal/views/IndexPart$IndexLabelProvider.cl
+ ass
+SHA-256-Digest: F2XiUM6UxP0YLw7TY7zwm3G4PGHWtdgQWrbZMu52+rI=
+
+Name: icons/etool16/help.png
+SHA-256-Digest: a8Qr2yDUox9N9gNs4HMzI5eXpBO9AFRqPBprW7lZ8lk=
+
+Name: org/eclipse/help/ui/internal/views/DynamicHelpPart$2.class
+SHA-256-Digest: XHl/6sPUDjXdQzP1D8hkuSxgmN4d50hqBTdGbj8Aq0s=
+
+Name: icons/dlcl16/showcat_co.png
+SHA-256-Digest: WZ249WhHYt1LI0D5qqNR7NN8rks3AbCauvBKZEMusgY=
+
+Name: org/eclipse/help/ui/internal/views/FederatedSearchSorter.class
+SHA-256-Digest: d/xVLSS/UL8QWPlJWyae6cYjJZRdzhbKjhx85fBcHr0=
+
+Name: org/eclipse/help/ui/internal/views/HyperlinkTreePart$2.class
+SHA-256-Digest: er23BZ4aerIMDHco+RD4EXIL6WgWPFQ/98ht4wNJZys=
+
+Name: org/eclipse/help/ui/internal/views/ScopePreferenceManager.class
+SHA-256-Digest: RNQpJy/78rOEGJMfcQNP4OM4TpauiWXqfvm6fNw+WIA=
+
+Name: org/eclipse/help/ui/internal/views/ReusableHelpPart$3.class
+SHA-256-Digest: hPxw3/YzSbFS5kMglY9jKJuUZov20HTtSGxUYFL4ts4=
+
+Name: org/eclipse/help/ui/internal/browser/embedded/IBrowserCloseListene
+ r.class
+SHA-256-Digest: odqn/husbozxoo5gPqxhOuFmo9bFYnEBzes1PSEy9N4=
+
+Name: org/eclipse/help/ui/internal/views/EngineDescriptor.class
+SHA-256-Digest: GU41qk+jHP1P2oW3e24RAfAz3iksYhEurd0I5gCj+w8=
+
+Name: org/eclipse/help/ui/internal/views/RelatedTopicsPart$RelatedLayout
+ .class
+SHA-256-Digest: 2Oj9Q14SqEPiy+600kYzcz6aDY1dj0d1kRtIqUU/6ic=
+
+Name: org/eclipse/help/ui/internal/views/ScopePreferenceManager$EnginePr
+ eferenceNode.class
+SHA-256-Digest: YofemXnwS9n6MBb8MPe9RVKdfMClSta172+J/qgT61I=
+
+Name: icons/elcl16/magnify_font.png
+SHA-256-Digest: CYJDjNFqqPapt3VzvMaZV/YlWUGKxE+kPrAd6md6jus=
+
+Name: icons/obj16/toc_open@2x.png
+SHA-256-Digest: tkeSItb+OD7Ny1HImZ3iESo7UaYu6SFdt5dLfRhbV3c=
+
+Name: org/eclipse/help/ui/internal/ContextHelpDialog$2.class
+SHA-256-Digest: H9eupd8a7QSul7vwsMvYhkMizhpEmefhrjPr7F+O8QQ=
+
