@@ -132,6 +132,7 @@ public class McpHttpController {
             case "initialize" -> handleInitialize(params);
             case "notifications/initialized" -> handleNotificationInitialized(params);
             case "tools/list" -> handleToolsList();
+            case "tools/call" -> handleToolsCall(params);
             case "listCollections" -> handleListCollections();
             case "listDocuments" -> handleListDocuments(params);
             case "getCollectionInfo" -> handleGetCollectionInfo(params);
@@ -651,5 +652,39 @@ public class McpHttpController {
                 "collectionsScanned", response.getCollectionsScanned(),
                 "errorMessage", response.getErrorMessage()
         );
+    }
+
+    private Object handleToolsCall(Map<String, Object> params) {
+        String toolName = (String) params.get("name");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> arguments = (Map<String, Object>) params.getOrDefault("arguments", java.util.Collections.emptyMap());
+        
+        if (toolName == null || toolName.isEmpty()) {
+            throw new IllegalArgumentException("Tool name is required");
+        }
+        
+        // Handle edge case where tools/list is incorrectly called via tools/call
+        if ("tools/list".equals(toolName)) {
+            log.warn("Received tools/list as tool name, redirecting to handleToolsList()");
+            return handleToolsList();
+        }
+        
+        log.info("Executing tool: {}", toolName);
+        
+        return switch (toolName) {
+            case "listCollections" -> handleListCollections();
+            case "listDocuments" -> handleListDocuments(arguments);
+            case "getCollectionInfo" -> handleGetCollectionInfo(arguments);
+            case "hybridSearch" -> handleHybridSearch(arguments);
+            case "ingestDocument" -> handleIngestDocument(arguments);
+            case "deleteDocument" -> handleDeleteDocument(arguments);
+            case "getDocumentInfo" -> handleGetDocumentInfo(arguments);
+            case "rebuildDocumentCache" -> handleRebuildDocumentCache(arguments);
+            case "createCollection" -> handleCreateCollection(arguments);
+            case "deleteCollection" -> handleDeleteCollection(arguments);
+            case "backupCollection" -> handleBackupCollection(arguments);
+            case "restoreCollection" -> handleRestoreCollection(arguments);
+            default -> throw new RuntimeException("Unknown tool: " + toolName);
+        };
     }
 }
