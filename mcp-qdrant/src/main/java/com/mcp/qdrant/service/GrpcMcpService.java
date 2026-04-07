@@ -106,10 +106,11 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             int limit = request.hasLimit() && request.getLimit() > 0 ? request.getLimit() : 5;
 
             // Determine if summarization should be used
-            // Only summarize if: explicitly requested AND model is configured/available
-            boolean modelAvailable = embeddingProperties.getModel() != null 
-                    && !embeddingProperties.getModel().isEmpty()
-                    && !"null".equals(embeddingProperties.getModel());
+            // Only summarize if: explicitly requested AND summarize model is configured/available
+            String summarizeModel = qdrantProperties.getSummarizeModel();
+            boolean modelAvailable = summarizeModel != null 
+                    && !summarizeModel.isEmpty()
+                    && !"null".equals(summarizeModel);
             boolean summarizeRequested = request.hasSummarize() && request.getSummarize();
             boolean shouldSummarize = summarizeRequested && modelAvailable;
 

@@ -16,6 +16,9 @@ public class QdrantProperties {
     private int timeoutMs = 10000;
     private List<String> collections = List.of("vpms", "vpmshelp");
     private int searchLimit = 10;
+    private int summaryMaxResults = 3;
+    private int summaryMaxLength = 500;
+    private String summarizeModel = "";
     
     public String getHost() { return host; }
     public void setHost(String host) { this.host = host; }
@@ -40,4 +43,10 @@ public class QdrantProperties {
     }
     public int getSearchLimit() { return searchLimit; }
     public void setSearchLimit(int searchLimit) { this.searchLimit = searchLimit; }
+    public int getSummaryMaxResults() { return summaryMaxResults; }
+    public void setSummaryMaxResults(int summaryMaxResults) { this.summaryMaxResults = summaryMaxResults; }
+    public int getSummaryMaxLength() { return summaryMaxLength; }
+    public void setSummaryMaxLength(int summaryMaxLength) { this.summaryMaxLength = summaryMaxLength; }
+    public String getSummarizeModel() { return summarizeModel; }
+    public void setSummarizeModel(String summarizeModel) { this.summarizeModel = summarizeModel; }
 }

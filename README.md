@@ -269,7 +269,10 @@ server:
 | --------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
 | `MCP_QDRANT_HOST`           | `localhost`               | Qdrant server hostname                                                                   |
 | `MCP_QDRANT_PORT`           | `6334`                    | Qdrant gRPC port                                                                         |
-| `MCP_QDRANT_COLLECTIONS`    | `all`                     | Collection mode: `all` (dynamic), `coll1,coll2` (specific), or `\"\"` (treated as `all`) |
+| `MCP_QDRANT_COLLECTIONS`    | `all`                     | Collection mode: `all` (dynamic), `coll1,coll2` (specific), or `""` (treated as `all`) |
+| `MCP_QDRANT_SUMMARYMAXRESULTS` | `3`                    | Max results to include in summary                                                        |
+| `MCP_QDRANT_SUMMARYMAXLENGTH`  | `500`                  | Max characters per result in summary                                                   |
+| `MCP_SUMMARIZE_MODEL`       | (none)                    | LLM model for summarization (e.g., `llama3.2`). If not set, uses simple concatenation  |
 | `QDRANT_API_KEY`            | (none)                    | API key for Qdrant Cloud                                                                 |
 | `MCP_EMBEDDING_SERVICE_URL` | `http://localhost:11434`  | Ollama/embedding service URL                                                             |
 | `MCP_EMBEDDING_MODEL`       | `nomic-embed-text-v2-moe` | Embedding model name                                                                     |
@@ -305,14 +308,18 @@ rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
 - **Returns**:
   - Aggregated search results sorted by relevance score
   - Document sources table (document_id, collection, chunk_count)
-  - LLM-generated summary (if requested and model available)
-  - `fallback_used` flag indicating if summarization was skipped
+  - Generated summary (LLM-generated if `MCP_SUMMARIZE_MODEL` configured, otherwise simple concatenation)
+  - `fallback_used` flag indicating if summarization was skipped or LLM failed
 
 **Smart Summarization Behavior**:
 
-- If `summarize=true` and `MCP_EMBEDDING_MODEL` is configured → LLM summary generated
-- If `summarize=true` but model unavailable → `fallback_used=true`, no summary
-- If `summarize=false` or not specified → Returns results without summary (default)
+| Condition | Summary Type | `fallback_used` |
+|-----------|--------------|-----------------|
+| `summarize=true` + `MCP_SUMMARIZE_MODEL` configured → LLM summary via Ollama `/api/generate` | false |
+| `summarize=true` but LLM fails/unavailable → Simple concatenation fallback | true |
+| `summarize=false` or not specified → No summary (default) | false |
+
+**Simple Concatenation Fallback**: When no LLM is configured or LLM fails, returns top N results (configurable via `MCP_QDRANT_SUMMARYMAXRESULTS`, default 3) with truncated content (`MCP_QDRANT_SUMMARYMAXLENGTH`, default 500 chars).
 
 **Collection Configuration Behavior**:
 
