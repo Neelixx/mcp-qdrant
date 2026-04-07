@@ -18,14 +18,17 @@ A Spring Boot-based MCP (Model Context Protocol) server providing gRPC access to
 ### Workflow Steps:
 
 1.  **Vectorization:**
-    *   Calls `EmbeddingServiceClient.embed(query_text)` to obtain 768-dimensional query vector.
-    *   Timeout: 50ms (configured via `mcp.embedding.timeout-ms`).
-    *   Model: `nomic-embed-text-v2-moe` via Ollama.
+    *   Groups collections by their configured embedding model
+    *   Generates separate query embeddings for each model using `EmbeddingServiceClient.embedWithModel(query_text, model_name)`
+    *   Supports multiple models simultaneously (e.g., 768-dim `nomic-embed-text-v2-moe` and 384-dim `all-minilm:l6-v2`)
+    *   Timeout: 50ms (configured via `mcp.embedding.timeout-ms`)
+    *   Default model: `nomic-embed-text-v2-moe` via Ollama
 
 2.  **Collection Iteration:**
-    *   **Dynamic Mode (`all`):** When `MCP_QDRANT_COLLECTIONS` is set to `all`, `\"\"`, or not set, dynamically fetches all collections from Qdrant via `listCollectionsAsync()`.
+    *   **Dynamic Mode (`all`):** When `MCP_QDRANT_COLLECTIONS` is set to `all`, `""`, or not set, dynamically fetches all collections from Qdrant via `listCollectionsAsync()`.
     *   **Specific Mode:** When configured with specific collections (e.g., `vpms,vpmshelp`), uses only those collections.
-    *   Iterates through collections, calling `QdrantRepository.search()` for each.
+    *   Collections are grouped by embedding model to minimize embedding API calls
+    *   Iterates through collections, calling `QdrantRepository.search()` for each with the appropriate query vector
     *   **Fallback:** If one collection fails, logs error and continues to next collection.
 
 3.  **Result Processing:**
@@ -97,6 +100,7 @@ rpc IngestDocument(IngestDocumentRequest) returns (IngestDocumentResponse);
     *   Retrieves all collection names from Qdrant.
     *   For each collection, fetches detailed info including:
         - Points count, status, vector dimension, distance metric
+        - **Embedding model**: The configured embedding model for this collection
         - **Cache size**: Current configured cache size limit for the collection
         - **Total documents**: Number of unique documents in the collection
     *   Returns list of `CollectionInfo` objects with full metadata.
@@ -201,7 +205,8 @@ rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCa
 **Location:** `com.mcp.qdrant.client.EmbeddingServiceClient`
 
 - Handles HTTP calls to Ollama embedding service
-- Methods: `embed()`, `embedBatch()`
+- Methods: `embed()`, `embedBatch()`, `embedWithModel()`, `embedBatchWithModel()`
+- Supports model override per collection via `embedWithModel(text, modelName)`
 - Error handling: Throws `RuntimeException` on timeout/failure
 
 ### 4.2 QdrantRepository
@@ -307,6 +312,14 @@ mcp:
     dimension: 768
     timeout-ms: 50
     batch-size: 32
+    # Collection-specific embedding models (optional)
+    collection-models:
+      qdrant-doc:
+        model: all-minilm:l6-v2
+        dimension: 384
+      another-collection:
+        model: all-minilm:l6-v2
+        dimension: 384
 grpc:
   server:
     port: 9091
@@ -320,6 +333,87 @@ grpc:
 | **Specific** | `coll1,coll2` | Uses only the explicitly configured collections |
 
 **Implementation:** `QdrantProperties.isAllCollections()` determines mode based on configuration value.
+
+### Collection-Specific Embedding Configuration
+
+**Implementation:** `com.mcp.qdrant.config.EmbeddingProperties`
+
+**Configuration Structure:**
+
+```yaml
+mcp:
+  embedding:
+    # Default embedding configuration
+    model: nomic-embed-text-v2-moe
+    dimension: 768
+    
+    # Collection-specific overrides
+    collection-models:
+      <collection-name>:
+        model: <embedding-model-name>
+        dimension: <vector-dimension>
+```
+
+**Java Implementation:**
+
+```java
+@ConfigurationProperties(prefix = "mcp.embedding")
+public class EmbeddingProperties {
+    private String model = "nomic-embed-text-v2-moe";
+    private int dimension = 768;
+    private Map<String, CollectionEmbeddingConfig> collectionModels = new HashMap<>();
+    
+    public CollectionEmbeddingConfig getConfigForCollection(String collectionName) {
+        return collectionModels.get(collectionName);
+    }
+    
+    public static class CollectionEmbeddingConfig {
+        private String model;
+        private int dimension;
+        // getters/setters
+    }
+}
+```
+
+**Environment Variable Format:**
+
+```bash
+MCP_EMBEDDING_COLLECTION_<COLLECTION-NAME>_MODEL=<model-name>
+MCP_EMBEDDING_COLLECTION_<COLLECTION-NAME>_DIMENSION=<dimension>
+```
+
+Note: Collection names are uppercase, hyphens replaced by underscores (e.g., `qdrant-doc` → `QDRANT-DOC`).
+
+**Example:**
+
+```bash
+MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL=all-minilm:l6-v2
+MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION=384
+```
+
+**Hybrid Search Integration:**
+
+The `GrpcMcpService.hybridSearch()` method groups collections by embedding model before generating query vectors:
+
+```java
+// Group collections by embedding model
+Map<String, List<String>> collectionsByModel = new HashMap<>();
+for (String collection : collectionsToSearch) {
+    EmbeddingProperties.CollectionEmbeddingConfig config = 
+        embeddingProperties.getConfigForCollection(collection);
+    String modelName = (config != null && config.getModel() != null) 
+        ? config.getModel() 
+        : embeddingProperties.getModel();
+    collectionsByModel.computeIfAbsent(modelName, k -> new ArrayList<>()).add(collection);
+}
+
+// Search each model group with appropriate embedding
+for (Map.Entry<String, List<String>> entry : collectionsByModel.entrySet()) {
+    String modelName = entry.getKey();
+    float[] queryVector = embeddingClient.embedWithModel(request.getQueryText(), modelName);
+    // Search collections in this group...
+}
+```
 
 ---
 

@@ -33,12 +33,16 @@ public class EmbeddingServiceClient {
     }
 
     public float[] embed(String text) {
+        return embedWithModel(text, properties.getModel());
+    }
+    
+    public float[] embedWithModel(String text, String modelName) {
         try {
             String url = properties.getServiceUrl() + "/api/embeddings";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            String requestBody = createRequestBody(text);
+            String requestBody = createRequestBody(text, modelName);
             HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
             ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
@@ -49,12 +53,16 @@ public class EmbeddingServiceClient {
 
             return parseEmbedding(response.getBody());
         } catch (Exception e) {
-            log.error("Embedding request failed: {}", e.getMessage());
-            throw new RuntimeException("Failed to generate embedding: " + e.getMessage(), e);
+            log.error("Embedding request failed for model '{}': {}", modelName, e.getMessage());
+            throw new RuntimeException("Failed to generate embedding with model " + modelName + ": " + e.getMessage(), e);
         }
     }
 
     public List<float[]> embedBatch(List<String> texts) {
+        return embedBatchWithModel(texts, properties.getModel());
+    }
+    
+    public List<float[]> embedBatchWithModel(List<String> texts, String modelName) {
         if (texts.isEmpty()) {
             return new ArrayList<>();
         }
@@ -62,14 +70,18 @@ public class EmbeddingServiceClient {
         // Ollama doesn't have a batch endpoint, so we call single embeddings
         List<float[]> results = new ArrayList<>();
         for (String text : texts) {
-            results.add(embed(text));
+            results.add(embedWithModel(text, modelName));
         }
         return results;
     }
 
     private String createRequestBody(String text) {
+        return createRequestBody(text, properties.getModel());
+    }
+
+    private String createRequestBody(String text, String modelName) {
         try {
-            return objectMapper.writeValueAsString(new EmbeddingRequest(properties.getModel(), text));
+            return objectMapper.writeValueAsString(new EmbeddingRequest(modelName, text));
         } catch (Exception e) {
             throw new RuntimeException("Failed to create request body", e);
         }

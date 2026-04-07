@@ -8,9 +8,11 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
 
 **Key Features:**
 
+- ✅ **Multi-Model Hybrid Search** - Search across collections with different embedding models (e.g., 768-dim + 384-dim vectors)
 - ✅ **Hybrid Search** across multiple Qdrant collections with result aggregation
 - ✅ **Document Ingestion** with intelligent text chunking and batch indexing  
 - ✅ **Collection Management** - Create, delete, list, and get info for collections
+- ✅ **Collection-Specific Embedding Config** - Configure different models per collection
 - ✅ **Document Caching** with Spring Cache + Caffeine - per-collection dynamic sizing
 - ✅ **Backup & Restore** - Snapshot-based collection backup and restore
 - ✅ **HTTP API** for MCP protocol with `/health` endpoint
@@ -250,10 +252,15 @@ mcp:
 
   embedding:
     service-url: ${MCP_EMBEDDING_SERVICE_URL:http://localhost:11434}
-    model: nomic-embed-text-v2-moe
-    dimension: 768
-    timeout-ms: 50
-    batch-size: 32
+    model: ${MCP_EMBEDDING_MODEL:nomic-embed-text-v2-moe}
+    dimension: ${MCP_EMBEDDING_DIMENSION:768}
+    timeout-ms: ${MCP_EMBEDDING_TIMEOUT_MS:5000}
+    batch-size: ${MCP_EMBEDDING_BATCH_SIZE:32}
+    # Collection-specific embedding models (optional)
+    collection-models:
+      qdrant-doc:
+        model: all-minilm:l6-v2
+        dimension: 384
 
 grpc:
   server:
@@ -275,8 +282,11 @@ server:
 | `MCP_SUMMARIZE_MODEL`       | (none)                    | LLM model for summarization (e.g., `llama3.2`). If not set, uses simple concatenation  |
 | `QDRANT_API_KEY`            | (none)                    | API key for Qdrant Cloud                                                                 |
 | `MCP_EMBEDDING_SERVICE_URL` | `http://localhost:11434`  | Ollama/embedding service URL                                                             |
-| `MCP_EMBEDDING_MODEL`       | `nomic-embed-text-v2-moe` | Embedding model name                                                                     |
+| `MCP_EMBEDDING_MODEL`       | `nomic-embed-text-v2-moe` | Default embedding model name                                                             |
+| `MCP_EMBEDDING_DIMENSION`   | `768`                     | Default embedding dimension                                                              |
 | `MCP_EMBEDDING_TIMEOUT_MS`  | `10000`                   | Embedding service timeout                                                                |
+| `MCP_EMBEDDING_COLLECTION_<NAME>_MODEL` | (none)        | Collection-specific embedding model (e.g., `MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL`)  |
+| `MCP_EMBEDDING_COLLECTION_<NAME>_DIMENSION` | (none)  | Collection-specific embedding dimension                                                  |
 | `GRPC_SERVER_PORT`          | `9091`                    | gRPC server port                                                                         |
 | **HTTP API**                | 8080                      | MCP protocol endpoint, health checks                                                     |
 | **gRPC**                    | 9091                      | Internal gRPC service (Docker: 9090)                                                     |
@@ -371,6 +381,72 @@ rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCa
   - `restoreCollection`: Automatically rebuilds cache based on restored data
   - `ingestDocument`/`deleteDocument`: Invalidates cache entries
 - **rebuildDocumentCache**: Manually trigger cache recalculation after bulk operations
+
+### Multi-Model Hybrid Search
+
+The MCP Qdrant Server supports searching across collections with **different embedding models and dimensions**. This enables use cases where:
+
+- Legacy collections use one embedding model (e.g., `nomic-embed-text-v2-moe`, 768-dim)
+- New collections use a different model (e.g., `all-minilm:l6-v2`, 384-dim)
+
+**How it works:**
+
+1. Collections are grouped by their configured embedding model
+2. Separate query embeddings are generated for each model using the appropriate Ollama embedding endpoint
+3. Each collection is searched with the correct vector dimension
+4. Results are merged and ranked by relevance score
+
+**Configuration Example:**
+
+```yaml
+mcp:
+  embedding:
+    # Default embedding configuration
+    model: nomic-embed-text-v2-moe
+    dimension: 768
+    
+    # Collection-specific overrides
+    collection-models:
+      qdrant-doc:
+        model: all-minilm:l6-v2
+        dimension: 384
+      my-small-collection:
+        model: all-minilm:l6-v2
+        dimension: 384
+```
+
+**Environment Variables:**
+
+```bash
+# Default embedding model
+MCP_EMBEDDING_MODEL=nomic-embed-text-v2-moe
+MCP_EMBEDDING_DIMENSION=768
+
+# Collection-specific models (use uppercase with hyphens replaced by underscores)
+MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL=all-minilm:l6-v2
+MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION=384
+```
+
+**Example `listCollections` output:**
+
+```json
+{
+  "collections": [
+    {
+      "name": "vpms",
+      "vectorDimension": 768,
+      "embeddingModel": "nomic-embed-text-v2-moe",
+      "pointsCount": 67223
+    },
+    {
+      "name": "qdrant-doc",
+      "vectorDimension": 384,
+      "embeddingModel": "all-minilm:l6-v2",
+      "pointsCount": 18828
+    }
+  ]
+}
+```
 
 ### Backup & Restore Scripts
 

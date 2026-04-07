@@ -145,6 +145,9 @@ public class McpHttpController {
             case "deleteCollection" -> handleDeleteCollection(params);
             case "backupCollection" -> handleBackupCollection(params);
             case "restoreCollection" -> handleRestoreCollection(params);
+            case "resources/list" -> Map.of("resources", java.util.List.of());
+            case "resources/templates/list" -> Map.of("templates", java.util.List.of());
+            case "prompts/list" -> Map.of("prompts", java.util.List.of());
             default -> throw new RuntimeException("Unknown method: " + method);
         };
     }
@@ -303,7 +306,7 @@ public class McpHttpController {
                         "properties", Map.of(
                             "documentId", Map.of("type", "string"),
                             "content", Map.of("type", "string"),
-                            "targetCollections", Map.of("type", "array"),
+                            "targetCollections", Map.of("type", "array", "items", Map.of("type", "string")),
                             "chunkSize", Map.of("type", "integer"),
                             "chunkOverlap", Map.of("type", "integer")
                         ),
@@ -349,7 +352,8 @@ public class McpHttpController {
                                 "distanceMetric", c.getDistanceMetric(),
                                 "status", c.getStatus(),
                                 "cacheSize", c.getCacheSize(),
-                                "totalDocuments", c.getTotalDocuments()
+                                "totalDocuments", c.getTotalDocuments(),
+                                "embeddingModel", c.getEmbeddingModel()
                         ))
                         .toList()
         );

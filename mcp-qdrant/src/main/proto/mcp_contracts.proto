@@ -108,6 +108,7 @@ message CollectionInfo {
   string status = 5;
   int64 cache_size = 6;         // Current cache size limit for this collection
   int32 total_documents = 7;    // Total number of unique documents in collection
+  string embedding_model = 8;   // Embedding model name configured for this collection
 }
 
 message ListCollectionsResponse {

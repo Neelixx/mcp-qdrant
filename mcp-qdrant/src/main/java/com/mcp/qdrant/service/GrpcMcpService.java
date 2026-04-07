@@ -114,23 +114,44 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             boolean summarizeRequested = request.hasSummarize() && request.getSummarize();
             boolean shouldSummarize = summarizeRequested && modelAvailable;
 
-            float[] queryVector = embeddingClient.embed(request.getQueryText());
-
             List<String> collectionsToSearch = getCollectionsToSearch();
             
+            // Group collections by embedding model
+            Map<String, List<String>> collectionsByModel = new java.util.HashMap<>();
             for (String collection : collectionsToSearch) {
+                EmbeddingProperties.CollectionEmbeddingConfig config = embeddingProperties.getConfigForCollection(collection);
+                String modelName = (config != null && config.getModel() != null) 
+                    ? config.getModel() 
+                    : embeddingProperties.getModel();
+                collectionsByModel.computeIfAbsent(modelName, k -> new ArrayList<>()).add(collection);
+            }
+            
+            // Search each model group with appropriate embedding
+            for (Map.Entry<String, List<String>> entry : collectionsByModel.entrySet()) {
+                String modelName = entry.getKey();
+                List<String> collectionsForModel = entry.getValue();
+                
                 try {
-                    List<SearchResult> results = qdrantRepository.search(
-                            collection,
-                            queryVector,
-                            limit,
-                            request.getFiltersMap()
-                    );
-                    allResults.addAll(results);
-                    collectionsSearched++;
+                    float[] queryVector = embeddingClient.embedWithModel(request.getQueryText(), modelName);
+                    
+                    for (String collection : collectionsForModel) {
+                        try {
+                            List<SearchResult> results = qdrantRepository.search(
+                                    collection,
+                                    queryVector,
+                                    limit,
+                                    request.getFiltersMap()
+                            );
+                            allResults.addAll(results);
+                            collectionsSearched++;
+                        } catch (Exception e) {
+                            log.error("Search failed for collection {}: {}", collection, e.getMessage());
+                            failedCollections.add(collection);
+                        }
+                    }
                 } catch (Exception e) {
-                    log.error("Search failed for collection {}: {}", collection, e.getMessage());
-                    failedCollections.add(collection);
+                    log.error("Embedding generation failed for model '{}': {}", modelName, e.getMessage());
+                    failedCollections.addAll(collectionsForModel);
                 }
             }
 
@@ -381,12 +402,32 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     log.warn("Could not count documents for collection {}: {}", name, e.getMessage());
                 }
                 
+                // Get vector dimension and embedding model from configuration
+                int vectorDimension = embeddingProperties.getDimension();
+                String embeddingModel = embeddingProperties.getModel();
+                
+                // Check for collection-specific config
+                var collectionEmbeddingConfig = embeddingProperties.getConfigForCollection(name);
+                if (collectionEmbeddingConfig != null) {
+                    if (collectionEmbeddingConfig.getDimension() > 0) {
+                        vectorDimension = collectionEmbeddingConfig.getDimension();
+                    }
+                    if (collectionEmbeddingConfig.getModel() != null) {
+                        embeddingModel = collectionEmbeddingConfig.getModel();
+                    }
+                }
+                
+                String distanceMetric = "Cosine"; // Default, could be enhanced later
+                
                 CollectionInfo info = CollectionInfo.newBuilder()
                         .setName(name)
                         .setPointsCount((int) collectionInfo.getPointsCount())
+                        .setVectorDimension(vectorDimension)
+                        .setDistanceMetric(distanceMetric)
                         .setStatus(collectionInfo.getStatus().name())
                         .setCacheSize(cacheSize)
                         .setTotalDocuments(totalDocuments)
+                        .setEmbeddingModel(embeddingModel)
                         .build();
                 responseBuilder.addCollections(info);
             }
