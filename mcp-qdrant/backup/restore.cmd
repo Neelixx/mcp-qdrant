@@ -75,10 +75,48 @@ echo.
 echo Uploading and restoring snapshot...
 echo This may take a while for large collections...
 
-REM Upload and restore using PowerShell
+REM Upload and restore using PowerShell script file
 set "SNAPSHOT_FILENAME=%~nx2"
 
-powershell -Command "try { $uri = '%QDRANT_URL%/collections/%TARGET_COLLECTION%/snapshots/upload?priority=snapshot'; $fileBytes = [System.IO.File]::ReadAllBytes('%SNAPSHOT_FILE%'); $boundary = [System.Guid]::NewGuid().ToString(); $LF = \"`r`n\"; $bodyLines = @(\"--$boundary\", \"Content-Disposition: form-data; name=`\"snapshot\"`; filename=`\"%SNAPSHOT_FILENAME%`\"\", \"Content-Type: application/octet-stream\", \"\", \"\") -join $LF; $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($bodyLines); $bodyBytes2 = $fileBytes; $bodyBytes3 = [System.Text.Encoding]::UTF8.GetBytes(\"$LF--$boundary--$LF\"); $allBytes = New-Object byte[] ($bodyBytes.Length + $bodyBytes2.Length + $bodyBytes3.Length); [System.Buffer]::BlockCopy($bodyBytes, 0, $allBytes, 0, $bodyBytes.Length); [System.Buffer]::BlockCopy($bodyBytes2, 0, $allBytes, $bodyBytes.Length, $bodyBytes2.Length); [System.Buffer]::BlockCopy($bodyBytes3, 0, $allBytes, $bodyBytes.Length + $bodyBytes2.Length, $bodyBytes3.Length); $response = Invoke-RestMethod -Uri $uri -Method POST -ContentType \"multipart/form-data; boundary=$boundary\" -Body $allBytes -TimeoutSec 300; if ($response.status -eq 'ok') { exit 0 } else { exit 1 } } catch { Write-Error $_.Exception.Message; exit 1 }"
+REM Create temporary PowerShell script
+echo $uri = '%QDRANT_URL%/collections/%TARGET_COLLECTION%/snapshots/upload?priority=snapshot' > %TEMP%\restore_upload.ps1
+echo $filePath = '%SNAPSHOT_FILE%' >> %TEMP%\restore_upload.ps1
+echo $snapshotFilename = '%SNAPSHOT_FILENAME%' >> %TEMP%\restore_upload.ps1
+echo. >> %TEMP%\restore_upload.ps1
+echo $fileBytes = [System.IO.File]::ReadAllBytes($filePath) >> %TEMP%\restore_upload.ps1
+echo $boundary = [System.Guid]::NewGuid().ToString() >> %TEMP%\restore_upload.ps1
+echo $LF = "`r`n" >> %TEMP%\restore_upload.ps1
+echo. >> %TEMP%\restore_upload.ps1
+echo $bodyLines = @( >> %TEMP%\restore_upload.ps1
+echo     "--$boundary", >> %TEMP%\restore_upload.ps1
+echo     "Content-Disposition: form-data; name=""snapshot""; filename=""$snapshotFilename""", >> %TEMP%\restore_upload.ps1
+echo     "Content-Type: application/octet-stream", >> %TEMP%\restore_upload.ps1
+echo     "", >> %TEMP%\restore_upload.ps1
+echo     "" >> %TEMP%\restore_upload.ps1
+echo ) -join $LF >> %TEMP%\restore_upload.ps1
+echo. >> %TEMP%\restore_upload.ps1
+echo $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($bodyLines) >> %TEMP%\restore_upload.ps1
+echo $endBytes = [System.Text.Encoding]::UTF8.GetBytes("$LF--$boundary--$LF") >> %TEMP%\restore_upload.ps1
+echo. >> %TEMP%\restore_upload.ps1
+echo $allBytes = New-Object byte[] ($bodyBytes.Length + $fileBytes.Length + $endBytes.Length) >> %TEMP%\restore_upload.ps1
+echo [System.Buffer]::BlockCopy($bodyBytes, 0, $allBytes, 0, $bodyBytes.Length) >> %TEMP%\restore_upload.ps1
+echo [System.Buffer]::BlockCopy($fileBytes, 0, $allBytes, $bodyBytes.Length, $fileBytes.Length) >> %TEMP%\restore_upload.ps1
+echo [System.Buffer]::BlockCopy($endBytes, 0, $allBytes, $bodyBytes.Length + $fileBytes.Length, $endBytes.Length) >> %TEMP%\restore_upload.ps1
+echo. >> %TEMP%\restore_upload.ps1
+echo try { >> %TEMP%\restore_upload.ps1
+echo     $response = Invoke-RestMethod -Uri $uri -Method POST -ContentType "multipart/form-data; boundary=$boundary" -Body $allBytes -TimeoutSec 300 >> %TEMP%\restore_upload.ps1
+echo     if ($response.status -eq 'ok') { >> %TEMP%\restore_upload.ps1
+echo         exit 0 >> %TEMP%\restore_upload.ps1
+echo     } else { >> %TEMP%\restore_upload.ps1
+echo         Write-Error "Upload failed: $($response.status)" >> %TEMP%\restore_upload.ps1
+echo         exit 1 >> %TEMP%\restore_upload.ps1
+echo     } >> %TEMP%\restore_upload.ps1
+echo } catch { >> %TEMP%\restore_upload.ps1
+echo     Write-Error $_.Exception.Message >> %TEMP%\restore_upload.ps1
+echo     exit 1 >> %TEMP%\restore_upload.ps1
+echo } >> %TEMP%\restore_upload.ps1
+
+powershell -ExecutionPolicy Bypass -File %TEMP%\restore_upload.ps1
 
 if %ERRORLEVEL% neq 0 (
     echo.
