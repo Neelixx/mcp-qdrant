@@ -1,0 +1,13 @@
+{
+  "servers": {
+      "github": {
+          "type": "http",
+          "url": "https://api.githubcopilot.com/mcp/"
+      },
+      "mcp-qdrant": {
+	   "type": "http",
+          "url": "http://localhost:8080/mcp",
+          "headers": {}
+      }
+  }
+}
