@@ -131,6 +131,7 @@ public class McpHttpController {
         return switch (method) {
             case "initialize" -> handleInitialize(params);
             case "notifications/initialized" -> handleNotificationInitialized(params);
+            case "notifications/cancelled" -> Map.of(); // Notification, no response needed
             case "tools/list" -> handleToolsList();
             case "tools/call" -> handleToolsCall(params);
             case "listCollections" -> handleListCollections();
