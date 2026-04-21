@@ -1,0 +1,48 @@
+# Qdrant Configuration for Memory-VPMS Windows Native
+# Full documentation: https://qdrant.tech/documentation/guides/configuration/
+
+storage:
+  storage_path: .\storage
+  snapshots_path: .\snapshots
+  lock_cache_size: 1000
+  performance:
+    max_search_threads: 4
+    indexing_search_threads: 4
+
+http_server:
+  host: 0.0.0.0
+  port: 6333
+  cors:
+    allowed_origins:
+      - "http://localhost:6335"
+      - "http://localhost:3000"
+      - "http://localhost:8000"
+    allowed_methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowed_headers:
+      - Content-Type
+      - Authorization
+
+grpc_server:
+  host: 0.0.0.0
+  port: 6334
+
+api_key: new-api-key-here
+read_only_api_key: new-readonly-key-here
+
+cluster:
+  enabled: false
+
+log_level: info
+
+snapshots:
+  schedule: "0 0 * * *"
+
+temp_dir: .\temp
+
+consensus:
+  tick_period_ms: 100

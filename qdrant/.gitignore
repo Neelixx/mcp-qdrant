@@ -1,0 +1,5 @@
+bin/qdrant.exe
+snapshots/
+storage/
+temp/
+.qdrant-initialized
