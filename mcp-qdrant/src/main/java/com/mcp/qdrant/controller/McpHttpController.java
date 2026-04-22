@@ -517,14 +517,18 @@ public class McpHttpController {
 
         BackupCollectionResponse response = stub.backupCollection(request);
 
-        return Map.of(
-                "success", response.getSuccess(),
-                "collectionName", response.getCollectionName(),
-                "snapshotName", response.getSnapshotName(),
-                "sizeBytes", response.getSizeBytes(),
-                "creationTime", response.getCreationTime(),
-                "downloadUrl", response.getDownloadUrl()
-        );
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("success", response.getSuccess());
+        result.put("collectionName", response.getCollectionName());
+        result.put("snapshotName", response.getSnapshotName());
+        result.put("sizeBytes", response.getSizeBytes());
+        result.put("creationTime", response.getCreationTime());
+        result.put("downloadUrl", response.getDownloadUrl());
+        String errorMessage = response.getErrorMessage();
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            result.put("errorMessage", errorMessage);
+        }
+        return result;
     }
 
     private Object handleRestoreCollection(Map<String, Object> params) {
@@ -663,33 +667,70 @@ public class McpHttpController {
         String toolName = (String) params.get("name");
         @SuppressWarnings("unchecked")
         Map<String, Object> arguments = (Map<String, Object>) params.getOrDefault("arguments", java.util.Collections.emptyMap());
-        
+
         if (toolName == null || toolName.isEmpty()) {
             throw new IllegalArgumentException("Tool name is required");
         }
-        
+
         // Handle edge case where tools/list is incorrectly called via tools/call
         if ("tools/list".equals(toolName)) {
             log.warn("Received tools/list as tool name, redirecting to handleToolsList()");
             return handleToolsList();
         }
-        
+
         log.info("Executing tool: {}", toolName);
-        
-        return switch (toolName) {
-            case "listCollections" -> handleListCollections();
-            case "listDocuments" -> handleListDocuments(arguments);
-            case "getCollectionInfo" -> handleGetCollectionInfo(arguments);
-            case "hybridSearch" -> handleHybridSearch(arguments);
-            case "ingestDocument" -> handleIngestDocument(arguments);
-            case "deleteDocument" -> handleDeleteDocument(arguments);
-            case "getDocumentInfo" -> handleGetDocumentInfo(arguments);
-            case "rebuildDocumentCache" -> handleRebuildDocumentCache(arguments);
-            case "createCollection" -> handleCreateCollection(arguments);
-            case "deleteCollection" -> handleDeleteCollection(arguments);
-            case "backupCollection" -> handleBackupCollection(arguments);
-            case "restoreCollection" -> handleRestoreCollection(arguments);
-            default -> throw new RuntimeException("Unknown tool: " + toolName);
-        };
+
+        try {
+            Object toolResult = switch (toolName) {
+                case "listCollections" -> handleListCollections();
+                case "listDocuments" -> handleListDocuments(arguments);
+                case "getCollectionInfo" -> handleGetCollectionInfo(arguments);
+                case "hybridSearch" -> handleHybridSearch(arguments);
+                case "ingestDocument" -> handleIngestDocument(arguments);
+                case "deleteDocument" -> handleDeleteDocument(arguments);
+                case "getDocumentInfo" -> handleGetDocumentInfo(arguments);
+                case "rebuildDocumentCache" -> handleRebuildDocumentCache(arguments);
+                case "createCollection" -> handleCreateCollection(arguments);
+                case "deleteCollection" -> handleDeleteCollection(arguments);
+                case "backupCollection" -> handleBackupCollection(arguments);
+                case "restoreCollection" -> handleRestoreCollection(arguments);
+                default -> throw new RuntimeException("Unknown tool: " + toolName);
+            };
+
+            // Return proper MCP tools/call response format with content array
+            return Map.of(
+                "content", java.util.List.of(
+                    Map.of(
+                        "type", "text",
+                        "text", objectMapper.writeValueAsString(toolResult)
+                    )
+                ),
+                "isError", false
+            );
+        } catch (Exception e) {
+            log.error("Tool execution failed: {}", e.getMessage(), e);
+            try {
+                return Map.of(
+                    "content", java.util.List.of(
+                        Map.of(
+                            "type", "text",
+                            "text", objectMapper.writeValueAsString(Map.of("error", e.getMessage()))
+                        )
+                    ),
+                    "isError", true
+                );
+            } catch (Exception jsonError) {
+                // Fallback if JSON serialization fails
+                return Map.of(
+                    "content", java.util.List.of(
+                        Map.of(
+                            "type", "text",
+                            "text", "{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}"
+                        )
+                    ),
+                    "isError", true
+                );
+            }
+        }
     }
 }

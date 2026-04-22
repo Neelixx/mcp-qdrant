@@ -13,6 +13,7 @@ REM Qdrant Configuration
 set MCP_QDRANT_HOST=localhost
 set MCP_QDRANT_PORT=6334
 set MCP_QDRANT_COLLECTIONS=all
+set MCP_QDRANT_TIMEOUT_MS=30000
 set QDRANT_API_KEY=
 
 REM Embedding Service Configuration
@@ -30,6 +31,7 @@ REM Display environment variables being used
 echo Environment Variables:
 echo   MCP_QDRANT_HOST:             %MCP_QDRANT_HOST%
 echo   MCP_QDRANT_PORT:             %MCP_QDRANT_PORT%
+echo   MCP_QDRANT_TIMEOUT_MS:       %MCP_QDRANT_TIMEOUT_MS%
 echo   MCP_QDRANT_COLLECTIONS:      %MCP_QDRANT_COLLECTIONS%
 echo   QDRANT_API_KEY:              %QDRANT_API_KEY%
 echo   MCP_QDRANT_SUMMARYMAXRESULTS:%MCP_QDRANT_SUMMARYMAXRESULTS%
