@@ -147,7 +147,7 @@ public class McpHttpController {
             case "backupCollection" -> handleBackupCollection(params);
             case "restoreCollection" -> handleRestoreCollection(params);
             case "resources/list" -> Map.of("resources", java.util.List.of());
-            case "resources/templates/list" -> Map.of("templates", java.util.List.of());
+            case "resources/templates/list" -> Map.of("resourceTemplates", java.util.List.of());
             case "prompts/list" -> Map.of("prompts", java.util.List.of());
             default -> throw new RuntimeException("Unknown method: " + method);
         };
