@@ -112,7 +112,7 @@ List all Qdrant collections with metadata including point counts, dimensions, an
         "status": "Green",
         "cacheSize": 1048576,
         "totalDocuments": 31172,
-        "embeddingModel": "nomic-embed-text-v2-moe"
+        "embeddingModel": "all-minilm:l6-v2"
       }
     ]
   }
@@ -532,13 +532,13 @@ The server is configured with default collections (e.g., `vpms`, `vpmshelp`). If
 
 ### Embedding Models
 Different collections may use different embedding models:
-- Default: `nomic-embed-text-v2-moe` (768 dimensions)
-- Collection-specific: `all-minilm:l6-v2` (384 dimensions) for `qdrant-doc`
+- Default: `all-minilm:l6-v2` (384 dimensions)
+- Collection-specific: `nomic-embed-text-v2-moe` (768 dimensions) for collections requiring higher dimensions
 
 The server automatically handles embedding generation based on collection configuration.
 
 ### Summarization
-When `summarize: true` is set in `hybridSearch`, results are summarized using the configured LLM (e.g., `gemma4:e2b` via Ollama). This requires the summarization model to be configured in the server.
+When `summarize: true` is set in `hybridSearch`, results are summarized using the configured LLM (default: `gemma4` via Ollama). If no LLM is configured, the server falls back to simple concatenation of results.
 
 ---
 

@@ -303,7 +303,7 @@ mcp:
     collections: ${MCP_QDRANT_COLLECTIONS:all}  # 'all' for dynamic, or specific list
     search-limit: 10
     search-threshold: 0.7
-    summarize-model: ${MCP_SUMMARIZE_MODEL:}  # LLM for summarization (e.g., llama3.2)
+    summarize-model: ${MCP_SUMMARIZE_MODEL:-gemma4}  # LLM for summarization (default: gemma4)
     summary-max-results: ${MCP_QDRANT_SUMMARYMAXRESULTS:3}
     summary-max-length: ${MCP_QDRANT_SUMMARYMAXLENGTH:500}
   embedding:
