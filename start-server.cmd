@@ -49,7 +49,7 @@ REM Check if Java is installed
 java -version >nul 2>&1
 if %errorlevel% neq 0 (
     echo ERROR: Java is not installed or not in PATH
-    echo Please install Java 21 or higher and try again
+    echo Please install Java 25 or higher and try again
     pause
     exit /b 1
 )

@@ -1,7 +1,7 @@
 # MCP Qdrant Server
 
 [![Status](https://img.shields.io/badge/status-implemented-success)](./)
-[![Java](https://img.shields.io/badge/Java-21%2B-blue)](./)
+[![Java](https://img.shields.io/badge/Java-25%2B-blue)](./)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-green)](./)
 
 A production-ready Java Spring Boot gRPC service for hybrid vector search and document ingestion using Qdrant vector database and external embedding services.
@@ -24,7 +24,7 @@ A production-ready Java Spring Boot gRPC service for hybrid vector search and do
 
 | Component      | Requirement                                          |
 | -------------- | ---------------------------------------------------- |
-| Java           | 21 (LTS) - tested with Java 25                       |
+| Java           | 25 (LTS) - tested with Java 25                       |
 | Maven          | 3.9+                                                 |
 | Docker         | 24.0+ (for containerized deployment)                 |
 | Docker Compose | 2.20+                                                |

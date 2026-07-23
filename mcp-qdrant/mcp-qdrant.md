@@ -13,7 +13,7 @@
     - timeout: 50 (ms)
     - embeddingmodel: nomic-embed-text-v2-moe
 - Project Location: Copilot-Memories/Memory-VPMS/mcp-qdrant
-- Programming Language: Java 21
+- Programming Language: Java 25
 
 ## Architecture & Design Principles (Architect's Note)
 
@@ -23,7 +23,7 @@ The design utilizes a multi-layered approach optimized for high concurrency and 
     *   **SearchService (API Layer):** Handles external gRPC contracts; acts as an **Orchestrator**.
     *   **QdrantRepository (Data Access Layer):** Handles all interactions with Qdrant (Search, Ingest, and **Collection Management**).
     *   **EmbeddingServiceClient (External Dependency):** Handles calls to the external Nomic embedding service.
-3.  **Concurrency:** Leverage Java 21's **Virtual Threads** within the Spring Boot framework to handle massive concurrent I/O operations (waiting for Qdrant or the Embedding Service) without thread overhead.
+- Concurrency: Leverage Java 25's **Virtual Threads** within the Spring Boot framework to handle massive concurrent I/O operations (waiting for Qdrant or the Embedding Service) without thread overhead.
 
 ## Functional Requirements ## Functional Requirements & Workflows Workflows (Updated Specifications)
 

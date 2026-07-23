@@ -21,7 +21,8 @@
     <description>MCP Server for Qdrant Vector Database Access</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <grpc.version>1.59.0</grpc.version>
         <protobuf.version>3.24.0</protobuf.version>
         <qdrant-client.version>1.8.1</qdrant-client.version>
@@ -142,8 +143,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
 
