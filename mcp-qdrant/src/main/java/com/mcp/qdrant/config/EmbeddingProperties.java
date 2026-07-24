@@ -35,11 +35,8 @@ public class EmbeddingProperties {
     
     public static class CollectionEmbeddingConfig {
         private String model;
-        private int dimension;
         
         public String getModel() { return model; }
         public void setModel(String model) { this.model = model; }
-        public int getDimension() { return dimension; }
-        public void setDimension(int dimension) { this.dimension = dimension; }
     }
 }

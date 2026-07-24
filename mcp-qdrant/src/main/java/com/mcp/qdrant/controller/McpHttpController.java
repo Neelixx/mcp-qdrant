@@ -374,6 +374,8 @@ public class McpHttpController {
                 "info", Map.of(
                         "name", response.getInfo().getName(),
                         "pointsCount", response.getInfo().getPointsCount(),
+                        "vectorDimension", response.getInfo().getVectorDimension(),
+                        "distanceMetric", response.getInfo().getDistanceMetric(),
                         "status", response.getInfo().getStatus()
                 )
         );

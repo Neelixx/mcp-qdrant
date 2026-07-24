@@ -256,11 +256,6 @@ mcp:
     dimension: ${MCP_EMBEDDING_DIMENSION:768}
     timeout-ms: ${MCP_EMBEDDING_TIMEOUT_MS:5000}
     batch-size: ${MCP_EMBEDDING_BATCH_SIZE:32}
-    # Collection-specific embedding models (optional)
-    collection-models:
-      qdrant-doc:
-        model: all-minilm:l6-v2
-        dimension: 384
 
 grpc:
   server:
@@ -286,7 +281,6 @@ server:
 | `MCP_EMBEDDING_DIMENSION`   | `768`                     | Default embedding dimension                                                              |
 | `MCP_EMBEDDING_TIMEOUT_MS`  | `10000`                   | Embedding service timeout                                                                |
 | `MCP_EMBEDDING_COLLECTION_<NAME>_MODEL` | (none)        | Collection-specific embedding model (e.g., `MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL`)  |
-| `MCP_EMBEDDING_COLLECTION_<NAME>_DIMENSION` | (none)  | Collection-specific embedding dimension                                                  |
 | `GRPC_SERVER_PORT`          | `9091`                    | gRPC server port                                                                         |
 | **HTTP API**                | 8080                      | MCP protocol endpoint, health checks                                                     |
 | **gRPC**                    | 9091                      | Internal gRPC service (Docker: 9090)                                                     |
@@ -384,16 +378,18 @@ rpc RebuildDocumentCache(RebuildDocumentCacheRequest) returns (RebuildDocumentCa
 
 ### Multi-Model Hybrid Search
 
-The MCP Qdrant Server supports searching across collections with **different embedding models and dimensions**. This enables use cases where:
+The MCP Qdrant Server supports searching across collections with **different embedding models**. This enables use cases where:
 
 - Legacy collections use one embedding model (e.g., `nomic-embed-text-v2-moe`, 768-dim)
 - New collections use a different model (e.g., `all-minilm:l6-v2`, 384-dim)
+
+Vector dimensions for each collection are read directly from Qdrant and do not need to be configured separately.
 
 **How it works:**
 
 1. Collections are grouped by their configured embedding model
 2. Separate query embeddings are generated for each model using the appropriate Ollama embedding endpoint
-3. Each collection is searched with the correct vector dimension
+3. Each collection is searched with the correct vector dimension, retrieved from Qdrant
 4. Results are merged and ranked by relevance score
 
 **Configuration Example:**
@@ -405,14 +401,12 @@ mcp:
     model: nomic-embed-text-v2-moe
     dimension: 768
     
-    # Collection-specific overrides
+    # Collection-specific model overrides (dimension is read from Qdrant)
     collection-models:
       qdrant-doc:
         model: all-minilm:l6-v2
-        dimension: 384
       my-small-collection:
         model: all-minilm:l6-v2
-        dimension: 384
 ```
 
 **Environment Variables:**
@@ -422,9 +416,8 @@ mcp:
 MCP_EMBEDDING_MODEL=nomic-embed-text-v2-moe
 MCP_EMBEDDING_DIMENSION=768
 
-# Collection-specific models (use uppercase with hyphens replaced by underscores)
+# Collection-specific models (dimension is read from Qdrant)
 MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL=all-minilm:l6-v2
-MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION=384
 ```
 
 **Example `listCollections` output:**

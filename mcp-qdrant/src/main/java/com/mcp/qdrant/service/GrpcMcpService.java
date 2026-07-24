@@ -402,22 +402,15 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     log.warn("Could not count documents for collection {}: {}", name, e.getMessage());
                 }
                 
-                // Get vector dimension and embedding model from configuration
-                int vectorDimension = embeddingProperties.getDimension();
+                CollectionQueryConfig queryConfig = fetchCollectionQueryConfig(name);
+                int vectorDimension = queryConfig.vectorDimension();
+                String distanceMetric = queryConfig.distanceMetric();
+                
                 String embeddingModel = embeddingProperties.getModel();
-                
-                // Check for collection-specific config
                 var collectionEmbeddingConfig = embeddingProperties.getConfigForCollection(name);
-                if (collectionEmbeddingConfig != null) {
-                    if (collectionEmbeddingConfig.getDimension() > 0) {
-                        vectorDimension = collectionEmbeddingConfig.getDimension();
-                    }
-                    if (collectionEmbeddingConfig.getModel() != null) {
-                        embeddingModel = collectionEmbeddingConfig.getModel();
-                    }
+                if (collectionEmbeddingConfig != null && collectionEmbeddingConfig.getModel() != null) {
+                    embeddingModel = collectionEmbeddingConfig.getModel();
                 }
-                
-                String distanceMetric = "Cosine"; // Default, could be enhanced later
                 
                 CollectionInfo info = CollectionInfo.newBuilder()
                         .setName(name)
@@ -466,9 +459,13 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             
             var collectionInfo = qdrantRepository.getQdrantClient().getCollectionInfoAsync(collectionName).get(5, java.util.concurrent.TimeUnit.SECONDS);
             
+            CollectionQueryConfig queryConfig = fetchCollectionQueryConfig(collectionName);
+            
             CollectionInfo info = CollectionInfo.newBuilder()
                     .setName(collectionName)
                     .setPointsCount((int) collectionInfo.getPointsCount())
+                    .setVectorDimension(queryConfig.vectorDimension())
+                    .setDistanceMetric(queryConfig.distanceMetric())
                     .setStatus(collectionInfo.getStatus().name())
                     .build();
             
@@ -776,6 +773,70 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     .setErrorMessage(e.getMessage())
                     .build());
             responseObserver.onCompleted();
+        }
+    }
+
+    private record CollectionQueryConfig(int vectorDimension, String distanceMetric) {}
+
+    private CollectionQueryConfig fetchCollectionQueryConfig(String collectionName) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> collInfo = webClient.get()
+                    .uri("/collections/{name}", collectionName)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .timeout(java.time.Duration.ofMillis(qdrantProperties.getTimeoutMs()))
+                    .block();
+
+            if (collInfo == null) {
+                return new CollectionQueryConfig(0, "Cosine");
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> result = (Map<String, Object>) collInfo.get("result");
+            if (result == null) {
+                return new CollectionQueryConfig(0, "Cosine");
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> config = (Map<String, Object>) result.get("config");
+            if (config == null) {
+                return new CollectionQueryConfig(0, "Cosine");
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> params = (Map<String, Object>) config.get("params");
+            if (params == null) {
+                return new CollectionQueryConfig(0, "Cosine");
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> vectors = (Map<String, Object>) params.get("vectors");
+            if (vectors == null) {
+                return new CollectionQueryConfig(0, "Cosine");
+            }
+
+            int dimension = 0;
+            Object sizeObj = vectors.get("size");
+            if (sizeObj instanceof Integer) {
+                dimension = (Integer) sizeObj;
+            } else if (sizeObj instanceof Long) {
+                dimension = ((Long) sizeObj).intValue();
+            } else if (sizeObj instanceof Number) {
+                dimension = ((Number) sizeObj).intValue();
+            }
+
+            String distance = "Cosine";
+            Object distObj = vectors.get("distance");
+            if (distObj instanceof String) {
+                distance = (String) distObj;
+            }
+
+            return new CollectionQueryConfig(dimension, distance);
+
+        } catch (Exception e) {
+            log.warn("Could not fetch collection config for {}: {}", collectionName, e.getMessage());
+            return new CollectionQueryConfig(0, "Cosine");
         }
     }
 }

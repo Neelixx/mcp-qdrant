@@ -22,16 +22,12 @@ mcp:
   embedding:
     service-url: http://localhost:11434
     model: all-minilm:l6-v2
+    # Alternative: nomic-embed-text-v2-moe with dimension 768
+    # model: nomic-embed-text-v2-moe
+    # dimension: 768
     dimension: 384
     timeout-ms: 10000
     batch-size: 32
-    # Collection-specific embedding models (optional)
-    # For collections with different embedding models/dimensions
-    # Override via env vars: MCP_EMBEDDING_COLLECTIONMODELS_<COLLECTION>_MODEL
-    collection-models:
-      qdrant-doc:
-        model: all-minilm:l6-v2
-        dimension: 384
 
 grpc:
   server:

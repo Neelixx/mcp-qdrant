@@ -316,10 +316,8 @@ mcp:
     collection-models:
       qdrant-doc:
         model: all-minilm:l6-v2
-        dimension: 384
       another-collection:
         model: all-minilm:l6-v2
-        dimension: 384
 grpc:
   server:
     port: 9091
@@ -346,12 +344,10 @@ mcp:
     # Default embedding configuration
     model: nomic-embed-text-v2-moe
     dimension: 768
-    
-    # Collection-specific overrides
+    # Collection-specific model overrides (dimension is read from Qdrant)
     collection-models:
       <collection-name>:
         model: <embedding-model-name>
-        dimension: <vector-dimension>
 ```
 
 **Java Implementation:**
@@ -369,7 +365,6 @@ public class EmbeddingProperties {
     
     public static class CollectionEmbeddingConfig {
         private String model;
-        private int dimension;
         // getters/setters
     }
 }
@@ -379,7 +374,6 @@ public class EmbeddingProperties {
 
 ```bash
 MCP_EMBEDDING_COLLECTION_<COLLECTION-NAME>_MODEL=<model-name>
-MCP_EMBEDDING_COLLECTION_<COLLECTION-NAME>_DIMENSION=<dimension>
 ```
 
 Note: Collection names are uppercase, hyphens replaced by underscores (e.g., `qdrant-doc` → `QDRANT-DOC`).
@@ -388,7 +382,6 @@ Note: Collection names are uppercase, hyphens replaced by underscores (e.g., `qd
 
 ```bash
 MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL=all-minilm:l6-v2
-MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION=384
 ```
 
 **Hybrid Search Integration:**

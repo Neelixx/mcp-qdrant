@@ -5,10 +5,10 @@ services:
   qdrant:
     image: qdrant/qdrant:latest
     ports:
-      - "6333:6333"
-      - "6334:6334"
+      - "0.0.0.0:6333:6333"
+      - "0.0.0.0:6334:6334"
     volumes:
-      - qdrant_data:/qdrant/storage
+      - /mnt/data/AI/qdrant:/qdrant/storage
     environment:
       - QDRANT__SERVICE__GRPC_PORT=6334
       - QDRANT_ALLOW_CORS=true
@@ -29,7 +29,7 @@ services:
       - /dev/kfd
       - /dev/dri
     volumes:
-      - ollama_data:/root/.ollama
+      - /mnt/data/AI/ollama/docker:/root/.ollama
     environment:
       - OLLAMA_HOST=0.0.0.0:11434
     networks:
@@ -42,8 +42,8 @@ services:
   mcp-qdrant:
     build: .
     ports:
-      - "8090:8080"
-      - "9090:9091"
+      - "0.0.0.0:8090:8080"
+      - "0.0.0.0:9090:9091"
     environment:
       - MCP_QDRANT_HOST=qdrant
       - MCP_QDRANT_PORT=6334
@@ -54,10 +54,6 @@ services:
       - MCP_EMBEDDING_SERVICE_URL=http://ollama:11434
       - MCP_EMBEDDING_MODEL=${MCP_EMBEDDING_MODEL:-all-minilm:l6-v2}
       - MCP_EMBEDDING_TIMEOUT_MS=${MCP_EMBEDDING_TIMEOUT_MS:-10000}
-      # Collection-specific embedding models (optional)
-      # Format: MCP_EMBEDDING_COLLECTION_<COLLECTION>_MODEL and MCP_EMBEDDING_COLLECTION_<COLLECTION>_DIMENSION
-      - MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL=${MCP_EMBEDDING_COLLECTION_QDRANT-DOC_MODEL:-all-minilm:l6-v2}
-      - MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION=${MCP_EMBEDDING_COLLECTION_QDRANT-DOC_DIMENSION:-384}
       - QDRANT_API_KEY=${QDRANT_API_KEY:-}
     networks:
       - ai-net

@@ -531,9 +531,7 @@ Common error scenarios:
 The server is configured with default collections (e.g., `vpms`, `vpmshelp`). If no collection is specified in parameters, operations may apply to all configured collections.
 
 ### Embedding Models
-Different collections may use different embedding models:
-- Default: `all-minilm:l6-v2` (384 dimensions)
-- Collection-specific: `nomic-embed-text-v2-moe` (768 dimensions) for collections requiring higher dimensions
+Different collections may use different embedding models. Vector dimensions for each collection are read directly from Qdrant.
 
 The server automatically handles embedding generation based on collection configuration.
 
