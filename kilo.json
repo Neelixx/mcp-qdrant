@@ -1,0 +1,16 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "qdrant-mcp": {
+      "enabled": true
+    }
+  },
+  "indexing": {
+    "provider": "openai-compatible",
+    "model": "all-minilm:l6-v2",
+    "openai-compatible": {
+      "baseUrl": "http://localhost:11434/v1"
+    },
+    "dimension": 768
+  }
+}

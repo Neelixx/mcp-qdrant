@@ -12,7 +12,7 @@ import os
 # Force unbuffered output
 sys.stdout.reconfigure(line_buffering=True)
 
-BACKEND_URL = os.environ.get("MCP_QDRANT_URL", "http://localhost:8080/mcp")
+BACKEND_URL = os.environ.get("MCP_QDRANT_URL", "http://localhost:8090/mcp")
 
 # ---------------------------------------------------------------------------
 # Tool definitions (MCP schema format)
