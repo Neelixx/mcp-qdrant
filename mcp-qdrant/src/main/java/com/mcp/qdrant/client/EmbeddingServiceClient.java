@@ -110,6 +110,9 @@ public class EmbeddingServiceClient {
             }
             return result;
 
+        } catch (RuntimeException e) {
+            // Service/contract errors already carry the real cause; keep it.
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse embedding response", e);
         }
