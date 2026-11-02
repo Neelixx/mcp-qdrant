@@ -38,7 +38,7 @@ public class TextChunker {
             return chunks;
         }
 
-        String[] paragraphs = content.split(separator);
+        List<String> paragraphs = splitIntoFitParagraphs(content, chunkSize, separator);
         StringBuilder currentChunk = new StringBuilder();
         int sequenceNumber = 0;
 
@@ -72,6 +72,55 @@ public class TextChunker {
 
         log.info("Chunked document into {} chunks", chunks.size());
         return chunks;
+    }
+
+    // Split the content into paragraphs, hard-splitting any paragraph that exceeds
+    // chunkSize so no oversized chunk (e.g. a whole markdown table or code block)
+    // reaches the embedding service and overflows the model context.
+    private List<String> splitIntoFitParagraphs(String content, int chunkSize, String separator) {
+        List<String> result = new ArrayList<>();
+        for (String paragraph : content.split(separator)) {
+            paragraph = paragraph.trim();
+            if (paragraph.isEmpty()) {
+                continue;
+            }
+            if (paragraph.length() <= chunkSize) {
+                result.add(paragraph);
+            } else {
+                result.addAll(splitOversizedParagraph(paragraph, chunkSize));
+            }
+        }
+        return result;
+    }
+
+    // Greedily re-assemble lines of an oversized paragraph into pieces of at most
+    // chunkSize characters; single lines longer than chunkSize are cut at character
+    // boundaries as a last resort.
+    private List<String> splitOversizedParagraph(String paragraph, int chunkSize) {
+        List<String> pieces = new ArrayList<>();
+        StringBuilder piece = new StringBuilder();
+        for (String line : paragraph.split("\n")) {
+            while (line.length() > chunkSize) {
+                if (piece.length() > 0) {
+                    pieces.add(piece.toString());
+                    piece = new StringBuilder();
+                }
+                pieces.add(line.substring(0, chunkSize));
+                line = line.substring(chunkSize);
+            }
+            if (piece.length() > 0 && piece.length() + 1 + line.length() > chunkSize) {
+                pieces.add(piece.toString());
+                piece = new StringBuilder();
+            }
+            if (piece.length() > 0) {
+                piece.append("\n");
+            }
+            piece.append(line);
+        }
+        if (piece.length() > 0) {
+            pieces.add(piece.toString());
+        }
+        return pieces;
     }
 
     private DocumentChunk createChunk(String content, Map<String, String> metadata, int sequenceNumber) {

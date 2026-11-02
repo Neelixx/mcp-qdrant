@@ -212,18 +212,43 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     request.hasChunkingConfig() ? request.getChunkingConfig() : null
             );
 
-            List<float[]> vectors = embeddingClient.embedBatch(
-                    chunks.stream().map(DocumentChunk::getContent).toList()
-            );
+            // Embed chunk-by-chunk so one failing chunk (e.g. one that overflows the
+            // embedding model context) cannot silently abort the whole document.
+            List<DocumentChunk> embeddedChunks = new ArrayList<>();
+            List<float[]> vectors = new ArrayList<>();
+            List<String> embeddingErrors = new ArrayList<>();
+            for (DocumentChunk chunkObj : chunks) {
+                try {
+                    vectors.add(embeddingClient.embed(chunkObj.getContent()));
+                    embeddedChunks.add(chunkObj);
+                } catch (Exception e) {
+                    embeddingErrors.add("chunk " + chunkObj.getSequenceNumber() + ": " + e.getMessage());
+                    log.warn("Embedding failed for chunk {} of document {}: {}",
+                            chunkObj.getSequenceNumber(), request.getDocumentId(), e.getMessage());
+                }
+            }
+            if (embeddedChunks.isEmpty()) {
+                throw new RuntimeException("No chunks could be embedded for document "
+                        + request.getDocumentId() + ": "
+                        + (embeddingErrors.isEmpty()
+                                ? "embedding service returned no vectors"
+                                : String.join("; ", embeddingErrors)));
+            }
 
             int totalIndexed = 0;
             List<String> failedCollections = new ArrayList<>();
             for (String collection : targetCollections) {
                 try {
+                    // Make re-ingest idempotent: drop prior chunks for this document first.
+                    int removed = qdrantRepository.deleteDocument(request.getDocumentId(), collection);
+                    if (removed > 0) {
+                        log.info("Re-ingest cleanup: removed {} stale chunks for document {} from {}",
+                                removed, request.getDocumentId(), collection);
+                    }
                     int indexed = qdrantRepository.batchIndex(
                             collection,
                             request.getDocumentId(),
-                            chunks,
+                            embeddedChunks,
                             vectors,
                             embeddingProperties.getDimension()
                     );
@@ -234,12 +259,17 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 }
             }
 
-            IngestDocumentResponse response = IngestDocumentResponse.newBuilder()
-                    .setSuccess(failedCollections.isEmpty())
+            IngestDocumentResponse.Builder responseBuilder = IngestDocumentResponse.newBuilder()
+                    .setSuccess(failedCollections.isEmpty() && embeddingErrors.isEmpty())
                     .setChunksIndexed(totalIndexed)
                     .addAllIndexedCollections(targetCollections)
-                    .addAllFailedCollections(failedCollections)
-                    .build();
+                    .addAllFailedCollections(failedCollections);
+            if (!embeddingErrors.isEmpty()) {
+                responseBuilder.setErrorMessage(
+                        String.join("; ", embeddingErrors)
+                        + " (" + embeddedChunks.size() + " of " + chunks.size() + " chunks indexed)");
+            }
+            IngestDocumentResponse response = responseBuilder.build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

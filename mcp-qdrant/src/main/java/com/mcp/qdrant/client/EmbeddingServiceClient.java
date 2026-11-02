@@ -90,6 +90,14 @@ public class EmbeddingServiceClient {
     private float[] parseEmbedding(String response) {
         try {
             JsonNode root = objectMapper.readTree(response);
+
+            // Ollama reports failures (e.g. prompt over the model context) as
+            // {"error": "..."} with HTTP 200; surface that text instead of losing it.
+            JsonNode error = root.get("error");
+            if (error != null && error.isTextual() && !error.asText().isEmpty()) {
+                throw new RuntimeException("Embedding service error: " + error.asText());
+            }
+
             JsonNode embedding = root.get("embedding");
 
             if (embedding == null || !embedding.isArray()) {
