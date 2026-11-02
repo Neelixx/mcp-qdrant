@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,10 @@ public class EmbeddingServiceClient {
     public EmbeddingServiceClient(EmbeddingProperties properties, ObjectMapper objectMapper) {
         this.properties = properties;
         this.objectMapper = objectMapper;
-        this.restTemplate = new RestTemplate();
+        // Bound the HTTP call: a hung embedding service must not block the caller indefinitely.
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
+        requestFactory.setReadTimeout(java.time.Duration.ofMillis(properties.getTimeoutMs()));
+        this.restTemplate = new RestTemplate(requestFactory);
     }
 
     public float[] embed(String text) {

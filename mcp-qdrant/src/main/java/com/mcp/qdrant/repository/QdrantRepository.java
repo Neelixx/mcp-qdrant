@@ -43,14 +43,19 @@ public class QdrantRepository {
             if ("all".equals(collectionName)) {
                 return searchAllCollections(vector, limit, filters);
             }
-            
+
+            Points.SearchPoints.Builder searchBuilder = Points.SearchPoints.newBuilder()
+                    .setCollectionName(collectionName)
+                    .addAllVector(toFloatList(vector))
+                    .setLimit(limit)
+                    .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build());
+            Points.Filter filter = buildMetadataFilter(filters);
+            if (filter != null) {
+                searchBuilder.setFilter(filter);
+            }
+
             List<Points.ScoredPoint> results = qdrantClient.searchAsync(
-                    Points.SearchPoints.newBuilder()
-                            .setCollectionName(collectionName)
-                            .addAllVector(toFloatList(vector))
-                            .setLimit(limit)
-                            .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build())
-                            .build()
+                    searchBuilder.build()
             ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
 
             return results.stream()
@@ -69,6 +74,29 @@ public class QdrantRepository {
         }
     }
     
+    /**
+     * Builds a Qdrant must-filter from equality metadata constraints, or null
+     * when no constraints are given. Each entry becomes a keyword-field match
+     * on the payload, mirroring the document_id filter used by deleteDocument.
+     */
+    public Points.Filter buildMetadataFilter(Map<String, String> filters) {
+        if (filters == null || filters.isEmpty()) {
+            return null;
+        }
+        Points.Filter.Builder filterBuilder = Points.Filter.newBuilder();
+        filters.forEach((key, value) ->
+                filterBuilder.addMust(
+                        Points.Condition.newBuilder()
+                                .setField(Points.FieldCondition.newBuilder()
+                                        .setKey(key)
+                                        .setMatch(Points.Match.newBuilder()
+                                                .setText(value)
+                                                .build())
+                                        .build())
+                                .build()));
+        return filterBuilder.build();
+    }
+
     private List<SearchResult> searchAllCollections(float[] vector, int limit, Map<String, String> filters) {
         try {
             List<String> allCollections = qdrantClient.listCollectionsAsync()
@@ -79,13 +107,18 @@ public class QdrantRepository {
             
             for (String collection : allCollections) {
                 try {
+                    Points.SearchPoints.Builder searchBuilder = Points.SearchPoints.newBuilder()
+                            .setCollectionName(collection)
+                            .addAllVector(toFloatList(vector))
+                            .setLimit(perCollectionLimit)
+                            .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build());
+                    Points.Filter filter = buildMetadataFilter(filters);
+                    if (filter != null) {
+                        searchBuilder.setFilter(filter);
+                    }
+
                     List<Points.ScoredPoint> results = qdrantClient.searchAsync(
-                            Points.SearchPoints.newBuilder()
-                                    .setCollectionName(collection)
-                                    .addAllVector(toFloatList(vector))
-                                    .setLimit(perCollectionLimit)
-                                    .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build())
-                                    .build()
+                            searchBuilder.build()
                     ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
 
                     for (Points.ScoredPoint point : results) {

@@ -81,9 +81,34 @@ public class McpHttpController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> handleMcpRequest(@RequestBody Map<String, Object> request) {
-        String method = (String) request.get("method");
-        Map<String, Object> params = (Map<String, Object>) request.get("params");
+        Object methodValue = request.get("method");
+        Object paramsValue = request.get("params");
         Object id = request.get("id");
+
+        // Wrong JSON types are protocol errors, not transport failures: answer with
+        // the JSON-RPC envelope instead of letting the cast escape as an HTTP 500.
+        if (methodValue != null && !(methodValue instanceof java.lang.String)) {
+            return ResponseEntity.ok(Map.of(
+                    "jsonrpc", "2.0",
+                    "id", id != null ? id : "null",
+                    "error", Map.of(
+                            "code", -32600,
+                            "message", "Invalid Request: 'method' must be a string"
+                    )
+            ));
+        }
+        if (paramsValue != null && !(paramsValue instanceof java.util.Map)) {
+            return ResponseEntity.ok(Map.of(
+                    "jsonrpc", "2.0",
+                    "id", id != null ? id : "null",
+                    "error", Map.of(
+                            "code", -32600,
+                            "message", "Invalid Request: 'params' must be an object"
+                    )
+            ));
+        }
+        String method = (java.lang.String) methodValue;
+        Map<String, Object> params = (Map<String, Object>) paramsValue;
 
         log.info("MCP request: method={}, id={}", method, id);
 

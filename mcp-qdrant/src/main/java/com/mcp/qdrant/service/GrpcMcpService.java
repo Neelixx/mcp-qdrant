@@ -90,6 +90,18 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         return builder.build();
     }
 
+    /**
+     * Resolves a client-supplied limit: non-positive values fall back to the
+     * default; anything above max is capped so a single request cannot force
+     * Qdrant to materialise an unbounded result set.
+     */
+    public static int clampLimit(int requested, int fallback, int max) {
+        if (requested <= 0) {
+            return fallback;
+        }
+        return Math.min(requested, max);
+    }
+
     @Override
     public void hybridSearch(HybridSearchRequest request, StreamObserver<HybridSearchResponse> responseObserver) {
         try {
@@ -102,8 +114,9 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             int collectionsSearched = 0;
             List<String> failedCollections = new ArrayList<>();
 
-            // Handle default limit (num_results) - default to 5 if not specified
-            int limit = request.hasLimit() && request.getLimit() > 0 ? request.getLimit() : 5;
+            // Handle default limit (num_results) - default to 5, cap at 100 so one
+            // client request cannot ask Qdrant to materialise the whole collection.
+            int limit = clampLimit(request.hasLimit() ? request.getLimit() : 0, 5, 100);
 
             // Determine if summarization should be used
             // Only summarize if: explicitly requested AND summarize model is configured/available
@@ -657,7 +670,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                               StreamObserver<ListDocumentsResponse> responseObserver) {
         try {
             String collectionName = request.getCollectionName();
-            int limit = request.getLimit() > 0 ? request.getLimit() : 100;
+            int limit = clampLimit(request.getLimit(), 100, 1000);
             int offset = request.getOffset() >= 0 ? request.getOffset() : 0;
             
             log.info("Listing documents from collection: '{}', offset: {}, limit: {}", 

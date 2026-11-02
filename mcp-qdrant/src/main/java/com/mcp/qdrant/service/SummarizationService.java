@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +34,10 @@ public class SummarizationService {
         this.qdrantProperties = qdrantProperties;
         this.embeddingProperties = embeddingProperties;
         this.objectMapper = objectMapper;
-        this.restTemplate = new RestTemplate();
+        // Bound the HTTP call: the LLM runs on the same Ollama service as the embeddings.
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
+        requestFactory.setReadTimeout(java.time.Duration.ofMillis(embeddingProperties.getTimeoutMs()));
+        this.restTemplate = new RestTemplate(requestFactory);
     }
 
     public String summarize(String query, List<SearchResult> results) {
