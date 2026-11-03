@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -296,23 +295,10 @@ public class QdrantRepository {
     }
 
     /**
-     * Full, sorted document list for a collection (or for all collections), read
-     * from and written back to that collection's own cache region. The cache is
-     * keyed by collection name only, so paging is applied to the cached list
-     * instead of re-scanning the collection for every offset/limit request.
+     * Full, sorted document list for a collection (or for all collections).
+     * offset/limit are applied by the caller to this full list.
      */
     private List<DocumentInfo> listAllDocuments(String collectionName) {
-        Cache listCache = cacheConfig.getDocumentListCache(collectionName);
-        String cacheKey = collectionName != null && !collectionName.isEmpty() ? collectionName : "all";
-        if (listCache != null) {
-            Object cached = listCache.get(cacheKey);
-            if (cached != null) {
-                @SuppressWarnings("unchecked")
-                List<DocumentInfo> hit = (List<DocumentInfo>) cached;
-                return hit;
-            }
-        }
-
         Map<String, DocumentInfo> documents = new HashMap<>();
         
         try {
@@ -375,9 +361,6 @@ public class QdrantRepository {
                 .sorted((a, b) -> a.getDocumentId().compareTo(b.getDocumentId()))
                 .collect(Collectors.toList());
         
-        if (listCache != null) {
-            listCache.put(cacheKey, allDocuments);
-        }
         return allDocuments;
     }
 
