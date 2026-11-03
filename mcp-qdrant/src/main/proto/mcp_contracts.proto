@@ -35,6 +35,8 @@ message HybridSearchResponse {
   int32 collections_searched = 4;
   repeated DocumentSource sources = 5;
   repeated string failed_collections = 6;
+  bool success = 7;
+  string error_message = 8;
 }
 
 message DocumentSource {

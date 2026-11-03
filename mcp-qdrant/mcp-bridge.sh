@@ -2,7 +2,13 @@
 # Wrapper script for mcp-bridge.py with logging
 
 LOG_DIR="/tmp/mcp-qdrant-logs"
-mkdir -p "$LOG_DIR"
+if ! mkdir -p "$LOG_DIR"; then
+    echo "ERROR: could not create log directory $LOG_DIR" >&2
+    exit 1
+fi
+
+# Keep the log directory bounded: drop bridge logs older than 7 days
+find "$LOG_DIR" -name '*.log' -mtime +7 -delete
 
 # Timestamp for this run
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)

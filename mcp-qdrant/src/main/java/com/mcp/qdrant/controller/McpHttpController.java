@@ -88,24 +88,10 @@ public class McpHttpController {
         // Wrong JSON types are protocol errors, not transport failures: answer with
         // the JSON-RPC envelope instead of letting the cast escape as an HTTP 500.
         if (methodValue != null && !(methodValue instanceof java.lang.String)) {
-            return ResponseEntity.ok(Map.of(
-                    "jsonrpc", "2.0",
-                    "id", id != null ? id : "null",
-                    "error", Map.of(
-                            "code", -32600,
-                            "message", "Invalid Request: 'method' must be a string"
-                    )
-            ));
+            return ResponseEntity.ok(jsonRpcError(id, -32600, "Invalid Request: 'method' must be a string"));
         }
         if (paramsValue != null && !(paramsValue instanceof java.util.Map)) {
-            return ResponseEntity.ok(Map.of(
-                    "jsonrpc", "2.0",
-                    "id", id != null ? id : "null",
-                    "error", Map.of(
-                            "code", -32600,
-                            "message", "Invalid Request: 'params' must be an object"
-                    )
-            ));
+            return ResponseEntity.ok(jsonRpcError(id, -32600, "Invalid Request: 'params' must be an object"));
         }
         String method = (java.lang.String) methodValue;
         Map<String, Object> params = (Map<String, Object>) paramsValue;
@@ -115,14 +101,7 @@ public class McpHttpController {
         // Validate required fields
         if (method == null || method.isEmpty()) {
             log.error("MCP request missing required 'method' field");
-            return ResponseEntity.ok(Map.of(
-                    "jsonrpc", "2.0",
-                    "id", id != null ? id : "null",
-                    "error", Map.of(
-                            "code", -32600,
-                            "message", "Invalid Request: missing required 'method' field"
-                    )
-            ));
+            return ResponseEntity.ok(jsonRpcError(id, -32600, "Invalid Request: missing required 'method' field"));
         }
 
         try {
@@ -140,15 +119,35 @@ public class McpHttpController {
         } catch (Exception e) {
             log.error("MCP error: {}", e.getMessage(), e);
             String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error";
-            return ResponseEntity.ok(Map.of(
-                    "jsonrpc", "2.0",
-                    "id", id != null ? id : "null",
-                    "error", Map.of(
-                            "code", -32603,
-                            "message", errorMessage
-                    )
-            ));
+            return ResponseEntity.ok(jsonRpcError(id, -32603, errorMessage));
         }
+    }
+
+    // JSON-RPC error envelope. The body is a mutable map so a missing request id
+    // serializes as JSON null instead of the string "null".
+    private Map<String, Object> jsonRpcError(java.lang.Object id, int code, String message) {
+        Map<String, Object> body = new java.util.HashMap<>();
+        body.put("jsonrpc", "2.0");
+        body.put("id", id);
+        body.put("error", Map.of("code", code, "message", message));
+        return body;
+    }
+
+    // JSON numbers arrive as Long, so intValue() silently wraps values above 2^31.
+    // Read through longValue() and clamp into the documented protocol range;
+    // null or non-number values fall back to the caller's default.
+    public static int toInt(java.lang.Object value, int fallback, int min, int max) {
+        if (value instanceof java.lang.Number n) {
+            long clamped = n.longValue();
+            if (clamped < min) {
+                return min;
+            }
+            if (clamped > max) {
+                return max;
+            }
+            return (int) clamped;
+        }
+        return fallback;
     }
 
     private Object dispatchMethod(String method, Map<String, Object> params) {
@@ -281,8 +280,7 @@ public class McpHttpController {
                     "inputSchema", Map.of(
                         "type", "object",
                         "properties", Map.of(
-                            "collectionName", Map.of("type", "string"),
-                            "backupPath", Map.of("type", "string")
+                            "collectionName", Map.of("type", "string")
                         ),
                         "required", java.util.List.of("collectionName")
                     )
@@ -381,7 +379,8 @@ public class McpHttpController {
                                 "totalDocuments", c.getTotalDocuments(),
                                 "embeddingModel", c.getEmbeddingModel()
                         ))
-                        .toList()
+                        .toList(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -402,7 +401,8 @@ public class McpHttpController {
                         "vectorDimension", response.getInfo().getVectorDimension(),
                         "distanceMetric", response.getInfo().getDistanceMetric(),
                         "status", response.getInfo().getStatus()
-                )
+                ),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -411,7 +411,7 @@ public class McpHttpController {
         if (queryText == null || queryText.isEmpty()) {
             throw new IllegalArgumentException("queryText is required");
         }
-        int limit = params.getOrDefault("limit", 5) instanceof Number n ? n.intValue() : 5;
+        int limit = toInt(params.get("limit"), 5, 1, 100);
         boolean summarize = params.getOrDefault("summarize", false) instanceof Boolean b ? b : false;
 
         HybridSearchRequest.Builder builder = HybridSearchRequest.newBuilder()
@@ -427,6 +427,7 @@ public class McpHttpController {
         HybridSearchResponse response = stub.hybridSearch(builder.build());
 
         return Map.of(
+                "success", response.getSuccess(),
                 "results", response.getResultsList().stream()
                         .map(r -> Map.of(
                                 "id", r.getId(),
@@ -439,7 +440,8 @@ public class McpHttpController {
                 "summary", response.getSummary(),
                 "fallbackUsed", response.getFallbackUsed(),
                 "collectionsSearched", response.getCollectionsSearched(),
-                "failedCollections", response.getFailedCollectionsList()
+                "failedCollections", response.getFailedCollectionsList(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -459,8 +461,8 @@ public class McpHttpController {
             targetCollections = java.util.Collections.emptyList();
         }
 
-        int chunkSize = params.getOrDefault("chunkSize", 512) instanceof Number n ? n.intValue() : 512;
-        int chunkOverlap = params.getOrDefault("chunkOverlap", 50) instanceof Number n ? n.intValue() : 50;
+        int chunkSize = toInt(params.get("chunkSize"), 512, 0, 100000);
+        int chunkOverlap = toInt(params.get("chunkOverlap"), 50, 0, 100000);
 
         IngestDocumentRequest.Builder builder = IngestDocumentRequest.newBuilder()
                 .setDocumentId(documentId)
@@ -470,7 +472,7 @@ public class McpHttpController {
                         com.mcp.qdrant.proto.ChunkingConfig.newBuilder()
                                 .setChunkSize(chunkSize)
                                 .setChunkOverlap(chunkOverlap)
-                                .setSeparator("\\n\\n")
+                                .setSeparator("\n\n")
                                 .build()
                 );
 
@@ -495,7 +497,9 @@ public class McpHttpController {
         if (collectionName == null || collectionName.isEmpty()) {
             throw new IllegalArgumentException("collectionName is required");
         }
-        int dimension = params.getOrDefault("dimension", 768) instanceof Number n ? n.intValue() : 768;
+        // 0 means "not specified": the gRPC handler substitutes the configured
+        // embedding dimension, so the HTTP bridge must not hardcode 768 here.
+        int dimension = toInt(params.get("dimension"), 0, 0, 65536);
         String distance = (String) params.getOrDefault("distance", "Cosine");
 
         CreateCollectionRequest request = CreateCollectionRequest.newBuilder()
@@ -508,7 +512,8 @@ public class McpHttpController {
 
         return Map.of(
                 "success", response.getSuccess(),
-                "collectionName", response.getCollectionName()
+                "collectionName", response.getCollectionName(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -526,7 +531,8 @@ public class McpHttpController {
 
         return Map.of(
                 "success", response.getSuccess(),
-                "collectionName", response.getCollectionName()
+                "collectionName", response.getCollectionName(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -535,11 +541,8 @@ public class McpHttpController {
         if (collectionName == null || collectionName.isEmpty()) {
             throw new IllegalArgumentException("collectionName is required");
         }
-        String backupPath = (String) params.getOrDefault("backupPath", "");
-
         BackupCollectionRequest request = BackupCollectionRequest.newBuilder()
                 .setCollectionName(collectionName)
-                .setBackupPath(backupPath)
                 .build();
 
         BackupCollectionResponse response = stub.backupCollection(request);
@@ -580,7 +583,8 @@ public class McpHttpController {
         return Map.of(
                 "success", response.getSuccess(),
                 "collectionName", response.getCollectionName(),
-                "pointsRestored", response.getPointsRestored()
+                "pointsRestored", response.getPointsRestored(),
+                "errorMessage", response.getErrorMessage()
         );
     }
 
@@ -590,8 +594,8 @@ public class McpHttpController {
         if (collectionName == null) {
             collectionName = "";
         }
-        int limit = params.getOrDefault("limit", 100) instanceof Number n ? n.intValue() : 100;
-        int offset = params.getOrDefault("offset", 0) instanceof Number n ? n.intValue() : 0;
+        int limit = toInt(params.get("limit"), 100, 1, 1000);
+        int offset = toInt(params.get("offset"), 0, 0, java.lang.Integer.MAX_VALUE);
 
         ListDocumentsRequest request = ListDocumentsRequest.newBuilder()
                 .setCollectionName(collectionName)

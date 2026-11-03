@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mcp.qdrant.chunker.TextChunker;
 import com.mcp.qdrant.model.DocumentChunk;
+import com.mcp.qdrant.proto.ChunkingConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
 /**
  * Regression tests for TextChunker: a single oversized paragraph (markdown table,
  * fenced code block) must be hard-split so no chunk exceeds the configured bound,
- * and no content may be lost.
+ * and no content may be lost. A client-supplied separator must also be treated as
+ * a literal string, never as a regular expression.
  */
 public class TextChunkerUnitTest {
 
@@ -53,5 +55,33 @@ public class TextChunkerUnitTest {
         assertEquals(1, chunks.size());
         assertEquals("First paragraph text. Second paragraph text. Third paragraph text.",
                 chunks.get(0).getContent());
+    }
+
+    @Test
+    void testSeparatorParenthesisIsTreatedLiterally() {
+        // As a regular expression "(" is an uncaptured group and would throw
+        // PatternSyntaxException out of ingestDocument; as a literal it must not.
+        String content = "alpha(beta)gamma(delta)";
+        ChunkingConfig config = ChunkingConfig.newBuilder()
+                .setSeparator("(")
+                .build();
+
+        List<DocumentChunk> chunks = new TextChunker().chunk(content, null, config);
+        assertEquals(1, chunks.size());
+        assertEquals("alpha beta)gamma delta)", chunks.get(0).getContent());
+    }
+
+    @Test
+    void testSeparatorDotSplitsOnLiteralDotsOnly() {
+        // Regex "." matches every character and would destroy the text; literal "."
+        // splits only at the dots.
+        String content = "First.Sentence.Second.Sentence";
+        ChunkingConfig config = ChunkingConfig.newBuilder()
+                .setSeparator(".")
+                .build();
+
+        List<DocumentChunk> chunks = new TextChunker().chunk(content, null, config);
+        assertEquals(1, chunks.size());
+        assertEquals("First Sentence Second Sentence", chunks.get(0).getContent());
     }
 }

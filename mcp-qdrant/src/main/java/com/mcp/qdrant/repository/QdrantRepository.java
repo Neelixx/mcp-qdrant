@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -102,6 +103,12 @@ public class QdrantRepository {
             List<String> allCollections = qdrantClient.listCollectionsAsync()
                     .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
             
+            // Nothing to divide by below: an empty collection set is an empty result,
+            // not a division by zero.
+            if (allCollections.isEmpty()) {
+                return new ArrayList<SearchResult>();
+            }
+            
             List<SearchResult> allResults = new ArrayList<>();
             int perCollectionLimit = Math.max(limit / allCollections.size(), 10);
             
@@ -148,8 +155,8 @@ public class QdrantRepository {
     }
 
     @CacheEvict(value = {"documentListCache", "documentInfoCache"}, allEntries = true)
-    public int batchIndex(String collectionName, String documentId, List<DocumentChunk> chunks, List<float[]> vectors, int dimension) {
-        // Add at start of batchIndex() method (line 60):
+    public int batchIndex(String collectionName, String documentId, List<DocumentChunk> chunks, List<float[]> vectors,
+                         int dimension, int batchSize) {
         if (chunks.size() != vectors.size()) {
             throw new IllegalArgumentException("Chunks and vectors must have same size: chunks=" 
                 + chunks.size() + ", vectors=" + vectors.size());
@@ -185,15 +192,26 @@ public class QdrantRepository {
                         .build());
             }
 
-            qdrantClient.upsertAsync(
-                    Points.UpsertPoints.newBuilder()
-                            .setCollectionName(collectionName)
-                            .addAllPoints(points)
-                            .build()
-            ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+            // Upsert in bounded batches: one request carrying every chunk can exceed
+            // the gRPC message or server batch limit and fail as a whole.
+            int effectiveBatchSize = batchSize > 0 ? batchSize : points.size();
+            int indexed = 0;
+            for (int start = 0; start < points.size(); start += effectiveBatchSize) {
+                int end = Math.min(start + effectiveBatchSize, points.size());
+                qdrantClient.upsertAsync(
+                        Points.UpsertPoints.newBuilder()
+                                .setCollectionName(collectionName)
+                                .addAllPoints(points.subList(start, end))
+                                .build()
+                ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+                indexed += end - start;
+            }
 
-            log.info("Indexed {} chunks to collection {}", chunks.size(), collectionName);
-            return chunks.size();
+            // The collection's contents changed: drop its cached document lists.
+            cacheConfig.clearCollectionCaches(collectionName);
+
+            log.info("Indexed {} chunks to collection {}", indexed, collectionName);
+            return indexed;
 
         } catch (Exception e) {
             log.error("Batch indexing failed for collection {}: {}", collectionName, e.getMessage());
@@ -265,8 +283,36 @@ public class QdrantRepository {
      * @param offset number of documents to skip (for pagination)
      * @return sorted list of DocumentInfo containing collection and chunk count
      */
-@Cacheable(value = "documentListCache", key = "#collectionName + '-' + #limit + '-' + #offset")
     public List<DocumentInfo> listDocuments(String collectionName, int limit, int offset) {
+        List<DocumentInfo> allDocuments = listAllDocuments(collectionName);
+        int skip = Math.max(offset, 0);
+        if (skip == 0 && limit >= allDocuments.size()) {
+            return allDocuments;
+        }
+        return allDocuments.stream()
+                .skip(skip)
+                .limit(Math.max(limit, 0))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Full, sorted document list for a collection (or for all collections), read
+     * from and written back to that collection's own cache region. The cache is
+     * keyed by collection name only, so paging is applied to the cached list
+     * instead of re-scanning the collection for every offset/limit request.
+     */
+    private List<DocumentInfo> listAllDocuments(String collectionName) {
+        Cache listCache = cacheConfig.getDocumentListCache(collectionName);
+        String cacheKey = collectionName != null && !collectionName.isEmpty() ? collectionName : "all";
+        if (listCache != null) {
+            Object cached = listCache.get(cacheKey);
+            if (cached != null) {
+                @SuppressWarnings("unchecked")
+                List<DocumentInfo> hit = (List<DocumentInfo>) cached;
+                return hit;
+            }
+        }
+
         Map<String, DocumentInfo> documents = new HashMap<>();
         
         try {
@@ -324,12 +370,15 @@ public class QdrantRepository {
             throw new RuntimeException("Failed to list documents: " + e.getMessage(), e);
         }
         
-        // Sort by document_id and apply offset/limit
-        return documents.values().stream()
+        // Sort by document_id; offset/limit are applied by the caller
+        List<DocumentInfo> allDocuments = documents.values().stream()
                 .sorted((a, b) -> a.getDocumentId().compareTo(b.getDocumentId()))
-                .skip(offset)
-                .limit(limit)
                 .collect(Collectors.toList());
+        
+        if (listCache != null) {
+            listCache.put(cacheKey, allDocuments);
+        }
+        return allDocuments;
     }
 
     /**
@@ -342,7 +391,6 @@ public class QdrantRepository {
     @CacheEvict(value = {"documentListCache", "documentInfoCache"}, allEntries = true)
     public int deleteDocument(String documentId, String collectionName) {
         int deletedCount = 0;
-        String targetCollection = null;
         
         try {
             List<String> collectionsToSearch;
@@ -353,83 +401,68 @@ public class QdrantRepository {
                         .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
             }
             
+            // Restrict both the scroll and the delete to this document_id so Qdrant
+            // returns only the matching points instead of paging the whole collection.
+            Points.Filter filter = buildMetadataFilter(Map.of("document_id", documentId));
+            
             for (String collection : collectionsToSearch) {
-                try {
-                    // Find all points with this document_id
-                    List<Points.PointId> pointsToDelete = new ArrayList<>();
-                    
-                    Points.ScrollPoints.Builder scrollBuilder = Points.ScrollPoints.newBuilder()
-                            .setCollectionName(collection)
-                            .setLimit(1000)
-                            .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build());
-                    
-                    Points.PointId nextOffset = null;
-                    boolean hasMore = true;
-                    
-                    while (hasMore) {
-                        if (nextOffset != null) {
-                            scrollBuilder.setOffset(nextOffset);
-                        }
-                        
-                        Points.ScrollResponse response = qdrantClient.scrollAsync(scrollBuilder.build())
-                                .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
-                        
-                        for (Points.RetrievedPoint point : response.getResultList()) {
-                            Map<String, io.qdrant.client.grpc.JsonWithInt.Value> payload = point.getPayloadMap();
-                            io.qdrant.client.grpc.JsonWithInt.Value docIdValue = payload.get("document_id");
-                            
-                            if (docIdValue != null && docIdValue.hasStringValue() 
-                                    && docIdValue.getStringValue().equals(documentId)) {
-                                pointsToDelete.add(point.getId());
-                            }
-                        }
-                        
-                        hasMore = response.hasNextPageOffset();
-                        if (hasMore) {
-                            nextOffset = response.getNextPageOffset();
-                        }
+                // Find all points with this document_id
+                List<Points.PointId> pointsToDelete = new ArrayList<>();
+                
+                Points.ScrollPoints.Builder scrollBuilder = Points.ScrollPoints.newBuilder()
+                        .setCollectionName(collection)
+                        .setLimit(1000)
+                        .setFilter(filter);
+                
+                Points.PointId nextOffset = null;
+                boolean hasMore = true;
+                
+                while (hasMore) {
+                    if (nextOffset != null) {
+                        scrollBuilder.setOffset(nextOffset);
                     }
                     
-                    // Delete points using payload filter on document_id
-                    try {
-                        Points.Filter filter = Points.Filter.newBuilder()
-                                .addMust(
-                                        Points.Condition.newBuilder()
-                                                .setField(Points.FieldCondition.newBuilder()
-                                                        .setKey("document_id")
-                                                        .setMatch(Points.Match.newBuilder()
-                                                                .setText(documentId)
-                                                                .build()
-                                                        )
-                                                        .build()
-                                                )
-                                                .build()
-                                )
-                                .build();
-                        
-                        Points.PointsSelector selector = Points.PointsSelector.newBuilder()
-                                .setFilter(filter)
-                                .build();
-                        
-                        qdrantClient.deleteAsync(
-                                Points.DeletePoints.newBuilder()
-                                        .setCollectionName(collection)
-                                        .setPoints(selector)
-                                        .build()
-                        ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
-                        
-                        deletedCount += pointsToDelete.size();
-                        targetCollection = collection;
-                        log.info("Deleted {} chunks for document {} from collection {}", 
-                                pointsToDelete.size(), documentId, collection);
-                    } catch (Exception e) {
-                        log.error("Failed to delete points for document {}: {}", documentId, e.getMessage());
+                    Points.ScrollResponse response = qdrantClient.scrollAsync(scrollBuilder.build())
+                            .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+                    
+                    for (Points.RetrievedPoint point : response.getResultList()) {
+                        pointsToDelete.add(point.getId());
                     }
                     
-                } catch (Exception e) {
-                    log.error("Failed to delete document {} from collection {}: {}", 
-                            documentId, collection, e.getMessage());
+                    hasMore = response.hasNextPageOffset();
+                    if (hasMore) {
+                        nextOffset = response.getNextPageOffset();
+                    }
                 }
+                
+                if (pointsToDelete.isEmpty()) {
+                    continue;
+                }
+                
+                // Delete points using payload filter on document_id
+                Points.PointsSelector selector = Points.PointsSelector.newBuilder()
+                        .setFilter(filter)
+                        .build();
+                
+                // The delete's outcome propagates to the caller: a failed delete must
+                // not be reported as a document that was simply not there.
+                qdrantClient.deleteAsync(
+                        Points.DeletePoints.newBuilder()
+                                .setCollectionName(collection)
+                                .setPoints(selector)
+                                .build()
+                ).get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
+                
+                // The gRPC delete response carries only an operation status, so the
+                // count comes from the server-filtered match set above, not from a
+                // client-side tally over the whole collection.
+                deletedCount += pointsToDelete.size();
+                log.info("Deleted {} chunks for document {} from collection {}",
+                        pointsToDelete.size(), documentId, collection);
+            }
+            
+            if (deletedCount > 0) {
+                cacheConfig.clearCollectionCaches(collectionName);
             }
             
             if (deletedCount == 0) {
@@ -464,10 +497,15 @@ public class QdrantRepository {
             
             for (String collection : collectionsToSearch) {
                 try {
+                    // Let Qdrant do the matching: the must-condition on document_id means
+                    // the scroll returns only this document's chunks, not the whole
+                    // collection, and no payload has to be transferred to check it.
+                    Points.Filter filter = buildMetadataFilter(Map.of("document_id", documentId));
+                    
                     Points.ScrollPoints.Builder scrollBuilder = Points.ScrollPoints.newBuilder()
                             .setCollectionName(collection)
                             .setLimit(1000)
-                            .setWithPayload(Points.WithPayloadSelector.newBuilder().setEnable(true).build());
+                            .setFilter(filter);
                     
                     Points.PointId nextOffset = null;
                     boolean hasMore = true;
@@ -481,15 +519,7 @@ public class QdrantRepository {
                         Points.ScrollResponse response = qdrantClient.scrollAsync(scrollBuilder.build())
                                 .get(properties.getTimeoutMs(), TimeUnit.MILLISECONDS);
                         
-                        for (Points.RetrievedPoint point : response.getResultList()) {
-                            Map<String, io.qdrant.client.grpc.JsonWithInt.Value> payload = point.getPayloadMap();
-                            io.qdrant.client.grpc.JsonWithInt.Value docIdValue = payload.get("document_id");
-                            
-                            if (docIdValue != null && docIdValue.hasStringValue() 
-                                    && docIdValue.getStringValue().equals(documentId)) {
-                                chunkCount++;
-                            }
-                        }
+                        chunkCount += response.getResultList().size();
                         
                         hasMore = response.hasNextPageOffset();
                         if (hasMore) {
@@ -518,13 +548,13 @@ public class QdrantRepository {
     /**
      * Rebuilds the document cache by scanning all collections.
      * This evicts all existing cache entries and recalculates cache size
-     * based on document count: min(1000, totalDocuments).
+     * based on document count: max(1000, totalDocuments).
      *
      * @param collectionName specific collection, or null/empty for all
-     * @return total number of unique documents found
+     * @return documents found and the number of collections actually scanned
      */
     @CacheEvict(value = {"documentListCache", "documentInfoCache"}, allEntries = true)
-    public int rebuildDocumentCache(String collectionName) {
+    public DocumentScan rebuildDocumentCache(String collectionName) {
         log.info("Rebuilding document cache for collection: {}", 
                 collectionName != null && !collectionName.isEmpty() ? collectionName : "all");
         
@@ -560,13 +590,18 @@ public class QdrantRepository {
             log.info("Document cache rebuilt. Found {} documents across {} collections", 
                     allDocuments.size(), collectionsScanned);
             
-            return allDocuments.size();
+            return new DocumentScan(allDocuments.size(), collectionsScanned);
             
         } catch (Exception e) {
             log.error("Failed to rebuild document cache: {}", e.getMessage());
             throw new RuntimeException("Failed to rebuild document cache: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * What a document-cache rebuild actually looked at.
+     */
+    public record DocumentScan(int totalDocuments, int collectionsScanned) {}
 
     /**
      * Simple DTO for document information during listing

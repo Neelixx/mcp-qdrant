@@ -20,7 +20,9 @@ public class TextChunker {
 
     private static final int DEFAULT_CHUNK_SIZE = 512;
     private static final int DEFAULT_CHUNK_OVERLAP = 50;
-    private static final String DEFAULT_SEPARATOR = "\\n\\n";
+    // Separators are matched literally (Pattern.quote at the split site), so the
+    // default is two actual newlines, i.e. a blank-line paragraph boundary.
+    private static final String DEFAULT_SEPARATOR = "\n\n";
 
     public List<DocumentChunk> chunk(String content, Map<String, String> metadata, ChunkingConfig config) {
         int chunkSize = (config != null && config.getChunkSize() > 0) ? config.getChunkSize() : DEFAULT_CHUNK_SIZE;
@@ -74,12 +76,30 @@ public class TextChunker {
         return chunks;
     }
 
+    // Split on a LITERAL separator (the client-supplied ChunkingConfig.separator
+    // is client data, not a pattern: no ReDoS, no PatternSyntaxException).
+    private List<String> splitLiteral(String content, String separator) {
+        List<String> parts = new ArrayList<>();
+        if (separator == null || separator.isEmpty()) {
+            parts.add(content);
+            return parts;
+        }
+        int start = 0;
+        int idx;
+        while ((idx = content.indexOf(separator, start)) >= 0) {
+            parts.add(content.substring(start, idx));
+            start = idx + separator.length();
+        }
+        parts.add(content.substring(start));
+        return parts;
+    }
+
     // Split the content into paragraphs, hard-splitting any paragraph that exceeds
     // chunkSize so no oversized chunk (e.g. a whole markdown table or code block)
     // reaches the embedding service and overflows the model context.
     private List<String> splitIntoFitParagraphs(String content, int chunkSize, String separator) {
         List<String> result = new ArrayList<>();
-        for (String paragraph : content.split(separator)) {
+        for (String paragraph : splitLiteral(content, separator)) {
             paragraph = paragraph.trim();
             if (paragraph.isEmpty()) {
                 continue;

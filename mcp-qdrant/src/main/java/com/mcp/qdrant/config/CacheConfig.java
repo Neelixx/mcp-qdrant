@@ -65,18 +65,30 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        cacheManager = new CaffeineCacheManager();
-        
-        // Configure default cache
-        cacheManager.setCaffeine(createCaffeineConfig(DEFAULT_TTL_MINUTES, DEFAULT_MAX_SIZE));
-        
-        // Register all known cache names (will be created dynamically as needed)
-        List<String> cacheNames = new ArrayList<>();
-        cacheNames.add(DOCUMENT_LIST_CACHE_PREFIX);
-        cacheNames.add(DOCUMENT_INFO_CACHE_PREFIX);
-        cacheManager.setCacheNames(cacheNames);
-        registeredCacheNames.addAll(cacheNames);
-        
+        return ensureCacheManager();
+    }
+    
+    /**
+     * Build the cache manager on first use. The bean above normally creates it at
+     * startup; this also lets the per-collection cache regions be looked up
+     * directly from code that runs before Spring has resolved the bean.
+     */
+    private CaffeineCacheManager ensureCacheManager() {
+        if (cacheManager == null) {
+            CaffeineCacheManager manager = new CaffeineCacheManager();
+            
+            // Configure default cache
+            manager.setCaffeine(createCaffeineConfig(DEFAULT_TTL_MINUTES, DEFAULT_MAX_SIZE));
+            
+            // Register all known cache names (will be created dynamically as needed)
+            List<String> cacheNames = new ArrayList<>();
+            cacheNames.add(DOCUMENT_LIST_CACHE_PREFIX);
+            cacheNames.add(DOCUMENT_INFO_CACHE_PREFIX);
+            manager.setCacheNames(cacheNames);
+            registeredCacheNames.addAll(cacheNames);
+            
+            cacheManager = manager;
+        }
         return cacheManager;
     }
     
@@ -98,6 +110,37 @@ public class CacheConfig {
             return DOCUMENT_INFO_CACHE_PREFIX;
         }
         return DOCUMENT_INFO_CACHE_PREFIX + "-" + collectionName;
+    }
+    
+    /**
+     * Resolve the document list cache region for a collection, or null when that
+     * collection has no registered cache region.
+     */
+    public Cache getDocumentListCache(String collectionName) {
+        return ensureCacheManager().getCache(getDocumentListCacheName(collectionName));
+    }
+    
+    /**
+     * Resolve the document info cache region for a collection, or null when that
+     * collection has no registered cache region.
+     */
+    public Cache getDocumentInfoCache(String collectionName) {
+        return ensureCacheManager().getCache(getDocumentInfoCacheName(collectionName));
+    }
+    
+    /**
+     * Drop all cached entries for a collection, keeping its cache regions
+     * registered. Used when a collection's contents change.
+     */
+    public void clearCollectionCaches(String collectionName) {
+        Cache listCache = getDocumentListCache(collectionName);
+        if (listCache != null) {
+            listCache.clear();
+        }
+        Cache infoCache = getDocumentInfoCache(collectionName);
+        if (infoCache != null) {
+            infoCache.clear();
+        }
     }
     
     /**
@@ -151,8 +194,9 @@ public class CacheConfig {
         Caffeine<Object, Object> caffeine = createCaffeineConfig(ttlMinutes, newSize);
         
         // Register the new cache configuration
-        cacheManager.registerCustomCache(listCacheName, caffeine.build());
-        cacheManager.registerCustomCache(infoCacheName, caffeine.build());
+        CaffeineCacheManager manager = ensureCacheManager();
+        manager.registerCustomCache(listCacheName, caffeine.build());
+        manager.registerCustomCache(infoCacheName, caffeine.build());
         registeredCacheNames.add(listCacheName);
         registeredCacheNames.add(infoCacheName);
     }
@@ -162,10 +206,20 @@ public class CacheConfig {
      */
     private void clearCache(String cacheName) {
         if (registeredCacheNames.contains(cacheName)) {
-            Cache cache = cacheManager.getCache(cacheName);
+            Cache cache = ensureCacheManager().getCache(cacheName);
             if (cache != null) {
                 cache.clear();
             }
+        }
+    }
+
+    /**
+     * Remove a cache region from the underlying cache manager so its Caffeine
+     * instance becomes unreachable and can be collected.
+     */
+    private void unregisterCache(String cacheName) {
+        if (registeredCacheNames.remove(cacheName)) {
+            ensureCacheManager().removeCache(cacheName);
         }
     }
 
@@ -177,13 +231,11 @@ public class CacheConfig {
         String listCacheName = getDocumentListCacheName(collectionName);
         String infoCacheName = getDocumentInfoCacheName(collectionName);
         
-        // Clear and remove the caches if they exist
-        clearCache(listCacheName);
-        clearCache(infoCacheName);
-        
-        // Remove from registered cache names
-        registeredCacheNames.remove(listCacheName);
-        registeredCacheNames.remove(infoCacheName);
+        // Drop the cache regions themselves, not just their entries: leaving the
+        // Caffeine instances registered would grow the manager unboundedly as
+        // collections are created, reconfigured, and deleted.
+        unregisterCache(listCacheName);
+        unregisterCache(infoCacheName);
         
         // Remove from collection cache configs
         collectionCacheConfigs.remove(collectionName);
@@ -202,8 +254,9 @@ public class CacheConfig {
         Caffeine<Object, Object> caffeine = createCaffeineConfig(DEFAULT_TTL_MINUTES, DEFAULT_MAX_SIZE);
         
         // Register the caches
-        cacheManager.registerCustomCache(listCacheName, caffeine.build());
-        cacheManager.registerCustomCache(infoCacheName, caffeine.build());
+        CaffeineCacheManager manager = ensureCacheManager();
+        manager.registerCustomCache(listCacheName, caffeine.build());
+        manager.registerCustomCache(infoCacheName, caffeine.build());
         registeredCacheNames.add(listCacheName);
         registeredCacheNames.add(infoCacheName);
         

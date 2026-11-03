@@ -12,7 +12,7 @@ mcp:
   qdrant:
     host: localhost
     port: 6334
-    use-tls: false
+    use-tls: ${MCP_QDRANT_USE_TLS:false}
     api-key: ${QDRANT_API_KEY:}
     timeout-ms: 5000
     collections:
@@ -32,5 +32,5 @@ grpc:
 
 logging:
   level:
-    com.vpms.mcp.qdrant: INFO
+    com.mcp.qdrant: INFO
     io.qdrant.client: WARN

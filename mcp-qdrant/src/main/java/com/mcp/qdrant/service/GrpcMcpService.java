@@ -91,6 +91,29 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     }
 
     /**
+     * Resolves a client-supplied distance metric name to the Qdrant enum,
+     * case-insensitively. A null/blank name means "not specified" and keeps the
+     * caller's default; anything that is not one of the metrics the Qdrant
+     * Distance enum supports is rejected, so a typo cannot silently index a
+     * collection with the wrong distance.
+     */
+    public static Collections.Distance resolveDistance(String distance, Collections.Distance fallback) {
+        if (distance == null || distance.trim().isEmpty()) {
+            return fallback;
+        }
+        String name = distance.trim().toLowerCase();
+        List<String> supported = new ArrayList<>();
+        for (Collections.Distance candidate : Collections.Distance.values()) {
+            supported.add(candidate.name());
+            if (candidate.name().toLowerCase().equals(name)) {
+                return candidate;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported distance metric: '" + distance
+                + "' (supported: " + String.join(", ", supported) + ")");
+    }
+
+    /**
      * Resolves a client-supplied limit: non-positive values fall back to the
      * default; anything above max is capped so a single request cannot force
      * Qdrant to materialise an unbounded result set.
@@ -114,9 +137,12 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             int collectionsSearched = 0;
             List<String> failedCollections = new ArrayList<>();
 
-            // Handle default limit (num_results) - default to 5, cap at 100 so one
-            // client request cannot ask Qdrant to materialise the whole collection.
-            int limit = clampLimit(request.hasLimit() ? request.getLimit() : 0, 5, 100);
+            // Handle default limit (num_results): the configured search limit is the
+            // fallback when the client does not ask for one, defaulting to 5 when the
+            // configured value is unset; anything above 100 is capped so one client
+            // request cannot ask Qdrant to materialise the whole collection.
+            int configuredLimit = qdrantProperties.getSearchLimit() > 0 ? qdrantProperties.getSearchLimit() : 5;
+            int limit = clampLimit(request.hasLimit() ? request.getLimit() : 0, configuredLimit, 100);
 
             // Determine if summarization should be used
             // Only summarize if: explicitly requested AND summarize model is configured/available
@@ -173,6 +199,21 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     .limit(limit)
                     .collect(Collectors.toList());
 
+            // Total failure means nothing could be searched at all: either there was
+            // nothing to search, or every collection we tried failed (search error or
+            // embedding generation for its model). Zero hits from a successful search
+            // is NOT a failure, so it keeps success=true.
+            int attemptedCollections = collectionsToSearch.size();
+            boolean totalFailure = attemptedCollections == 0
+                    || (collectionsSearched == 0 && !failedCollections.isEmpty());
+            String searchError = null;
+            if (totalFailure) {
+                searchError = attemptedCollections == 0
+                        ? "No collections available to search"
+                        : "Search failed for all " + failedCollections.size() + " collections: "
+                                + String.join(", ", failedCollections);
+            }
+
             String summary = "";
             boolean fallbackUsed = false;
 
@@ -189,13 +230,16 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 log.info("Summarization skipped: embedding model not configured or empty");
             }
 
-            HybridSearchResponse response = buildResponse(sortedResults, summary, fallbackUsed, collectionsSearched, failedCollections);
+            HybridSearchResponse response = buildResponse(sortedResults, summary, fallbackUsed,
+                    collectionsSearched, failedCollections, !totalFailure, searchError);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
 
         } catch (Exception e) {
             log.error("Hybrid search failed: {}", e.getMessage(), e);
             responseObserver.onNext(HybridSearchResponse.newBuilder()
+                    .setSuccess(false)
+                    .setErrorMessage(e.getMessage())
                     .setFallbackUsed(true)
                     .build());
             responseObserver.onCompleted();
@@ -225,51 +269,79 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     request.hasChunkingConfig() ? request.getChunkingConfig() : null
             );
 
-            // Embed chunk-by-chunk so one failing chunk (e.g. one that overflows the
-            // embedding model context) cannot silently abort the whole document.
-            List<DocumentChunk> embeddedChunks = new ArrayList<>();
-            List<float[]> vectors = new ArrayList<>();
+            // Group target collections by the embedding model resolved for each one
+            // (falling back to the default model), mirroring hybridSearch: chunks have
+            // to be embedded with the model the collection uses for search, otherwise
+            // the stored vectors and the query vectors are not comparable.
+            Map<String, List<String>> collectionsByModel = new java.util.HashMap<>();
+            for (String collection : targetCollections) {
+                EmbeddingProperties.CollectionEmbeddingConfig config = embeddingProperties.getConfigForCollection(collection);
+                String modelName = (config != null && config.getModel() != null)
+                        ? config.getModel()
+                        : embeddingProperties.getModel();
+                collectionsByModel.computeIfAbsent(modelName, k -> new ArrayList<>()).add(collection);
+            }
+
+            int totalIndexed = 0;
+            int embeddedChunkCount = 0;
+            List<String> failedCollections = new ArrayList<>();
             List<String> embeddingErrors = new ArrayList<>();
-            for (DocumentChunk chunkObj : chunks) {
-                try {
-                    vectors.add(embeddingClient.embed(chunkObj.getContent()));
-                    embeddedChunks.add(chunkObj);
-                } catch (Exception e) {
-                    embeddingErrors.add("chunk " + chunkObj.getSequenceNumber() + ": " + e.getMessage());
-                    log.warn("Embedding failed for chunk {} of document {}: {}",
-                            chunkObj.getSequenceNumber(), request.getDocumentId(), e.getMessage());
+            for (Map.Entry<String, List<String>> entry : collectionsByModel.entrySet()) {
+                String modelName = entry.getKey();
+                List<DocumentChunk> modelChunks = new ArrayList<>();
+                List<float[]> modelVectors = new ArrayList<>();
+
+                // Embed chunk-by-chunk so one failing chunk (e.g. one that overflows the
+                // embedding model context) cannot silently abort the whole document.
+                for (DocumentChunk chunkObj : chunks) {
+                    try {
+                        modelVectors.add(embeddingClient.embedWithModel(chunkObj.getContent(), modelName));
+                        modelChunks.add(chunkObj);
+                    } catch (Exception e) {
+                        embeddingErrors.add("chunk " + chunkObj.getSequenceNumber() + " with model '"
+                                + modelName + "': " + e.getMessage());
+                        log.warn("Embedding failed for chunk {} of document {} with model {}: {}",
+                                chunkObj.getSequenceNumber(), request.getDocumentId(), modelName, e.getMessage());
+                    }
+                }
+
+                if (modelChunks.isEmpty()) {
+                    // Nothing embeddable for this model: every collection using it failed.
+                    failedCollections.addAll(entry.getValue());
+                    continue;
+                }
+                embeddedChunkCount = Math.max(embeddedChunkCount, modelChunks.size());
+
+                for (String collection : entry.getValue()) {
+                    try {
+                        // Make re-ingest idempotent: drop prior chunks for this document first.
+                        int removed = qdrantRepository.deleteDocument(request.getDocumentId(), collection);
+                        if (removed > 0) {
+                            log.info("Re-ingest cleanup: removed {} stale chunks for document {} from {}",
+                                    removed, request.getDocumentId(), collection);
+                        }
+                        int indexed = qdrantRepository.batchIndex(
+                                collection,
+                                request.getDocumentId(),
+                                modelChunks,
+                                modelVectors,
+                                embeddingProperties.getDimension(),
+                                embeddingProperties.getBatchSize()
+                        );
+                        totalIndexed += indexed;
+                    } catch (Exception e) {
+                        log.error("Indexing failed for collection {}: {}", collection, e.getMessage());
+                        failedCollections.add(collection);
+                    }
                 }
             }
-            if (embeddedChunks.isEmpty()) {
+
+            if (embeddedChunkCount == 0) {
                 throw new RuntimeException("No chunks could be embedded for document "
                         + request.getDocumentId() + ": "
                         + (embeddingErrors.isEmpty()
                                 ? "embedding service returned no vectors"
                                 : String.join("; ", embeddingErrors)));
-            }
-
-            int totalIndexed = 0;
-            List<String> failedCollections = new ArrayList<>();
-            for (String collection : targetCollections) {
-                try {
-                    // Make re-ingest idempotent: drop prior chunks for this document first.
-                    int removed = qdrantRepository.deleteDocument(request.getDocumentId(), collection);
-                    if (removed > 0) {
-                        log.info("Re-ingest cleanup: removed {} stale chunks for document {} from {}",
-                                removed, request.getDocumentId(), collection);
-                    }
-                    int indexed = qdrantRepository.batchIndex(
-                            collection,
-                            request.getDocumentId(),
-                            embeddedChunks,
-                            vectors,
-                            embeddingProperties.getDimension()
-                    );
-                    totalIndexed += indexed;
-                } catch (Exception e) {
-                    log.error("Indexing failed for collection {}: {}", collection, e.getMessage());
-                    failedCollections.add(collection);
-                }
             }
 
             IngestDocumentResponse.Builder responseBuilder = IngestDocumentResponse.newBuilder()
@@ -280,7 +352,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             if (!embeddingErrors.isEmpty()) {
                 responseBuilder.setErrorMessage(
                         String.join("; ", embeddingErrors)
-                        + " (" + embeddedChunks.size() + " of " + chunks.size() + " chunks indexed)");
+                        + " (" + embeddedChunkCount + " of " + chunks.size() + " chunks embedded)");
             }
             IngestDocumentResponse response = responseBuilder.build();
 
@@ -298,10 +370,17 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
     }
 
     private HybridSearchResponse buildResponse(List<SearchResult> results, String summary,
-                                                boolean fallbackUsed, int collectionsSearched, List<String> failedCollections) {
+                                                boolean fallbackUsed, int collectionsSearched,
+                                                List<String> failedCollections, boolean success,
+                                                String errorMessage) {
         HybridSearchResponse.Builder builder = HybridSearchResponse.newBuilder()
+                .setSuccess(success)
                 .setFallbackUsed(fallbackUsed)
                 .setCollectionsSearched(collectionsSearched);
+
+        if (errorMessage != null) {
+            builder.setErrorMessage(errorMessage);
+        }
 
         if (!failedCollections.isEmpty()) {
             builder.addAllFailedCollections(failedCollections);
@@ -356,13 +435,10 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             String collectionName = request.getCollectionName();
             int dimension = request.getDimension() > 0 ? request.getDimension() : embeddingProperties.getDimension();
             
-            Collections.Distance distance = Collections.Distance.Cosine;
-            if ("Euclid".equals(request.getDistance())) {
-                distance = Collections.Distance.Euclid;
-            } else if ("Dot".equals(request.getDistance())) {
-                distance = Collections.Distance.Dot;
-            }
-
+            // Reject anything that is not a supported distance metric instead of
+            // silently falling back to Cosine.
+            Collections.Distance distance = resolveDistance(request.getDistance(), Collections.Distance.Cosine);
+            
             Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
                     .setDistance(distance)
                     .setSize(dimension)
@@ -428,6 +504,10 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             
             ListCollectionsResponse.Builder responseBuilder = ListCollectionsResponse.newBuilder().setSuccess(true);
             
+            // Collections whose query config could not be read: the listing still
+            // returns them, but the response says which ones are incomplete.
+            List<String> configFailures = new ArrayList<>();
+            
             for (String name : collectionNames) {
                 // Get collection info from Qdrant
                 var collectionInfo = qdrantRepository.getQdrantClient().getCollectionInfoAsync(name)
@@ -446,6 +526,10 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 }
                 
                 CollectionQueryConfig queryConfig = fetchCollectionQueryConfig(name);
+                if (!queryConfig.success()) {
+                    log.warn("Could not read config for collection {}: {}", name, queryConfig.errorMessage());
+                    configFailures.add(name + ": " + queryConfig.errorMessage());
+                }
                 int vectorDimension = queryConfig.vectorDimension();
                 String distanceMetric = queryConfig.distanceMetric();
                 
@@ -457,7 +541,7 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                 
                 CollectionInfo info = CollectionInfo.newBuilder()
                         .setName(name)
-                        .setPointsCount((int) collectionInfo.getPointsCount())
+                        .setPointsCount((int) Math.min(Integer.MAX_VALUE, collectionInfo.getPointsCount()))
                         .setVectorDimension(vectorDimension)
                         .setDistanceMetric(distanceMetric)
                         .setStatus(collectionInfo.getStatus().name())
@@ -466,6 +550,12 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                         .setEmbeddingModel(embeddingModel)
                         .build();
                 responseBuilder.addCollections(info);
+            }
+            
+            if (!configFailures.isEmpty()) {
+                responseBuilder.setErrorMessage("Could not read query config for "
+                        + configFailures.size() + " of " + collectionNames.size() + " collections: "
+                        + String.join("; ", configFailures));
             }
             
             responseObserver.onNext(responseBuilder.build());
@@ -503,10 +593,19 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             var collectionInfo = qdrantRepository.getQdrantClient().getCollectionInfoAsync(collectionName).get(5, java.util.concurrent.TimeUnit.SECONDS);
             
             CollectionQueryConfig queryConfig = fetchCollectionQueryConfig(collectionName);
+            if (!queryConfig.success()) {
+                log.error("Could not read config for collection {}: {}", collectionName, queryConfig.errorMessage());
+                responseObserver.onNext(GetCollectionInfoResponse.newBuilder()
+                        .setSuccess(false)
+                        .setErrorMessage(queryConfig.errorMessage())
+                        .build());
+                responseObserver.onCompleted();
+                return;
+            }
             
             CollectionInfo info = CollectionInfo.newBuilder()
                     .setName(collectionName)
-                    .setPointsCount((int) collectionInfo.getPointsCount())
+                    .setPointsCount((int) Math.min(Integer.MAX_VALUE, collectionInfo.getPointsCount()))
                     .setVectorDimension(queryConfig.vectorDimension())
                     .setDistanceMetric(queryConfig.distanceMetric())
                     .setStatus(collectionInfo.getStatus().name())
@@ -791,23 +890,19 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             log.info("Rebuilding document cache for collection: '{}'", 
                     collectionName.isEmpty() ? "all" : collectionName);
             
-            int totalDocuments = qdrantRepository.rebuildDocumentCache(collectionName);
-            
-            int collectionsScanned = 0;
-            if (collectionName != null && !collectionName.isEmpty()) {
-                collectionsScanned = 1;
-            }
+            var scan = qdrantRepository.rebuildDocumentCache(collectionName);
             
             com.mcp.qdrant.proto.RebuildDocumentCacheResponse response = 
                     com.mcp.qdrant.proto.RebuildDocumentCacheResponse.newBuilder()
                             .setSuccess(true)
-                            .setTotalDocuments(totalDocuments)
-                            .setCollectionsScanned(collectionsScanned)
+                            .setTotalDocuments(scan.totalDocuments())
+                            .setCollectionsScanned(scan.collectionsScanned())
                             .build();
             
             responseObserver.onNext(response);
             responseObserver.onCompleted();
-            log.info("Document cache rebuilt. Found {} documents", totalDocuments);
+            log.info("Document cache rebuilt. Found {} documents across {} collections",
+                    scan.totalDocuments(), scan.collectionsScanned());
 
         } catch (Exception e) {
             log.error("Failed to rebuild document cache: {}", e.getMessage(), e);
@@ -819,7 +914,12 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
         }
     }
 
-    private record CollectionQueryConfig(int vectorDimension, String distanceMetric) {}
+    private record CollectionQueryConfig(boolean success, String errorMessage, int vectorDimension,
+                                          String distanceMetric) {}
+
+    private CollectionQueryConfig queryConfigFailure(String message) {
+        return new CollectionQueryConfig(false, message, 0, "");
+    }
 
     private CollectionQueryConfig fetchCollectionQueryConfig(String collectionName) {
         try {
@@ -832,31 +932,31 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
                     .block();
 
             if (collInfo == null) {
-                return new CollectionQueryConfig(0, "Cosine");
+                return queryConfigFailure("No collection config returned for " + collectionName);
             }
 
             @SuppressWarnings("unchecked")
             Map<String, Object> result = (Map<String, Object>) collInfo.get("result");
             if (result == null) {
-                return new CollectionQueryConfig(0, "Cosine");
+                return queryConfigFailure("Collection config response has no result for " + collectionName);
             }
 
             @SuppressWarnings("unchecked")
             Map<String, Object> config = (Map<String, Object>) result.get("config");
             if (config == null) {
-                return new CollectionQueryConfig(0, "Cosine");
+                return queryConfigFailure("Collection config has no config section for " + collectionName);
             }
 
             @SuppressWarnings("unchecked")
             Map<String, Object> params = (Map<String, Object>) config.get("params");
             if (params == null) {
-                return new CollectionQueryConfig(0, "Cosine");
+                return queryConfigFailure("Collection config has no params section for " + collectionName);
             }
 
             @SuppressWarnings("unchecked")
             Map<String, Object> vectors = (Map<String, Object>) params.get("vectors");
             if (vectors == null) {
-                return new CollectionQueryConfig(0, "Cosine");
+                return queryConfigFailure("Collection config has no vectors section for " + collectionName);
             }
 
             int dimension = 0;
@@ -868,18 +968,21 @@ public class GrpcMcpService extends McpQdrantServiceGrpc.McpQdrantServiceImplBas
             } else if (sizeObj instanceof Number) {
                 dimension = ((Number) sizeObj).intValue();
             }
-
-            String distance = "Cosine";
-            Object distObj = vectors.get("distance");
-            if (distObj instanceof String) {
-                distance = (String) distObj;
+            if (dimension <= 0) {
+                return queryConfigFailure("Collection config has no vector size for " + collectionName);
             }
 
-            return new CollectionQueryConfig(dimension, distance);
+            Object distObj = vectors.get("distance");
+            if (!(distObj instanceof String) || ((String) distObj).isEmpty()) {
+                return queryConfigFailure("Collection config has no distance metric for " + collectionName);
+            }
+
+            return new CollectionQueryConfig(true, null, dimension, (String) distObj);
 
         } catch (Exception e) {
             log.warn("Could not fetch collection config for {}: {}", collectionName, e.getMessage());
-            return new CollectionQueryConfig(0, "Cosine");
+            return queryConfigFailure("Could not fetch collection config for " + collectionName
+                    + ": " + e.getMessage());
         }
     }
 }

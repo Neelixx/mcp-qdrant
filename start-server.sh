@@ -7,7 +7,7 @@ echo "MCP Qdrant Server with Environment Variables"
 echo "========================================"
 echo
 
-cd "$(dirname "$0")/mcp-qdrant"
+cd "$(dirname "$0")/mcp-qdrant" || exit 1
 
 # Set environment variables (you can modify these as needed)
 # Qdrant Configuration
@@ -51,9 +51,6 @@ if ! command -v java &> /dev/null; then
     echo "Please install Java 25 or higher and try again"
     exit 1
 fi
-
-# set maven on PATH:
-export PATH=../apache-maven/bin:$PATH
 
 echo "Current directory: $(pwd)"
 echo
